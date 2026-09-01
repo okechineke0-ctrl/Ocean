@@ -74,20 +74,52 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
           {filteredProjects.map((project) => (
             <div
               key={project.id}
-              className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+              className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group"
             >
-              <div className="p-6 sm:p-8">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-200 uppercase tracking-wide">
-                    {project.category}
-                  </span>
-                  <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-                    <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                    <span>{project.location}</span>
+              {/* Visual Project Mockup Header */}
+              {project.imageUrl && (
+                <div className="relative h-56 sm:h-64 w-full bg-slate-900 overflow-hidden border-b border-slate-200">
+                  <img 
+                    src={project.imageUrl} 
+                    alt={project.title}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent"></div>
+                  
+                  {/* Category Pill Overlay */}
+                  <div className="absolute top-4 left-4 flex items-center gap-2">
+                    <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-sky-600 text-white shadow-md uppercase tracking-wider backdrop-blur-md">
+                      {project.category}
+                    </span>
+                    <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-900/80 text-slate-200 border border-slate-700/60 backdrop-blur-md flex items-center gap-1">
+                      <MapPin className="w-3 h-3 text-sky-400" />
+                      <span>{project.location}</span>
+                    </span>
+                  </div>
+
+                  {/* Rating Badge */}
+                  <div className="absolute bottom-4 right-4 bg-slate-900/90 border border-slate-700/80 px-3 py-1 rounded-lg backdrop-blur-md flex items-center gap-1 text-amber-400 text-xs font-bold shadow-md">
+                    <span>★</span>
+                    <span className="text-white font-semibold">5.0</span>
                   </div>
                 </div>
+              )}
 
-                <h3 className="text-xl font-bold text-slate-900 font-display mb-2">
+              <div className="p-6 sm:p-8">
+                {!project.imageUrl && (
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-200 uppercase tracking-wide">
+                      {project.category}
+                    </span>
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                      <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                      <span>{project.location}</span>
+                    </div>
+                  </div>
+                )}
+
+                <h3 className="text-xl font-bold text-slate-900 font-display mb-2 group-hover:text-sky-600 transition-colors">
                   {project.title}
                 </h3>
 
@@ -132,19 +164,17 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
               </div>
 
               <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                <div className="flex items-center gap-1 text-amber-500 text-xs font-bold">
-                  {[...Array(project.rating)].map((_, i) => (
-                    <span key={i}>★</span>
-                  ))}
-                  <span className="text-slate-600 ml-1 font-normal">5.0 Client Rating</span>
+                <div className="flex items-center gap-1 text-emerald-600 text-xs font-semibold">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>Verified Production Deployment</span>
                 </div>
 
                 <button
                   onClick={() => onOpenQuote()}
-                  className="px-3.5 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs transition-colors flex items-center gap-1 cursor-pointer"
+                  className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
                 >
                   <span>Build Similar System</span>
-                  <ArrowRight className="w-3 h-3" />
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>

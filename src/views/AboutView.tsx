@@ -77,65 +77,76 @@ export const AboutView: React.FC<AboutViewProps> = ({
           </div>
 
           {/* Agbani Headquarters Card */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-xs space-y-6">
-            <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
-              <div className="p-3 bg-sky-50 text-sky-600 rounded-xl">
-                <Building2 className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="font-bold text-slate-900 font-display">Ocean Technologies Development Hub</h3>
-                <p className="text-xs text-slate-500">Agbani, Enugu State, Nigeria</p>
-              </div>
-            </div>
-
-            <div className="space-y-3.5 text-xs text-slate-700">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
-                <span>
-                  <strong>Location:</strong> Agbani, Enugu State, Nigeria<br />
-                  <span className="text-slate-500 text-[11px]">(Near Enugu State University of Science and Technology - ESUT)</span>
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <Phone className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>
-                  <strong>Hotline:</strong> <a href={COMPANY_INFO.phoneTel} className="text-emerald-700 font-bold">{COMPANY_INFO.phone}</a>
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <Mail className="w-4 h-4 text-sky-600 shrink-0" />
-                <span>
-                  <strong>Email:</strong> <a href={COMPANY_INFO.emailMailto} className="text-sky-700 font-semibold">{COMPANY_INFO.email}</a>
-                </span>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <Clock className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
-                <span>
-                  <strong>Working Hours:</strong> Mon – Sat: 8:00 AM – 7:00 PM (WAT)<br />
-                  <span className="text-emerald-700 font-semibold">24/7 Software Emergency Response Hotline</span>
+          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+            <div className="relative h-44 w-full bg-slate-900">
+              <img 
+                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" 
+                alt="Ocean Technologies Team at Work"
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover opacity-80"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent"></div>
+              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
+                <div>
+                  <h3 className="font-bold text-base font-display">Ocean Technologies Development Hub</h3>
+                  <p className="text-xs text-sky-300">Agbani, Enugu State, Nigeria</p>
+                </div>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                  ESUT Area
                 </span>
               </div>
             </div>
 
-            <div className="pt-2 flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={() => onOpenQuote()}
-                className="flex-1 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs tracking-wide text-center transition-colors cursor-pointer"
-              >
-                Request a Consultation
-              </button>
-              <a
-                href={COMPANY_INFO.whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
-              >
-                <MessageCircle className="w-3.5 h-3.5" />
-                <span>WhatsApp Us</span>
-              </a>
+            <div className="p-6 space-y-4">
+              <div className="space-y-3.5 text-xs text-slate-700">
+                <div className="flex items-start gap-3">
+                  <MapPin className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
+                  <span>
+                    <strong>Location:</strong> Agbani, Enugu State, Nigeria<br />
+                    <span className="text-slate-500 text-[11px]">(Near Enugu State University of Science and Technology - ESUT)</span>
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Phone className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>
+                    <strong>Hotline:</strong> <a href={COMPANY_INFO.phoneTel} className="text-emerald-700 font-bold">{COMPANY_INFO.phone}</a>
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Mail className="w-4 h-4 text-sky-600 shrink-0" />
+                  <span>
+                    <strong>Email:</strong> <a href={COMPANY_INFO.emailMailto} className="text-sky-700 font-semibold">{COMPANY_INFO.email}</a>
+                  </span>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Clock className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
+                  <span>
+                    <strong>Working Hours:</strong> Mon – Sat: 8:00 AM – 7:00 PM (WAT)<br />
+                    <span className="text-emerald-700 font-semibold">24/7 Software Emergency Response Hotline</span>
+                  </span>
+                </div>
+              </div>
+
+              <div className="pt-2 flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => onOpenQuote()}
+                  className="flex-1 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs tracking-wide text-center transition-colors cursor-pointer shadow-xs"
+                >
+                  Request a Consultation
+                </button>
+                <a
+                  href={COMPANY_INFO.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  <MessageCircle className="w-3.5 h-3.5" />
+                  <span>WhatsApp Us</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>

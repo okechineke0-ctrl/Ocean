@@ -59,6 +59,8 @@ export interface ProjectCaseStudy {
   metrics: { label: string; value: string }[];
   location: string;
   rating: number;
+  imageUrl?: string;
+  mockupType?: 'browser' | 'mobile' | 'code' | 'dashboard';
 }
 
 export interface Testimonial {

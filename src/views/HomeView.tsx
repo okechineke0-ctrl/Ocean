@@ -58,81 +58,156 @@ export const HomeView: React.FC<HomeViewProps> = ({
     <div className="bg-slate-50 min-h-screen text-slate-900 selection:bg-sky-100 selection:text-sky-900">
       
       {/* 1. Hero Section */}
-      <section className="relative pt-12 pb-20 md:pt-20 md:pb-28 bg-white border-b border-slate-200 overflow-hidden">
-        {/* Subtle geometric grid backdrop */}
-        <div className="absolute inset-0 bg-[radial-gradient(#0284c7_1px,transparent_1px)] [background-size:24px_24px] opacity-15 pointer-events-none"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-sky-100 rounded-full filter blur-3xl opacity-40 pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-50 rounded-full filter blur-3xl opacity-40 pointer-events-none"></div>
+      <section className="relative pt-10 pb-16 md:pt-16 md:pb-24 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white border-b border-slate-800 overflow-hidden">
+        {/* Glow Effects & Tech Grid */}
+        <div className="absolute inset-0 bg-[radial-gradient(#0284c7_1px,transparent_1px)] [background-size:32px_32px] opacity-20 pointer-events-none"></div>
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-sky-500/15 rounded-full filter blur-[100px] pointer-events-none"></div>
+        <div className="absolute -top-24 right-0 w-96 h-96 bg-blue-600/15 rounded-full filter blur-3xl pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-3xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             
-            {/* Location & Status Tag */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-50 border border-sky-200 text-sky-800 text-xs font-semibold mb-6 shadow-xs">
-              <span className="flex h-2 w-2 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-600"></span>
-              </span>
-              <span>Agbani, Enugu State, Nigeria • ESUT Corridor</span>
+            {/* Left Content Column (7 cols) */}
+            <div className="lg:col-span-7">
+              {/* Location & Status Tag */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-400/30 text-sky-300 text-xs font-semibold mb-6 shadow-xs backdrop-blur-md">
+                <span className="flex h-2 w-2 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-400"></span>
+                </span>
+                <span>Agbani, Enugu State, Nigeria • Near ESUT Corridor</span>
+              </div>
+
+              {/* Headline */}
+              <h1 className="text-3xl sm:text-5xl lg:text-5xl font-extrabold text-white tracking-tight font-display leading-[1.15] mb-5">
+                Modern <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-blue-400">Web & Mobile Apps</span>, Custom Systems & 24/7 Support
+              </h1>
+
+              {/* Subtitle */}
+              <p className="text-sm sm:text-base text-slate-300 leading-relaxed mb-8 max-w-2xl font-normal">
+                Ocean Technologies engineers high-converting websites, iOS/Android mobile apps, and provides emergency 500 error & database triage for businesses in Enugu and across Nigeria.
+              </p>
+
+              {/* CTAs */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 mb-10">
+                <button
+                  id="hero-request-quote-cta"
+                  onClick={() => onOpenQuote()}
+                  className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold text-sm tracking-wide shadow-lg shadow-sky-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <span>Get a Free Project Quote</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+
+                <button
+                  id="hero-emergency-fix-cta"
+                  onClick={onOpenIssueReport}
+                  className="px-5 py-3.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/40 text-amber-300 font-semibold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer backdrop-blur-md"
+                >
+                  <AlertTriangle className="w-4 h-4 text-amber-400" />
+                  <span>Fix Broken Site / Bug</span>
+                </button>
+
+                <a
+                  id="hero-call-cta"
+                  href={COMPANY_INFO.phoneTel}
+                  className="px-4 py-3.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-semibold text-sm transition-colors flex items-center justify-center gap-2"
+                >
+                  <Phone className="w-4 h-4 text-emerald-400" />
+                  <span>{COMPANY_INFO.phone}</span>
+                </a>
+              </div>
+
+              {/* Trust Metrics Bar */}
+              <div className="pt-6 border-t border-slate-800/80 grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div>
+                  <p className="text-2xl font-black text-white font-display">120+</p>
+                  <p className="text-xs text-slate-400 font-medium">Projects Delivered</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-black text-white font-display">99.9%</p>
+                  <p className="text-xs text-slate-400 font-medium">Uptime Guarantee</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-black text-sky-400 font-display">&lt; 2 Hrs</p>
+                  <p className="text-xs text-slate-400 font-medium">Emergency Triage</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-black text-emerald-400 font-display">₦25k/mo</p>
+                  <p className="text-xs text-slate-400 font-medium">Starter Maintenance</p>
+                </div>
+              </div>
             </div>
 
-            {/* Headline */}
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight font-display leading-[1.15] mb-6">
-              Professional <span className="text-sky-600">Website Development</span>, Mobile Apps & Continuous <span className="text-slate-800">Software Maintenance</span>
-            </h1>
+            {/* Right Interactive Tech Showcase & Terminal (5 cols) */}
+            <div className="lg:col-span-5 relative">
+              {/* Code Terminal Frame */}
+              <div className="bg-slate-900/90 rounded-2xl border border-slate-700/80 shadow-2xl overflow-hidden backdrop-blur-xl">
+                {/* Terminal Window Header */}
+                <div className="bg-slate-950/80 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
+                    <span className="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
+                    <span className="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
+                  </div>
+                  <span className="text-[11px] font-mono text-slate-400">ocean-tech-engine.ts</span>
+                  <div className="flex items-center gap-1.5 text-[10px] text-emerald-400 font-mono">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>ONLINE</span>
+                  </div>
+                </div>
 
-            {/* Subtitle */}
-            <p className="text-base sm:text-lg text-slate-600 leading-relaxed mb-8 max-w-2xl font-normal">
-              We engineer fast websites, native mobile applications, and provide 24/7 software troubleshooting for businesses in Enugu State and across Nigeria. Whether launching a new platform or fixing a broken site, we deliver dependable results.
-            </p>
+                {/* Code Terminal Body */}
+                <div className="p-5 font-mono text-xs leading-relaxed space-y-2 text-slate-300">
+                  <div className="text-slate-500">// Ocean Technologies Stack Engine</div>
+                  <div>
+                    <span className="text-sky-400">const</span> <span className="text-amber-300">oceanDeploy</span> = {'{'}
+                  </div>
+                  <div className="pl-4 space-y-1">
+                    <div><span className="text-slate-400">location:</span> <span className="text-emerald-300">"Agbani, Enugu State, Nigeria"</span>,</div>
+                    <div><span className="text-slate-400">techStack:</span> [<span className="text-emerald-300">"React"</span>, <span className="text-emerald-300">"Next.js"</span>, <span className="text-emerald-300">"Flutter"</span>, <span className="text-emerald-300">"Node"</span>],</div>
+                    <div><span className="text-slate-400">payments:</span> [<span className="text-emerald-300">"Paystack"</span>, <span className="text-emerald-300">"Flutterwave"</span>, <span className="text-emerald-300">"Stripe"</span>],</div>
+                    <div><span className="text-slate-400">database:</span> <span className="text-emerald-300">"PostgreSQL & Cloud Firestore"</span>,</div>
+                    <div><span className="text-slate-400">slaUptime:</span> <span className="text-sky-300">"99.9% Uptime Guarantee"</span>,</div>
+                    <div><span className="text-slate-400">emergencyLine:</span> <span className="text-emerald-300">"09129216768"</span></div>
+                  </div>
+                  <div>{'};'}</div>
+                  <div className="pt-2 text-emerald-400 flex items-center gap-2">
+                    <span className="text-slate-500">&gt;</span>
+                    <span>Ready for project kickoff and emergency triage.</span>
+                  </div>
+                </div>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 mb-10">
-              <button
-                id="hero-request-quote-cta"
-                onClick={() => onOpenQuote()}
-                className="px-6 py-3.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-sm tracking-wide shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <span>Get a Free Project Quote</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-
-              <button
-                id="hero-emergency-fix-cta"
-                onClick={onOpenIssueReport}
-                className="px-5 py-3.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 font-semibold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <AlertTriangle className="w-4 h-4 text-amber-600" />
-                <span>Fix Broken Site / Emergency Bug</span>
-              </button>
-
-              <a
-                id="hero-call-cta"
-                href={COMPANY_INFO.phoneTel}
-                className="px-4 py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-sm transition-colors flex items-center justify-center gap-2"
-              >
-                <Phone className="w-4 h-4 text-emerald-600" />
-                <span>{COMPANY_INFO.phone}</span>
-              </a>
-            </div>
-
-            {/* Trust Metrics Bar */}
-            <div className="pt-6 border-t border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div>
-                <p className="text-2xl font-black text-slate-900 font-display">120+</p>
-                <p className="text-xs text-slate-500 font-medium">Projects Delivered</p>
+                {/* Visual Image Banner inside terminal frame */}
+                <div className="relative h-36 bg-slate-950 overflow-hidden border-t border-slate-800">
+                  <img 
+                    src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" 
+                    alt="Ocean Technologies Engineering Team"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover opacity-60"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+                  <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
+                    <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                      <ShieldCheck className="w-4 h-4 text-sky-400" />
+                      <span>Certified Software Engineering</span>
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                      ESUT Corridor
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="text-2xl font-black text-slate-900 font-display">99.9%</p>
-                <p className="text-xs text-slate-500 font-medium">Uptime Guarantee</p>
-              </div>
-              <div>
-                <p className="text-2xl font-black text-sky-600 font-display">&lt; 2 Hrs</p>
-                <p className="text-xs text-slate-500 font-medium">Emergency Triage</p>
-              </div>
-              <div>
-                <p className="text-2xl font-black text-emerald-600 font-display">₦25k/mo</p>
-                <p className="text-xs text-slate-500 font-medium">Starter Maintenance</p>
+
+              {/* Floating Verified Badge */}
+              <div className="hidden sm:flex absolute -bottom-5 -left-5 bg-slate-800/90 border border-slate-700 p-3 rounded-xl shadow-xl backdrop-blur-md items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+                  ✓
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-white">Verified Paystack & Flutterwave</p>
+                  <p className="text-[10px] text-slate-400">Secure Payment Architecture</p>
+                </div>
               </div>
             </div>
 
@@ -467,71 +542,83 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </div>
 
           {/* Agbani Office Card & Quick Inquiries */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
-            <div className="flex items-center gap-3 mb-6 pb-6 border-b border-slate-100">
-              <div className="w-12 h-12 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center font-black text-lg">
-                OT
-              </div>
-              <div>
-                <h3 className="font-bold text-slate-900 font-display">Ocean Technologies Office</h3>
-                <p className="text-xs text-slate-500">Agbani, Enugu State, Nigeria</p>
-              </div>
-            </div>
-
-            <div className="space-y-4 text-xs text-slate-700 mb-6">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
-                <span>
-                  <strong>Physical Address:</strong><br />
-                  Agbani, Enugu State, Nigeria (ESUT Corridor, Enugu State University of Science and Technology)
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <Phone className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>
-                  <strong>Hotline:</strong> <a href={COMPANY_INFO.phoneTel} className="text-emerald-700 font-bold hover:underline">{COMPANY_INFO.phone}</a>
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <MessageCircle className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>
-                  <strong>WhatsApp:</strong> <a href={COMPANY_INFO.whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-emerald-700 font-bold hover:underline">09129216768</a>
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <Clock className="w-4 h-4 text-sky-600 shrink-0" />
-                <span>
-                  <strong>Hours:</strong> Mon – Sat: 8:00 AM – 7:00 PM (WAT)
+          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+            {/* Tech Office Imagery Banner */}
+            <div className="relative h-44 w-full bg-slate-900">
+              <img 
+                src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" 
+                alt="Ocean Technologies Agbani Engineering Hub"
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover opacity-85"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent"></div>
+              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
+                <div>
+                  <h3 className="font-bold text-base font-display">Ocean Technologies Development Hub</h3>
+                  <p className="text-xs text-sky-300">Agbani, Enugu State, Nigeria</p>
+                </div>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                  ESUT Area
                 </span>
               </div>
             </div>
 
-            <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 text-xs space-y-2 mb-6">
-              <p className="font-semibold text-slate-900">Direct Email Inquiries:</p>
-              <a href={COMPANY_INFO.emailMailto} className="text-sky-600 font-medium hover:underline block break-all">
-                {COMPANY_INFO.email}
-              </a>
-            </div>
+            <div className="p-6">
+              <div className="space-y-3.5 text-xs text-slate-700 mb-6">
+                <div className="flex items-start gap-3">
+                  <MapPin className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
+                  <span>
+                    <strong>Physical Address:</strong><br />
+                    Agbani, Enugu State, Nigeria (ESUT Corridor, Enugu State University of Science and Technology)
+                  </span>
+                </div>
 
-            <div className="flex gap-2">
-              <button
-                onClick={() => onOpenQuote()}
-                className="flex-1 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs tracking-wide transition-colors text-center cursor-pointer"
-              >
-                Request Quote
-              </button>
-              <a
-                href={COMPANY_INFO.whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
-              >
-                <MessageCircle className="w-3.5 h-3.5" />
-                <span>WhatsApp</span>
-              </a>
+                <div className="flex items-center gap-3">
+                  <Phone className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>
+                    <strong>Hotline:</strong> <a href={COMPANY_INFO.phoneTel} className="text-emerald-700 font-bold hover:underline">{COMPANY_INFO.phone}</a>
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <MessageCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>
+                    <strong>WhatsApp:</strong> <a href={COMPANY_INFO.whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-emerald-700 font-bold hover:underline">09129216768</a>
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Clock className="w-4 h-4 text-sky-600 shrink-0" />
+                  <span>
+                    <strong>Hours:</strong> Mon – Sat: 8:00 AM – 7:00 PM (WAT)
+                  </span>
+                </div>
+              </div>
+
+              <div className="bg-slate-50 rounded-xl p-3.5 border border-slate-200 text-xs space-y-1 mb-6">
+                <p className="font-semibold text-slate-900">Direct Inquiries:</p>
+                <a href={COMPANY_INFO.emailMailto} className="text-sky-600 font-medium hover:underline block break-all">
+                  {COMPANY_INFO.email}
+                </a>
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => onOpenQuote()}
+                  className="flex-1 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs tracking-wide transition-colors text-center cursor-pointer shadow-xs"
+                >
+                  Request Quote
+                </button>
+                <a
+                  href={COMPANY_INFO.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  <MessageCircle className="w-3.5 h-3.5" />
+                  <span>WhatsApp</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -558,20 +645,44 @@ export const HomeView: React.FC<HomeViewProps> = ({
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {CASE_STUDIES.slice(0, 2).map((item) => (
-              <div key={item.id} className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
-                      {item.category}
-                    </span>
-                    <span className="text-xs text-slate-400 font-medium">
-                      {item.location}
-                    </span>
+              <div key={item.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group">
+                {/* Project Image Header */}
+                {item.imageUrl && (
+                  <div className="relative h-48 w-full bg-slate-900 overflow-hidden">
+                    <img 
+                      src={item.imageUrl} 
+                      alt={item.title} 
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                    <div className="absolute top-3 left-3 flex items-center gap-2">
+                      <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-sky-600 text-white shadow-md uppercase tracking-wider">
+                        {item.category}
+                      </span>
+                    </div>
+                    <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-slate-300">
+                      <span className="font-medium">{item.client}</span>
+                      <span className="text-amber-400 font-bold">5.0 ★</span>
+                    </div>
                   </div>
+                )}
 
-                  <h3 className="text-lg font-bold text-slate-900 font-display mb-2">
+                <div className="p-6">
+                  {!item.imageUrl && (
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
+                        {item.category}
+                      </span>
+                      <span className="text-xs text-slate-400 font-medium">
+                        {item.location}
+                      </span>
+                    </div>
+                  )}
+
+                  <h3 className="text-lg font-bold text-slate-900 font-display mb-2 group-hover:text-sky-600 transition-colors">
                     {item.title}
                   </h3>
                   
@@ -584,18 +695,20 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       <strong className="text-slate-800">Challenge:</strong> <span className="text-slate-600">{item.challenge}</span>
                     </div>
                     <div>
-                      <strong className="text-sky-700">Solution Delivered:</strong> <span className="text-slate-600">{item.solution}</span>
+                      <strong className="text-sky-700">Solution:</strong> <span className="text-slate-600">{item.solution}</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-slate-100 grid grid-cols-3 gap-2 text-center">
-                  {item.metrics.map((m, idx) => (
-                    <div key={idx} className="bg-slate-50 py-1.5 px-1 rounded-lg">
-                      <p className="text-xs font-bold text-slate-900">{m.value}</p>
-                      <p className="text-[10px] text-slate-500 truncate">{m.label}</p>
-                    </div>
-                  ))}
+                <div className="p-6 pt-0">
+                  <div className="pt-4 border-t border-slate-100 grid grid-cols-3 gap-2 text-center">
+                    {item.metrics.map((m, idx) => (
+                      <div key={idx} className="bg-slate-50 py-2 px-1 rounded-lg">
+                        <p className="text-xs font-bold text-slate-900">{m.value}</p>
+                        <p className="text-[10px] text-slate-500 truncate">{m.label}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             ))}

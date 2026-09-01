@@ -262,7 +262,9 @@ export const CASE_STUDIES: ProjectCaseStudy[] = [
       { label: 'Monthly Inquiries', value: '1,200+' }
     ],
     location: 'Agbani, Enugu State',
-    rating: 5
+    rating: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=1000&q=80',
+    mockupType: 'browser'
   },
   {
     id: 'enugu-agro-logistics',
@@ -280,7 +282,9 @@ export const CASE_STUDIES: ProjectCaseStudy[] = [
       { label: 'App Rating', value: '4.9 ★' }
     ],
     location: 'Enugu State, Nigeria',
-    rating: 5
+    rating: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=1000&q=80',
+    mockupType: 'mobile'
   },
   {
     id: 'fintech-checkout-rescue',
@@ -298,7 +302,9 @@ export const CASE_STUDIES: ProjectCaseStudy[] = [
       { label: 'Ongoing SLA', value: 'Active' }
     ],
     location: 'Nigeria (Remote Client)',
-    rating: 5
+    rating: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1000&q=80',
+    mockupType: 'code'
   },
   {
     id: 'healthcare-records-portal',
@@ -316,7 +322,9 @@ export const CASE_STUDIES: ProjectCaseStudy[] = [
       { label: 'Uptime', value: '99.99%' }
     ],
     location: 'Enugu, Nigeria',
-    rating: 5
+    rating: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=1000&q=80',
+    mockupType: 'dashboard'
   }
 ];
 
