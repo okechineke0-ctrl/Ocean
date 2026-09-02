@@ -9,6 +9,7 @@ import { PortfolioView } from './views/PortfolioView';
 import { EmergencyFixView } from './views/EmergencyFixView';
 import { AboutView } from './views/AboutView';
 import { ContactView } from './views/ContactView';
+import { AdminInboxView } from './views/AdminInboxView';
 import { QuoteModal } from './components/QuoteModal';
 import { IssueReportModal } from './components/IssueReportModal';
 import { SearchModal } from './components/SearchModal';
@@ -101,6 +102,12 @@ export default function App() {
           <ContactView
             onNavigate={handleNavigate}
             onOpenIssueReport={handleOpenIssueReport}
+          />
+        )}
+
+        {currentView === 'admin-inbox' && (
+          <AdminInboxView
+            onNavigate={handleNavigate}
           />
         )}
       </main>

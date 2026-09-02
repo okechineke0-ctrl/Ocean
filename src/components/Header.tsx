@@ -15,7 +15,8 @@ import {
   ArrowRight,
   ShieldCheck,
   MessageCircle,
-  Clock
+  Clock,
+  Database
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -149,6 +150,21 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <Search className="w-3.5 h-3.5" />
               <span className="font-mono text-[11px] text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200">⌘K</span>
+            </button>
+
+            {/* Database Inquiries Portal */}
+            <button
+              id="header-database-btn"
+              onClick={() => onNavigate('admin-inbox')}
+              title="View Firestore Database & Client Inquiries"
+              className={`p-2 rounded-lg border text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer ${
+                currentView === 'admin-inbox'
+                  ? 'bg-sky-600 text-white border-sky-600'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
+              }`}
+            >
+              <Database className="w-3.5 h-3.5 text-sky-600" />
+              <span className="hidden xl:inline">Database Inbox</span>
             </button>
 
             {/* Emergency Fix CTA */}

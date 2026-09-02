@@ -15,6 +15,7 @@ import {
   CreditCard,
   Server
 } from 'lucide-react';
+import { saveInquiry } from '../lib/inquiriesService';
 
 interface EmergencyFixViewProps {
   onNavigate: (view: ViewMode) => void;
@@ -35,8 +36,23 @@ export const EmergencyFixView: React.FC<EmergencyFixViewProps> = ({
     description: ''
   });
 
-  const handleQuickSubmit = (e: React.FormEvent) => {
+  const handleQuickSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      await saveInquiry({
+        type: 'emergency_issue',
+        fullName: form.name,
+        email: form.email || 'emergency@oceantechnologies.ng',
+        phone: form.phone,
+        serviceType: form.issueType,
+        affectedUrlOrSystem: form.affectedSite,
+        message: form.description || 'Quick emergency triage form submission',
+        urgency: 'Immediate Triage',
+        preferredContact: 'WhatsApp / Phone Call'
+      });
+    } catch (err) {
+      console.error('Error saving emergency ticket:', err);
+    }
     setTicketSubmitted(true);
   };
 

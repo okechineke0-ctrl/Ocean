@@ -5,7 +5,8 @@ export type ViewMode =
   | 'portfolio'
   | 'emergency-fix'
   | 'about'
-  | 'contact';
+  | 'contact'
+  | 'admin-inbox';
 
 export type ServiceCategory = 
   | 'All'
@@ -104,4 +105,24 @@ export interface IssueTicketFormData {
   errorDescription: string;
   accessAvailable: boolean;
 }
+
+export interface InquiryRecord {
+  id: string;
+  type: 'quote' | 'contact' | 'emergency_issue';
+  fullName: string;
+  email: string;
+  phone: string;
+  companyOrProject?: string;
+  serviceType?: string;
+  message?: string;
+  budgetRange?: string;
+  timeline?: string;
+  urgency?: string;
+  affectedUrlOrSystem?: string;
+  preferredContact?: string;
+  status: 'new' | 'in_progress' | 'responded' | 'resolved' | 'archived';
+  adminNotes?: string;
+  createdAt: string;
+}
+
 

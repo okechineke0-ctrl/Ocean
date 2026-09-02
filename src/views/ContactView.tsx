@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ViewMode } from '../types';
 import { COMPANY_INFO, FAQS } from '../data/companyData';
+import { saveInquiry } from '../lib/inquiriesService';
 import { 
   MapPin, 
   Phone, 
@@ -33,11 +34,29 @@ export const ContactView: React.FC<ContactViewProps> = ({
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [activeFaqCategory, setActiveFaqCategory] = useState<string>('All');
   const [openFaqId, setOpenFaqId] = useState<string | null>('1');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
+
+    try {
+      await saveInquiry({
+        type: 'contact',
+        fullName: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        serviceType: formData.subject,
+        message: formData.message,
+        preferredContact: 'WhatsApp / Email'
+      });
+    } catch (err) {
+      console.error('Error saving contact message:', err);
+    }
+
+    setSubmitting(false);
     setSubmitted(true);
   };
 

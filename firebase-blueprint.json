@@ -1,0 +1,84 @@
+{
+  "entities": {
+    "Inquiry": {
+      "title": "Inquiry",
+      "description": "A contact form submission, project quote request, or emergency software issue ticket submitted by a client.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the inquiry record."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["quote", "contact", "emergency_issue"],
+          "description": "The category of the client message or submission."
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Full name of the client."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the client."
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number or WhatsApp contact."
+        },
+        "companyOrProject": {
+          "type": "string",
+          "description": "Company name or project title."
+        },
+        "serviceType": {
+          "type": "string",
+          "description": "Requested software service or issue category."
+        },
+        "message": {
+          "type": "string",
+          "description": "Detailed project description or bug report."
+        },
+        "budgetRange": {
+          "type": "string",
+          "description": "Specified budget estimate."
+        },
+        "timeline": {
+          "type": "string",
+          "description": "Expected timeline or deadline."
+        },
+        "urgency": {
+          "type": "string",
+          "description": "Urgency level for emergency triage."
+        },
+        "affectedUrlOrSystem": {
+          "type": "string",
+          "description": "URL or server affected by bug."
+        },
+        "preferredContact": {
+          "type": "string",
+          "description": "Preferred channel: WhatsApp, Phone Call, or Email."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["new", "in_progress", "responded", "resolved", "archived"],
+          "description": "Workflow status of the inquiry."
+        },
+        "adminNotes": {
+          "type": "string",
+          "description": "Internal notes by Ocean Technologies administrator."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of when the inquiry was created."
+        }
+      },
+      "required": ["type", "fullName", "email", "phone", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/inquiries/{inquiryId}": {
+      "schema": "Inquiry",
+      "description": "Public client submissions (quotes, contact messages, and emergency bug tickets) with admin workflow management."
+    }
+  }
+}

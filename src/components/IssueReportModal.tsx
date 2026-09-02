@@ -11,6 +11,7 @@ import {
   Zap
 } from 'lucide-react';
 import { IssueTicketFormData } from '../types';
+import { saveInquiry } from '../lib/inquiriesService';
 
 interface IssueReportModalProps {
   isOpen: boolean;
@@ -35,12 +36,33 @@ export const IssueReportModal: React.FC<IssueReportModalProps> = ({
   const [submitted, setSubmitted] = useState(false);
   const [ticketId, setTicketId] = useState('');
 
+  const [submitting, setSubmitting] = useState(false);
+
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
     const generatedTicket = `OCEAN-FIX-${Math.floor(100000 + Math.random() * 900000)}`;
     setTicketId(generatedTicket);
+
+    try {
+      await saveInquiry({
+        type: 'emergency_issue',
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        serviceType: formData.softwareType,
+        urgency: formData.urgency,
+        affectedUrlOrSystem: formData.affectedUrlOrSystem,
+        message: `Ticket: ${generatedTicket} | Error: ${formData.errorDescription} | Access Provided: ${formData.accessAvailable ? 'Yes' : 'No'}`,
+        preferredContact: 'WhatsApp / Call'
+      });
+    } catch (err) {
+      console.error('Error saving emergency ticket:', err);
+    }
+
+    setSubmitting(false);
     setSubmitted(true);
   };
 

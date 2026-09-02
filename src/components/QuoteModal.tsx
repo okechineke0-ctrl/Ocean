@@ -11,6 +11,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { QuoteRequestFormData } from '../types';
+import { saveInquiry } from '../lib/inquiriesService';
 
 interface QuoteModalProps {
   isOpen: boolean;
@@ -41,14 +42,29 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     
-    setTimeout(() => {
-      setSubmitting(false);
-      setSubmitted(true);
-    }, 800);
+    try {
+      await saveInquiry({
+        type: 'quote',
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        companyOrProject: formData.companyOrProject,
+        serviceType: formData.serviceType,
+        timeline: formData.timeline,
+        budgetRange: formData.budgetRange,
+        message: `${formData.description || 'No description provided'}${formData.currentWebsiteOrAppUrl ? ` | URL: ${formData.currentWebsiteOrAppUrl}` : ''}`,
+        preferredContact: formData.contactMethod
+      });
+    } catch (err) {
+      console.error('Error saving quote inquiry:', err);
+    }
+
+    setSubmitting(false);
+    setSubmitted(true);
   };
 
   const handleReset = () => {
