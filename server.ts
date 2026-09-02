@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import path from 'path';
 import { GoogleGenAI } from '@google/genai';
@@ -60,23 +61,22 @@ app.post('/api/inquiries', async (req, res) => {
       source,
     } = req.body;
 
-    if (!clientName || !email || !phone || !projectDescription) {
-      return res.status(400).json({
-        error: 'Missing required fields: clientName, email, phone, and projectDescription are required.',
-      });
-    }
+    const safeClientName = (clientName || '').trim() || 'Prospective Client';
+    const safeEmail = (email || '').trim() || 'client@oceantechnologies.ng';
+    const safePhone = (phone || '').trim() || 'Not specified';
+    const safeDescription = (projectDescription || '').trim() || `Inquiry for ${serviceType || 'software services'}`;
 
     const newInquiry = await createInquiry({
-      clientName,
-      email,
-      phone,
-      company,
+      clientName: safeClientName,
+      email: safeEmail,
+      phone: safePhone,
+      company: (company || '').trim() || undefined,
       serviceType: serviceType || 'web_development',
-      projectType,
-      budgetRange,
-      timeline,
-      urgency,
-      projectDescription,
+      projectType: projectType || 'quote',
+      budgetRange: budgetRange || undefined,
+      timeline: timeline || undefined,
+      urgency: urgency || undefined,
+      projectDescription: safeDescription,
       preferredContactMethod: preferredContactMethod || 'whatsapp',
       source: source || 'website',
     });

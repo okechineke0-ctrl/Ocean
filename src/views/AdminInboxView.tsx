@@ -243,18 +243,21 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
           </div>
 
           <div className="flex items-center gap-2">
-            <a
-              href="https://console.firebase.google.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors border border-slate-700"
+            <button
+              onClick={async () => {
+                setLoading(true);
+                const items = await fetchInquiriesFromPostgres();
+                setInquiries(items);
+                setLoading(false);
+              }}
+              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors border border-slate-700 cursor-pointer"
             >
-              <span>Firebase Console</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
+              <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-sky-400' : ''}`} />
+              <span>Refresh Database</span>
+            </button>
             <button
               onClick={() => onNavigate('home')}
-              className="px-3.5 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold transition-colors"
+              className="px-3.5 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold transition-colors cursor-pointer"
             >
               Back to Website
             </button>
@@ -268,7 +271,7 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
           <div className="bg-slate-950/60 border border-slate-800 rounded-xl p-4">
             <p className="text-xs text-slate-400 font-medium">Total Received</p>
             <p className="text-2xl font-bold font-display text-white mt-1">{counts.total}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Stored in Firestore collection</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Stored in PostgreSQL database</p>
           </div>
           <div className="bg-slate-950/60 border border-slate-800 rounded-xl p-4">
             <p className="text-xs text-amber-400 font-medium">New Unread</p>

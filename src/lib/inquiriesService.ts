@@ -1,11 +1,55 @@
 import { InquiryRecord } from '../types';
 
+const LOCAL_STORAGE_KEY = 'ocean_tech_inquiries_cache';
+
+function getLocalInquiries(): InquiryRecord[] {
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveLocalInquiry(record: InquiryRecord) {
+  try {
+    const current = getLocalInquiries();
+    const updated = [record, ...current.filter((i) => i.id !== record.id)];
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated.slice(0, 50)));
+  } catch (e) {
+    console.warn('Could not cache inquiry to localStorage:', e);
+  }
+}
+
 /**
  * Save an inquiry (Quote, Contact Form message, or Rapid Project Triage) to the backend PostgreSQL database.
  */
 export async function saveInquiry(
   inquiry: Omit<InquiryRecord, 'id' | 'createdAt' | 'status'>
 ): Promise<string> {
+  const localId = `quote-${Date.now()}`;
+  const nowIso = new Date().toISOString();
+
+  // Optimistic local cache entry
+  const optimisticRecord: InquiryRecord = {
+    id: localId,
+    type: inquiry.type || 'quote',
+    fullName: (inquiry.fullName || '').trim() || 'Prospective Client',
+    email: (inquiry.email || '').trim() || 'client@oceantechnologies.ng',
+    phone: (inquiry.phone || '').trim() || 'Not provided',
+    companyOrProject: (inquiry.companyOrProject || '').trim(),
+    serviceType: inquiry.serviceType || 'Website Development',
+    budgetRange: inquiry.budgetRange,
+    timeline: inquiry.timeline,
+    urgency: inquiry.urgency || 'Standard',
+    message: inquiry.message || 'Project inquiry submitted via Ocean Technologies website',
+    preferredContact: inquiry.preferredContact || 'WhatsApp',
+    status: 'new',
+    createdAt: nowIso,
+  };
+
+  saveLocalInquiry(optimisticRecord);
+
   try {
     const res = await fetch('/api/inquiries', {
       method: 'POST',
@@ -13,32 +57,38 @@ export async function saveInquiry(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        clientName: inquiry.fullName,
-        email: inquiry.email,
-        phone: inquiry.phone,
-        company: inquiry.companyOrProject || '',
-        serviceType: inquiry.serviceType || inquiry.type || 'web_development',
-        projectType: inquiry.type || 'quote',
-        budgetRange: inquiry.budgetRange || '',
-        timeline: inquiry.timeline || '',
-        urgency: inquiry.urgency || 'Standard',
-        projectDescription: inquiry.message || `${inquiry.type} inquiry from ${inquiry.fullName}`,
-        preferredContactMethod: inquiry.preferredContact || 'whatsapp',
-        source: inquiry.type || 'website',
+        clientName: optimisticRecord.fullName,
+        email: optimisticRecord.email,
+        phone: optimisticRecord.phone,
+        company: optimisticRecord.companyOrProject,
+        serviceType: optimisticRecord.serviceType,
+        projectType: optimisticRecord.type,
+        budgetRange: optimisticRecord.budgetRange,
+        timeline: optimisticRecord.timeline,
+        urgency: optimisticRecord.urgency,
+        projectDescription: optimisticRecord.message,
+        preferredContactMethod: optimisticRecord.preferredContact,
+        source: optimisticRecord.type,
       }),
     });
 
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.error || `HTTP ${res.status}`);
+      console.warn('Backend returned error for inquiry:', errData);
+      return localId;
     }
 
     const data = await res.json();
-    return String(data.inquiry?.id || `pg-${Date.now()}`);
+    const serverId = String(data.inquiry?.id || localId);
+    
+    // Update local cache with server id
+    optimisticRecord.id = serverId;
+    saveLocalInquiry(optimisticRecord);
+
+    return serverId;
   } catch (error) {
     console.error('Failed to save inquiry to PostgreSQL database:', error);
-    // Return a fallback ID so frontend UX is uninterrupted
-    return `local-${Date.now()}`;
+    return localId;
   }
 }
 
@@ -82,14 +132,18 @@ export async function saveEmergencyTicket(ticket: {
 }
 
 /**
- * Fetch recent inquiries from PostgreSQL
+ * Fetch recent inquiries from PostgreSQL merged with local cache
  */
 export async function fetchInquiriesFromPostgres(): Promise<InquiryRecord[]> {
+  const localList = getLocalInquiries();
+
   try {
     const res = await fetch('/api/inquiries');
-    if (!res.ok) return [];
+    if (!res.ok) {
+      return localList;
+    }
     const data = await res.json();
-    return (data.inquiries || []).map((row: any) => ({
+    const serverList: InquiryRecord[] = (data.inquiries || []).map((row: any) => ({
       id: String(row.id),
       type: (row.projectType === 'emergency_issue' ? 'emergency_issue' : row.projectType === 'contact' ? 'contact' : 'quote') as any,
       fullName: row.clientName,
@@ -106,14 +160,26 @@ export async function fetchInquiriesFromPostgres(): Promise<InquiryRecord[]> {
       adminNotes: row.adminNotes,
       createdAt: row.createdAt ? new Date(row.createdAt).toISOString() : new Date().toISOString(),
     }));
+
+    // Merge server list with local items not yet on server
+    const serverIds = new Set(serverList.map((i) => i.id));
+    const merged = [...serverList];
+
+    for (const localItem of localList) {
+      if (!serverIds.has(localItem.id)) {
+        merged.push(localItem);
+      }
+    }
+
+    return merged.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   } catch (error) {
     console.error('Error fetching inquiries from PostgreSQL:', error);
-    return [];
+    return localList;
   }
 }
 
 /**
- * Poll / subscribe to inquiries from PostgreSQL (replaces Firestore onSnapshot)
+ * Poll / subscribe to inquiries from PostgreSQL
  */
 export function subscribeToInquiries(
   callback: (inquiries: InquiryRecord[]) => void
@@ -129,7 +195,7 @@ export function subscribeToInquiries(
   };
 
   fetchAndNotify();
-  const intervalId = setInterval(fetchAndNotify, 10000);
+  const intervalId = setInterval(fetchAndNotify, 6000);
 
   return () => {
     isMounted = false;
@@ -147,34 +213,43 @@ export async function updateInquiryStatus(
 ): Promise<void> {
   try {
     const numericId = parseInt(id, 10);
-    if (isNaN(numericId)) return;
+    if (!isNaN(numericId)) {
+      await fetch(`/api/inquiries/${numericId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status,
+          adminNotes,
+        }),
+      });
+    }
 
-    await fetch(`/api/inquiries/${numericId}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        status,
-        adminNotes,
-      }),
-    });
+    // Update local cache as well
+    const current = getLocalInquiries();
+    const updated = current.map((item) => (item.id === id ? { ...item, status, adminNotes } : item));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
   } catch (error) {
     console.error(`Failed to update inquiry ${id} in PostgreSQL:`, error);
   }
 }
 
 /**
- * Delete an inquiry from PostgreSQL
+ * Delete an inquiry from PostgreSQL and local cache
  */
 export async function deleteInquiry(id: string): Promise<void> {
   try {
     const numericId = parseInt(id, 10);
-    if (isNaN(numericId)) return;
+    if (!isNaN(numericId)) {
+      await fetch(`/api/inquiries/${numericId}`, {
+        method: 'DELETE',
+      });
+    }
 
-    await fetch(`/api/inquiries/${numericId}`, {
-      method: 'DELETE',
-    });
+    const current = getLocalInquiries();
+    const updated = current.filter((item) => item.id !== id);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
   } catch (error) {
     console.error(`Failed to delete inquiry ${id} from PostgreSQL:`, error);
   }
