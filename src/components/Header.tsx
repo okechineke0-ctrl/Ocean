@@ -36,6 +36,22 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [logoClicks, setLogoClicks] = useState<number[]>([]);
+
+  const handleLogoClick = () => {
+    const now = Date.now();
+    const recentClicks = [...logoClicks.filter((t) => now - t < 1500), now];
+    setLogoClicks(recentClicks);
+
+    if (recentClicks.length >= 3) {
+      setLogoClicks([]);
+      onNavigate('admin-inbox');
+      setMobileMenuOpen(false);
+    } else {
+      onNavigate('home');
+      setMobileMenuOpen(false);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -104,10 +120,11 @@ export const Header: React.FC<HeaderProps> = ({
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           
-          {/* Logo Brand */}
+          {/* Logo Brand (Click 3 times to open database portal) */}
           <div 
-            onClick={() => { onNavigate('home'); setMobileMenuOpen(false); }}
+            onClick={handleLogoClick}
             className="cursor-pointer select-none"
+            title="Ocean Technologies"
           >
             <Logo variant="horizontal" size="sm" showTagline={true} isDark={false} />
           </div>
@@ -150,21 +167,6 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <Search className="w-3.5 h-3.5" />
               <span className="font-mono text-[11px] text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200">⌘K</span>
-            </button>
-
-            {/* Database Inquiries Portal */}
-            <button
-              id="header-database-btn"
-              onClick={() => onNavigate('admin-inbox')}
-              title="View Firestore Database & Client Inquiries"
-              className={`p-2 rounded-lg border text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer ${
-                currentView === 'admin-inbox'
-                  ? 'bg-sky-600 text-white border-sky-600'
-                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
-              }`}
-            >
-              <Database className="w-3.5 h-3.5 text-sky-600" />
-              <span className="hidden xl:inline">Database Inbox</span>
             </button>
 
             {/* Emergency Fix CTA */}

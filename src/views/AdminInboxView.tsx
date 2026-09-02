@@ -94,7 +94,7 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this message record from the Firestore database?')) {
+    if (window.confirm('Are you sure you want to delete this message record from the PostgreSQL database?')) {
       await deleteInquiry(id);
       if (selectedInquiry?.id === id) {
         setSelectedInquiry(null);
@@ -230,14 +230,14 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold font-display text-white">Database & Inquiries Portal</h1>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span>Cloud Firestore Live</span>
+                <h1 className="text-xl font-bold font-display text-white">PostgreSQL Database Portal</h1>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/40 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
+                  <span>Cloud SQL PostgreSQL Live</span>
                 </span>
               </div>
               <p className="text-xs text-slate-400">
-                Agbani Headquarters Database • Project Quotes, Contact Messages & Emergency Bug Reports
+                Ocean Technologies HQ Database (Drizzle ORM) • Project Quotes, Contact Messages & Emergency Bug Reports
               </p>
             </div>
           </div>

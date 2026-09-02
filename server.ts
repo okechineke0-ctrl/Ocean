@@ -1,6 +1,14 @@
 import express from 'express';
 import path from 'path';
 import { GoogleGenAI } from '@google/genai';
+import { 
+  createInquiry, 
+  createEmergencyTicket, 
+  getInquiries, 
+  getEmergencyTickets,
+  updateInquiryRecord,
+  deleteInquiryRecord
+} from './src/db/queries.ts';
 
 const app = express();
 const PORT = 3000;
@@ -28,9 +36,150 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     service: 'Ocean Technologies API Server',
+    database: 'Cloud SQL PostgreSQL',
     hasApiKey: Boolean(process.env.GEMINI_API_KEY),
     timestamp: new Date().toISOString(),
   });
+});
+
+// PostgreSQL Inquiries API Endpoint
+app.post('/api/inquiries', async (req, res) => {
+  try {
+    const {
+      clientName,
+      email,
+      phone,
+      company,
+      serviceType,
+      projectType,
+      budgetRange,
+      timeline,
+      urgency,
+      projectDescription,
+      preferredContactMethod,
+      source,
+    } = req.body;
+
+    if (!clientName || !email || !phone || !projectDescription) {
+      return res.status(400).json({
+        error: 'Missing required fields: clientName, email, phone, and projectDescription are required.',
+      });
+    }
+
+    const newInquiry = await createInquiry({
+      clientName,
+      email,
+      phone,
+      company,
+      serviceType: serviceType || 'web_development',
+      projectType,
+      budgetRange,
+      timeline,
+      urgency,
+      projectDescription,
+      preferredContactMethod: preferredContactMethod || 'whatsapp',
+      source: source || 'website',
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Inquiry successfully saved to PostgreSQL database.',
+      inquiry: newInquiry,
+    });
+  } catch (error: any) {
+    console.error('API /api/inquiries failed:', error);
+    res.status(500).json({
+      error: error.message || 'Failed to submit inquiry to PostgreSQL.',
+    });
+  }
+});
+
+// PostgreSQL Emergency Bug / Incident Tickets API Endpoint
+app.post('/api/emergency-tickets', async (req, res) => {
+  try {
+    const { clientName, email, phone, systemUrl, severity, errorDescription } = req.body;
+
+    if (!clientName || !email || !phone || !errorDescription) {
+      return res.status(400).json({
+        error: 'Missing required fields: clientName, email, phone, and errorDescription are required.',
+      });
+    }
+
+    const newTicket = await createEmergencyTicket({
+      clientName,
+      email,
+      phone,
+      systemUrl,
+      severity: severity || 'critical',
+      errorDescription,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Emergency ticket successfully logged in PostgreSQL.',
+      ticket: newTicket,
+    });
+  } catch (error: any) {
+    console.error('API /api/emergency-tickets failed:', error);
+    res.status(500).json({
+      error: error.message || 'Failed to record emergency ticket in PostgreSQL.',
+    });
+  }
+});
+
+// GET /api/inquiries (Recent inquiries from PostgreSQL)
+app.get('/api/inquiries', async (req, res) => {
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 50;
+    const records = await getInquiries(limit);
+    res.json({ inquiries: records });
+  } catch (error: any) {
+    console.error('API GET /api/inquiries failed:', error);
+    res.status(500).json({ error: error.message || 'Failed to fetch inquiries' });
+  }
+});
+
+// PATCH /api/inquiries/:id (Update status and admin notes)
+app.patch('/api/inquiries/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const { status, adminNotes } = req.body;
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid inquiry ID' });
+    }
+    const updated = await updateInquiryRecord(id, status || 'pending', adminNotes);
+    res.json({ success: true, inquiry: updated });
+  } catch (error: any) {
+    console.error(`API PATCH /api/inquiries/${req.params.id} failed:`, error);
+    res.status(500).json({ error: error.message || 'Failed to update inquiry' });
+  }
+});
+
+// DELETE /api/inquiries/:id
+app.delete('/api/inquiries/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid inquiry ID' });
+    }
+    await deleteInquiryRecord(id);
+    res.json({ success: true, message: `Inquiry ${id} deleted` });
+  } catch (error: any) {
+    console.error(`API DELETE /api/inquiries/${req.params.id} failed:`, error);
+    res.status(500).json({ error: error.message || 'Failed to delete inquiry' });
+  }
+});
+
+// GET /api/emergency-tickets (Recent emergency tickets from PostgreSQL)
+app.get('/api/emergency-tickets', async (req, res) => {
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 50;
+    const records = await getEmergencyTickets(limit);
+    res.json({ tickets: records });
+  } catch (error: any) {
+    console.error('API GET /api/emergency-tickets failed:', error);
+    res.status(500).json({ error: error.message || 'Failed to fetch emergency tickets' });
+  }
 });
 
 // Comprehensive Fallback Knowledge Engine for Ocean Technologies

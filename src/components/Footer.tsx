@@ -28,6 +28,20 @@ export const Footer: React.FC<FooterProps> = ({
 }) => {
   const [subscribedEmail, setSubscribedEmail] = useState('');
   const [subscribedSuccess, setSubscribedSuccess] = useState(false);
+  const [logoClicks, setLogoClicks] = useState<number[]>([]);
+
+  const handleFooterLogoClick = () => {
+    const now = Date.now();
+    const recentClicks = [...logoClicks.filter((t) => now - t < 1500), now];
+    setLogoClicks(recentClicks);
+
+    if (recentClicks.length >= 3) {
+      setLogoClicks([]);
+      onNavigate('admin-inbox');
+    } else {
+      onNavigate('home');
+    }
+  };
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +62,7 @@ export const Footer: React.FC<FooterProps> = ({
           
           {/* Brand & Mission Column */}
           <div className="lg:col-span-2 space-y-4">
-            <div onClick={() => onNavigate('home')} className="cursor-pointer inline-block">
+            <div onClick={handleFooterLogoClick} className="cursor-pointer inline-block select-none" title="Ocean Technologies">
               <Logo variant="horizontal" size="md" showTagline={true} isDark={true} />
             </div>
             <p className="text-slate-400 text-sm leading-relaxed max-w-sm mt-3">
@@ -256,7 +270,20 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <div>
-            © {new Date().getFullYear()} Ocean Technologies. All rights reserved. Agbani, Enugu State, Nigeria.
+            © {new Date().getFullYear()}{' '}
+            <span 
+              onClick={(e) => {
+                // Secret triple click to access admin portal without exposing UI to visitors
+                if (e.detail === 3) {
+                  onNavigate('admin-inbox');
+                }
+              }}
+              className="cursor-default select-none"
+              title=""
+            >
+              Ocean Technologies
+            </span>
+            . All rights reserved. Agbani, Enugu State, Nigeria.
           </div>
           <div className="flex items-center gap-6">
             <button onClick={() => onNavigate('about')} className="hover:text-slate-200 transition-colors">
