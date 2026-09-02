@@ -14,6 +14,7 @@ import { QuoteModal } from './components/QuoteModal';
 import { IssueReportModal } from './components/IssueReportModal';
 import { SearchModal } from './components/SearchModal';
 import { AiAssistantWidget } from './components/AiAssistantWidget';
+import { LocationLocatorWidget } from './components/LocationLocatorWidget';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<ViewMode>('home');
@@ -145,6 +146,8 @@ export default function App() {
       />
       {/* AI Consultant Assistant Floating Widget */}
       <AiAssistantWidget />
+      {/* Google Location & Office Locator Floating Widget */}
+      <LocationLocatorWidget />
     </div>
   );
 }
