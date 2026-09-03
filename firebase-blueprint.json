@@ -73,12 +73,89 @@
         }
       },
       "required": ["type", "fullName", "email", "phone", "createdAt"]
+    },
+    "Internship": {
+      "title": "Internship",
+      "description": "Undergraduate student application for Industrial Training (IT), SIWES, or tech internship at Ocean Technologies Agbani hub.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Firestore document ID."
+        },
+        "registrationNumber": {
+          "type": "string",
+          "description": "Unique registration identifier (e.g. OCT-INT-2026-XXXX)."
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Student full name."
+        },
+        "email": {
+          "type": "string",
+          "description": "Student university or personal email address."
+        },
+        "phone": {
+          "type": "string",
+          "description": "Student phone number and WhatsApp."
+        },
+        "school": {
+          "type": "string",
+          "description": "Higher institution or university (e.g., ESUT, UNN, IMT)."
+        },
+        "department": {
+          "type": "string",
+          "description": "Course or department of study."
+        },
+        "level": {
+          "type": "string",
+          "description": "Current academic level (e.g., 300 Level, 400 Level)."
+        },
+        "studentId": {
+          "type": "string",
+          "description": "Matriculation number or School ID."
+        },
+        "programType": {
+          "type": "string",
+          "description": "Program duration (3-Month IT, 6-Month SIWES, 1-Year Attachment, Graduate)."
+        },
+        "techTrack": {
+          "type": "string",
+          "description": "Primary tech track interest (Web, Mobile, Backend, DevOps, UI/UX)."
+        },
+        "preferredStartDate": {
+          "type": "string",
+          "description": "Desired internship start period."
+        },
+        "statementOfPurpose": {
+          "type": "string",
+          "description": "Brief student goals and learning statement."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "under_review", "admitted", "completed", "declined"],
+          "description": "Admission workflow status."
+        },
+        "adminNotes": {
+          "type": "string",
+          "description": "Administrator interview and endorsement notes."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of application submission."
+        }
+      },
+      "required": ["registrationNumber", "fullName", "email", "phone", "school", "studentId", "createdAt"]
     }
   },
   "firestore": {
     "/inquiries/{inquiryId}": {
       "schema": "Inquiry",
       "description": "Public client submissions (quotes, contact messages, and emergency bug tickets) with admin workflow management."
+    },
+    "/internships/{internshipId}": {
+      "schema": "Internship",
+      "description": "Student Industrial Training (IT) and SIWES registration applications with admin tracking."
     }
   }
 }

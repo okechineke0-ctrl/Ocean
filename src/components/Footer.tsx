@@ -19,12 +19,14 @@ interface FooterProps {
   onNavigate: (view: ViewMode) => void;
   onOpenQuote: (serviceId?: string) => void;
   onOpenIssueReport: () => void;
+  onOpenInternship?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   onNavigate,
   onOpenQuote,
   onOpenIssueReport,
+  onOpenInternship,
 }) => {
   const [subscribedEmail, setSubscribedEmail] = useState('');
   const [subscribedSuccess, setSubscribedSuccess] = useState(false);
@@ -196,6 +198,15 @@ export const Footer: React.FC<FooterProps> = ({
               <li>
                 <button onClick={() => onNavigate('about')} className="hover:text-sky-300 transition-colors text-slate-400 hover:text-slate-200">
                   About Ocean Tech Agbani
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => onOpenInternship ? onOpenInternship() : onOpenQuote('Internship / IT & SIWES Placement')} 
+                  className="hover:text-indigo-300 transition-colors text-indigo-400 font-medium flex items-center gap-1 cursor-pointer"
+                >
+                  <span>🎓 Internships, IT & SIWES</span>
+                  <span className="text-[10px] px-1 py-0.2 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/60">Open</span>
                 </button>
               </li>
               <li>

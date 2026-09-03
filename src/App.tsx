@@ -12,6 +12,7 @@ import { ContactView } from './views/ContactView';
 import { AdminInboxView } from './views/AdminInboxView';
 import { QuoteModal } from './components/QuoteModal';
 import { IssueReportModal } from './components/IssueReportModal';
+import { InternshipModal } from './components/InternshipModal';
 import { SearchModal } from './components/SearchModal';
 import { AiAssistantWidget } from './components/AiAssistantWidget';
 import { LocationLocatorWidget } from './components/LocationLocatorWidget';
@@ -21,6 +22,7 @@ export default function App() {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
   const [selectedServiceForQuote, setSelectedServiceForQuote] = useState<string | undefined>(undefined);
   const [issueReportModalOpen, setIssueReportModalOpen] = useState(false);
+  const [internshipModalOpen, setInternshipModalOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
 
   // Check URL hash / query param on mount or hash change for secret admin access
@@ -69,6 +71,10 @@ export default function App() {
     setIssueReportModalOpen(true);
   };
 
+  const handleOpenInternship = () => {
+    setInternshipModalOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-sky-100 selection:text-sky-900">
       {/* Top Navbar */}
@@ -78,6 +84,7 @@ export default function App() {
         onOpenQuote={handleOpenQuote}
         onOpenIssueReport={handleOpenIssueReport}
         onOpenSearch={() => setSearchModalOpen(true)}
+        onOpenInternship={handleOpenInternship}
       />
 
       {/* Main Page Content */}
@@ -87,6 +94,7 @@ export default function App() {
             onNavigate={handleNavigate}
             onOpenQuote={handleOpenQuote}
             onOpenIssueReport={handleOpenIssueReport}
+            onOpenInternship={handleOpenInternship}
           />
         )}
 
@@ -124,6 +132,7 @@ export default function App() {
           <AboutView
             onNavigate={handleNavigate}
             onOpenQuote={handleOpenQuote}
+            onOpenInternship={handleOpenInternship}
           />
         )}
 
@@ -131,6 +140,7 @@ export default function App() {
           <ContactView
             onNavigate={handleNavigate}
             onOpenIssueReport={handleOpenIssueReport}
+            onOpenInternship={handleOpenInternship}
           />
         )}
 
@@ -146,6 +156,7 @@ export default function App() {
         onNavigate={handleNavigate}
         onOpenQuote={handleOpenQuote}
         onOpenIssueReport={handleOpenIssueReport}
+        onOpenInternship={handleOpenInternship}
       />
 
       {/* Interactive Modals */}
@@ -158,6 +169,11 @@ export default function App() {
       <IssueReportModal
         isOpen={issueReportModalOpen}
         onClose={() => setIssueReportModalOpen(false)}
+      />
+
+      <InternshipModal
+        isOpen={internshipModalOpen}
+        onClose={() => setInternshipModalOpen(false)}
       />
 
       <SearchModal

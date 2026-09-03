@@ -8,7 +8,11 @@ import {
   getInquiries, 
   getEmergencyTickets,
   updateInquiryRecord,
-  deleteInquiryRecord
+  deleteInquiryRecord,
+  createInternship,
+  getInternships,
+  updateInternshipRecord,
+  deleteInternshipRecord
 } from './src/db/queries.ts';
 
 const app = express();
@@ -181,6 +185,104 @@ app.get('/api/emergency-tickets', async (req, res) => {
     res.status(500).json({ error: error.message || 'Failed to fetch emergency tickets' });
   }
 });
+
+// POST /api/internships (Student Internship / IT & SIWES Registration)
+app.post('/api/internships', async (req, res) => {
+  try {
+    const {
+      fullName,
+      email,
+      phone,
+      school,
+      department,
+      level,
+      studentId,
+      programType,
+      techTrack,
+      preferredStartDate,
+      statementOfPurpose,
+    } = req.body;
+
+    if (!fullName || !email || !phone || !school || !studentId) {
+      return res.status(400).json({
+        error: 'Missing required student fields: fullName, email, phone, school, and studentId are required.',
+      });
+    }
+
+    const regNumber = `OCT-INT-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    const newRecord = await createInternship({
+      registrationNumber: regNumber,
+      fullName: fullName.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+      school: school.trim(),
+      department: (department || 'Computer Science / Engineering').trim(),
+      level: (level || '300 Level').trim(),
+      studentId: studentId.trim(),
+      programType: programType || '6-Month SIWES',
+      techTrack: techTrack || 'Full-Stack Web Development',
+      preferredStartDate: preferredStartDate || 'Immediate',
+      statementOfPurpose: statementOfPurpose || '',
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Student internship registration successfully saved to PostgreSQL database.',
+      registrationNumber: regNumber,
+      internship: newRecord,
+    });
+  } catch (error: any) {
+    console.error('API /api/internships failed:', error);
+    res.status(500).json({
+      error: error.message || 'Failed to submit internship registration to PostgreSQL.',
+    });
+  }
+});
+
+// GET /api/internships (List student registrations)
+app.get('/api/internships', async (req, res) => {
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 100;
+    const records = await getInternships(limit);
+    res.json({ internships: records });
+  } catch (error: any) {
+    console.error('API GET /api/internships failed:', error);
+    res.status(500).json({ error: error.message || 'Failed to fetch internship registrations' });
+  }
+});
+
+// PATCH /api/internships/:id (Update status and admin notes)
+app.patch('/api/internships/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const { status, adminNotes } = req.body;
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid internship ID' });
+    }
+    const updated = await updateInternshipRecord(id, status || 'pending', adminNotes);
+    res.json({ success: true, internship: updated });
+  } catch (error: any) {
+    console.error(`API PATCH /api/internships/${req.params.id} failed:`, error);
+    res.status(500).json({ error: error.message || 'Failed to update internship' });
+  }
+});
+
+// DELETE /api/internships/:id
+app.delete('/api/internships/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid internship ID' });
+    }
+    await deleteInternshipRecord(id);
+    res.json({ success: true, message: `Internship ${id} deleted` });
+  } catch (error: any) {
+    console.error(`API DELETE /api/internships/${req.params.id} failed:`, error);
+    res.status(500).json({ error: error.message || 'Failed to delete internship' });
+  }
+});
+
 
 // Comprehensive Fallback Knowledge Engine for Ocean Technologies
 function generateMatureConsultantResponse(userQuery: string): string {

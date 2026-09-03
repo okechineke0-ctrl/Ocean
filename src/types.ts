@@ -125,4 +125,37 @@ export interface InquiryRecord {
   createdAt: string;
 }
 
+export interface InternshipRegistrationFormData {
+  fullName: string;
+  email: string;
+  phone: string;
+  school: string;
+  department: string;
+  level: string;
+  studentId: string;
+  programType: string;
+  techTrack: string;
+  preferredStartDate?: string;
+  statementOfPurpose?: string;
+}
+
+export interface InternshipRecord {
+  id: string;
+  registrationNumber: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  school: string;
+  department: string;
+  level: string;
+  studentId: string;
+  programType: string;
+  techTrack: string;
+  preferredStartDate?: string;
+  statementOfPurpose?: string;
+  status: 'pending' | 'under_review' | 'admitted' | 'completed' | 'declined';
+  adminNotes?: string;
+  createdAt: string;
+}
+
 

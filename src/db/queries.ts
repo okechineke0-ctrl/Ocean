@@ -1,5 +1,5 @@
-import { db } from './index.ts';
-import { inquiries, emergencyTickets, users } from './schema.ts';
+import { db, createPool } from './index.ts';
+import { inquiries, emergencyTickets, internships, users } from './schema.ts';
 import { desc, eq } from 'drizzle-orm';
 
 export interface CreateInquiryInput {
@@ -149,3 +149,137 @@ export async function getEmergencyTickets(limitCount = 50) {
     throw new Error('Failed to fetch emergency tickets.', { cause: error });
   }
 }
+
+export interface CreateInternshipInput {
+  registrationNumber?: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  school: string;
+  department: string;
+  level: string;
+  studentId: string;
+  programType: string;
+  techTrack: string;
+  preferredStartDate?: string;
+  statementOfPurpose?: string;
+}
+
+/**
+ * Ensures internships table exists in PostgreSQL
+ */
+export async function ensureInternshipsTable() {
+  try {
+    const pool = createPool();
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS internships (
+        id SERIAL PRIMARY KEY,
+        registration_number VARCHAR(100) NOT NULL UNIQUE,
+        full_name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        phone VARCHAR(100) NOT NULL,
+        school VARCHAR(255) NOT NULL,
+        department VARCHAR(255) NOT NULL,
+        level VARCHAR(50) NOT NULL,
+        student_id VARCHAR(100) NOT NULL,
+        program_type VARCHAR(100) NOT NULL,
+        tech_track VARCHAR(150) NOT NULL,
+        preferred_start_date VARCHAR(100),
+        statement_of_purpose TEXT,
+        status VARCHAR(50) DEFAULT 'pending' NOT NULL,
+        admin_notes TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+      );
+    `);
+  } catch (e) {
+    console.warn('PostgreSQL ensureInternshipsTable notice:', e);
+  }
+}
+
+/**
+ * Creates a new student internship / IT & SIWES registration in PostgreSQL
+ */
+export async function createInternship(input: CreateInternshipInput) {
+  try {
+    await ensureInternshipsTable();
+    const regNumber = input.registrationNumber || `OCT-INT-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const inserted = await db
+      .insert(internships)
+      .values({
+        registrationNumber: regNumber,
+        fullName: input.fullName,
+        email: input.email,
+        phone: input.phone,
+        school: input.school,
+        department: input.department,
+        level: input.level,
+        studentId: input.studentId,
+        programType: input.programType,
+        techTrack: input.techTrack,
+        preferredStartDate: input.preferredStartDate || null,
+        statementOfPurpose: input.statementOfPurpose || null,
+        status: 'pending',
+      })
+      .returning();
+
+    return inserted[0];
+  } catch (error) {
+    console.error('Failed to create internship in PostgreSQL:', error);
+    throw new Error('Failed to record internship registration in PostgreSQL.', { cause: error });
+  }
+}
+
+/**
+ * Fetches recent internship registrations
+ */
+export async function getInternships(limitCount = 50) {
+  try {
+    await ensureInternshipsTable();
+    return await db
+      .select()
+      .from(internships)
+      .orderBy(desc(internships.createdAt))
+      .limit(limitCount);
+  } catch (error) {
+    console.error('Failed to query internships from PostgreSQL:', error);
+    return [];
+  }
+}
+
+/**
+ * Updates status and admin notes of an internship in PostgreSQL
+ */
+export async function updateInternshipRecord(id: number, status: string, adminNotes?: string) {
+  try {
+    await ensureInternshipsTable();
+    const updatePayload: Record<string, any> = { status, updatedAt: new Date() };
+    if (adminNotes !== undefined) {
+      updatePayload.adminNotes = adminNotes;
+    }
+    const updated = await db
+      .update(internships)
+      .set(updatePayload)
+      .where(eq(internships.id, id))
+      .returning();
+    return updated[0];
+  } catch (error) {
+    console.error(`Failed to update internship ${id} in PostgreSQL:`, error);
+    throw new Error('Failed to update internship.', { cause: error });
+  }
+}
+
+/**
+ * Deletes an internship registration from PostgreSQL
+ */
+export async function deleteInternshipRecord(id: number) {
+  try {
+    await ensureInternshipsTable();
+    await db.delete(internships).where(eq(internships.id, id));
+    return true;
+  } catch (error) {
+    console.error(`Failed to delete internship ${id} in PostgreSQL:`, error);
+    throw new Error('Failed to delete internship.', { cause: error });
+  }
+}
+

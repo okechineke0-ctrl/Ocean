@@ -14,17 +14,20 @@ import {
   Users, 
   Award, 
   Clock,
-  Sparkles
+  Sparkles,
+  GraduationCap
 } from 'lucide-react';
 
 interface AboutViewProps {
   onNavigate: (view: ViewMode) => void;
   onOpenQuote: (serviceId?: string) => void;
+  onOpenInternship?: () => void;
 }
 
 export const AboutView: React.FC<AboutViewProps> = ({
   onNavigate,
-  onOpenQuote
+  onOpenQuote,
+  onOpenInternship
 }) => {
   return (
     <div className="bg-slate-50 min-h-screen">
@@ -195,6 +198,39 @@ export const AboutView: React.FC<AboutViewProps> = ({
               <p className="text-xs text-slate-600 leading-relaxed">
                 No middleman or silent ticket queues. You have direct phone and WhatsApp access (09129216768) to senior software engineers who answer your questions in plain, clear language.
               </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Talent & Student Development: Internships, IT & SIWES */}
+        <div className="mb-16 bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 rounded-2xl border border-indigo-700/50 p-8 text-white shadow-md relative overflow-hidden">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 text-xs font-semibold mb-3">
+              <GraduationCap className="w-4 h-4 text-indigo-400" />
+              <span>Community Impact & Talent Incubation</span>
+            </div>
+            <h3 className="text-2xl font-bold font-display text-white mb-3">
+              Open for Internships, Industrial Training (IT) & SIWES in Agbani
+            </h3>
+            <p className="text-slate-300 text-sm leading-relaxed mb-6">
+              Located right along the university corridor in Agbani (near Enugu State University of Science and Technology - ESUT), Ocean Technologies is deeply committed to closing the gap between academic theory and industry engineering. We welcome undergraduates across Nigeria for intensive 3-month, 6-month, and 1-year Industrial Training (IT) and SIWES placements, providing hands-on coding, live database deployments, and professional software craft.
+            </p>
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                onClick={() => onOpenInternship ? onOpenInternship() : onOpenQuote('Internship / IT & SIWES Placement')}
+                className="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-sm cursor-pointer"
+              >
+                Register for Student Placement
+              </button>
+              <a
+                href="https://wa.me/2349129216768?text=Hello%20Ocean%20Technologies,%20I%20am%20interested%20in%20applying%20for%20an%20IT%20/%20SIWES%20internship%20at%20your%20Agbani%20office."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors flex items-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>Contact Student Coordinator</span>
+              </a>
             </div>
           </div>
         </div>

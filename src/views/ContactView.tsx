@@ -19,11 +19,13 @@ import {
 interface ContactViewProps {
   onNavigate: (view: ViewMode) => void;
   onOpenIssueReport: () => void;
+  onOpenInternship?: () => void;
 }
 
 export const ContactView: React.FC<ContactViewProps> = ({
   onNavigate,
-  onOpenIssueReport
+  onOpenIssueReport,
+  onOpenInternship
 }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -179,6 +181,44 @@ export const ContactView: React.FC<ContactViewProps> = ({
               </div>
             </div>
 
+            {/* Internships, IT & SIWES Card */}
+            <div className="bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 text-white p-6 rounded-2xl border border-indigo-700/50 shadow-sm">
+              <div className="flex items-start gap-3.5">
+                <div className="p-3 bg-indigo-500/20 text-indigo-300 rounded-xl shrink-0 mt-1 border border-indigo-400/30">
+                  <span className="text-xl">🎓</span>
+                </div>
+                <div>
+                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-400/30 mb-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Admissions Open</span>
+                  </div>
+                  <h3 className="font-bold text-sm text-white font-display mb-1">
+                    Internships, IT & SIWES Placements
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed mb-3">
+                    We accept computer science, engineering, and tech undergraduates for 3-month, 6-month, and 1-year Industrial Training (IT) & SIWES. Build production web and mobile apps with mentorship in Agbani (Near ESUT).
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      onClick={() => onOpenInternship && onOpenInternship()}
+                      className="px-3 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-white font-bold text-[11px] transition-colors inline-flex items-center gap-1.5 cursor-pointer shadow-xs"
+                    >
+                      <span>Fill Registration Form</span>
+                    </button>
+                    <a
+                      href="https://wa.me/2349129216768?text=Hello%20Ocean%20Technologies,%20I%20am%20interested%20in%20applying%20for%20Industrial%20Training%20(IT)%20/%20SIWES%20internship%20placement%20at%20your%20Agbani%20office."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-colors inline-flex items-center gap-1.5"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" />
+                      <span>WhatsApp Coordinator</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Operating Hours Card */}
             <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
               <div className="flex items-start gap-3.5">
@@ -286,6 +326,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
                       <option value="Monthly Website Maintenance">Monthly Website Maintenance Retainer</option>
                       <option value="Urgent Software Bug Fix">Urgent Software Bug / Error Fix</option>
                       <option value="Custom Portal / School Portal">Custom Portal / School Management System</option>
+                      <option value="Internship / IT & SIWES Placement">Student Internship / Industrial Training (IT & SIWES)</option>
                       <option value="General Partnership">General Question / Agbani Office Visit</option>
                     </select>
                   </div>

@@ -25,6 +25,7 @@ interface HeaderProps {
   onOpenQuote: (serviceId?: string) => void;
   onOpenIssueReport: () => void;
   onOpenSearch: () => void;
+  onOpenInternship?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -32,7 +33,8 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigate,
   onOpenQuote,
   onOpenIssueReport,
-  onOpenSearch
+  onOpenSearch,
+  onOpenInternship
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -82,12 +84,16 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
-              Office: Agbani, Enugu State, Nigeria (Near ESUT)
+              Office: Agbani, Enugu State (Near ESUT)
             </span>
             <span className="text-slate-600 hidden md:inline">•</span>
-            <span className="hidden md:inline text-slate-300">
-              Website Maintenance, App Development & Software Repair
-            </span>
+            <button
+              onClick={() => onOpenInternship ? onOpenInternship() : onOpenQuote('Internship / IT & SIWES Placement')}
+              className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 hover:bg-indigo-500/30 transition-colors font-medium text-[11px] cursor-pointer"
+            >
+              <span className="text-xs">🎓</span>
+              <span>Open for Internships, IT & SIWES</span>
+            </button>
           </div>
           
           <div className="flex items-center gap-4 text-slate-300">
@@ -249,6 +255,20 @@ export const Header: React.FC<HeaderProps> = ({
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
               
+              <button
+                onClick={() => {
+                  if (onOpenInternship) {
+                    onOpenInternship();
+                  } else {
+                    onOpenQuote('Internship / IT & SIWES Placement');
+                  }
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full py-2 px-4 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-semibold text-center flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <span>🎓 Apply for Internship, IT & SIWES</span>
+              </button>
+
               <button
                 onClick={() => {
                   onOpenIssueReport();

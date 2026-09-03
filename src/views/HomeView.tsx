@@ -19,19 +19,23 @@ import {
   Sparkles,
   ExternalLink,
   ChevronRight,
-  Code2
+  Code2,
+  GraduationCap,
+  Award
 } from 'lucide-react';
 
 interface HomeViewProps {
   onNavigate: (view: ViewMode) => void;
   onOpenQuote: (serviceId?: string) => void;
   onOpenIssueReport: () => void;
+  onOpenInternship?: () => void;
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({
   onNavigate,
   onOpenQuote,
-  onOpenIssueReport
+  onOpenIssueReport,
+  onOpenInternship
 }) => {
   const [activeTab, setActiveTab] = useState<'all' | 'web' | 'app' | 'maintenance'>('all');
 
@@ -620,6 +624,123 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </a>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5.5 Open for Internships, Industrial Training (IT) & SIWES Section */}
+      <section className="py-16 md:py-24 bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-950 text-white border-y border-indigo-900/50 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(#6366f1_1px,transparent_1px)] [background-size:28px_28px] opacity-15 pointer-events-none"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            
+            {/* Left Column: Heading, Context & Highlights */}
+            <div className="lg:col-span-7 space-y-5">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 text-xs font-semibold">
+                <GraduationCap className="w-4 h-4 text-indigo-400" />
+                <span>Now Open: Student Talent & Tech Incubation</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              </div>
+
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-white font-display tracking-tight leading-tight">
+                Open for Internships, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-sky-300 to-emerald-300">Industrial Training (IT) & SIWES</span>
+              </h2>
+
+              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+                Are you an undergraduate studying Computer Science, Computer Engineering, Software Engineering, Electrical/Electronic, or related disciplines at <strong>ESUT, UNN, IMT</strong>, or tertiary institutions across Nigeria? Ocean Technologies is actively accepting applications for <strong>3-month, 6-month, and 1-year IT and SIWES placements</strong> at our Agbani tech hub.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/5 border border-white/10">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <span className="text-xs text-slate-200">Official logbook endorsement & SIWES/IT clearance signed by verified senior engineers</span>
+                </div>
+                <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/5 border border-white/10">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <span className="text-xs text-slate-200">Work directly on production web applications, databases, and mobile apps</span>
+                </div>
+                <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/5 border border-white/10">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <span className="text-xs text-slate-200">Hands-on mentorship in React, Next.js, Node.js, Flutter, PostgreSQL & Cloud</span>
+                </div>
+                <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/5 border border-white/10">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                  <span className="text-xs text-slate-200">Pathways to junior developer retention and recommendations post-graduation</span>
+                </div>
+              </div>
+
+              <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <button
+                  onClick={() => onOpenInternship ? onOpenInternship() : onOpenQuote('Internship / IT & SIWES Placement')}
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-400 hover:to-sky-400 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-indigo-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <span>Register for IT / SIWES Placement</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+
+                <a
+                  href="https://wa.me/2349129216768?text=Hello%20Ocean%20Technologies!%20I%20am%20an%20undergraduate%20student%20interested%20in%20applying%20for%20an%20Internship%20/%20IT%20/%20SIWES%20placement%20at%20your%20Agbani%20office."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs tracking-wider transition-colors flex items-center justify-center gap-2"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>WhatsApp Student Desk</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Right Column: Track Cards */}
+            <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3.5">
+              <div className="bg-slate-900/80 border border-indigo-800/40 rounded-xl p-4 backdrop-blur-md">
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <div className="p-1.5 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-400/30">
+                    <Code2 className="w-4 h-4" />
+                  </div>
+                  <h4 className="text-sm font-bold text-white font-display">1. Modern Web & Frontend</h4>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Learn modern React 18, Next.js, Tailwind CSS, TypeScript, and state management. Build responsive, high-converting client interfaces.
+                </p>
+              </div>
+
+              <div className="bg-slate-900/80 border border-indigo-800/40 rounded-xl p-4 backdrop-blur-md">
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <div className="p-1.5 rounded-lg bg-indigo-500/20 text-indigo-400 border border-indigo-400/30">
+                    <Smartphone className="w-4 h-4" />
+                  </div>
+                  <h4 className="text-sm font-bold text-white font-display">2. Mobile App Development</h4>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Cross-platform iOS & Android mobile engineering with Flutter & Dart, device APIs, and offline-first data caching.
+                </p>
+              </div>
+
+              <div className="bg-slate-900/80 border border-indigo-800/40 rounded-xl p-4 backdrop-blur-md">
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <div className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-400/30">
+                    <Server className="w-4 h-4" />
+                  </div>
+                  <h4 className="text-sm font-bold text-white font-display">3. Backend & Cloud Databases</h4>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Build RESTful APIs with Node.js/Express, relational PostgreSQL schemas, Cloud Firestore, and secure payment processing.
+                </p>
+              </div>
+
+              <div className="bg-slate-900/80 border border-indigo-800/40 rounded-xl p-4 backdrop-blur-md">
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-400/30">
+                    <Wrench className="w-4 h-4" />
+                  </div>
+                  <h4 className="text-sm font-bold text-white font-display">4. DevOps, Security & Debugging</h4>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Practical Linux server management, cPanel setup, SSL encryption, emergency 500 error debugging, and database disaster recovery.
+                </p>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
