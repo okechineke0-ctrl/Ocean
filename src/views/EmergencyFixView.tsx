@@ -158,10 +158,10 @@ export const EmergencyFixView: React.FC<EmergencyFixViewProps> = ({
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
                   <div className="flex items-center gap-2 font-bold text-slate-900">
                     <Database className="w-4 h-4 text-indigo-600" />
-                    <span>Database Deadlocks & Corruptions</span>
+                    <span>Backend Deadlocks & System Corruptions</span>
                   </div>
                   <p className="text-slate-600 text-[11px]">
-                    MySQL / PostgreSQL connection refusals, locked session tables, and lost database configurations.
+                    Backend connection refusals, locked session tables, and broken configuration environments.
                   </p>
                 </div>
 
@@ -191,7 +191,7 @@ export const EmergencyFixView: React.FC<EmergencyFixViewProps> = ({
                   <div className="p-3 bg-sky-50/70 rounded-xl border border-sky-100">
                     <span className="w-5 h-5 rounded-full bg-sky-600 text-white font-bold text-[10px] flex items-center justify-center mb-2">2</span>
                     <strong className="text-slate-900 block mb-1">Permanent Fix</strong>
-                    <p className="text-slate-600 text-[11px]">We apply code and database patches in staging and verify live transactions.</p>
+                    <p className="text-slate-600 text-[11px]">We apply code and infrastructure patches in staging and verify live transactions.</p>
                   </div>
 
                   <div className="p-3 bg-sky-50/70 rounded-xl border border-sky-100">
@@ -267,7 +267,7 @@ export const EmergencyFixView: React.FC<EmergencyFixViewProps> = ({
                   >
                     <option value="Broken Payment / Checkout (Paystack/Flutterwave)">Broken Payment / Checkout (Paystack/Flutterwave)</option>
                     <option value="500 Internal Server Error / White Blank Screen">500 Internal Server Error / White Blank Screen</option>
-                    <option value="Database Connection Error / Crash">Database Connection Error / Crash</option>
+                    <option value="Server Connection Error / System Crash">Server Connection Error / System Crash</option>
                     <option value="Hacked Website / Malware Removal">Hacked Website / Malware Removal</option>
                     <option value="Mobile App API Down">Mobile App API Down</option>
                     <option value="Other Urgent Software Breakdown">Other Urgent Software Breakdown</option>

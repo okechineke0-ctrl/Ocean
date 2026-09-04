@@ -479,11 +479,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </div>
                 <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/5 border border-white/10">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span className="text-xs text-slate-200">Work directly on production web applications, databases, and mobile apps</span>
+                  <span className="text-xs text-slate-200">Work directly on production web applications, cloud backends, and mobile apps</span>
                 </div>
                 <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/5 border border-white/10">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span className="text-xs text-slate-200">Hands-on mentorship in React, Next.js, Node.js, Flutter, PostgreSQL & Cloud</span>
+                  <span className="text-xs text-slate-200">Hands-on mentorship in React, Next.js, Node.js, Flutter & Cloud Architecture</span>
                 </div>
                 <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/5 border border-white/10">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
@@ -543,10 +543,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <div className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-400/30">
                     <Server className="w-4 h-4" />
                   </div>
-                  <h4 className="text-sm font-bold text-white font-display">3. Backend & Cloud Databases</h4>
+                  <h4 className="text-sm font-bold text-white font-display">3. Backend & Cloud Infrastructure</h4>
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  Build RESTful APIs with Node.js/Express, relational PostgreSQL schemas, Cloud Firestore, and secure payment processing.
+                  Build high-performance RESTful APIs with Node.js/Express, scalable cloud backends, and secure payment processing.
                 </p>
               </div>
 
@@ -558,7 +558,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <h4 className="text-sm font-bold text-white font-display">4. DevOps, Security & Debugging</h4>
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  Practical Linux server management, cPanel setup, SSL encryption, emergency 500 error debugging, and database disaster recovery.
+                  Practical Linux server management, cPanel setup, SSL encryption, emergency 500 error debugging, and disaster recovery.
                 </p>
               </div>
             </div>

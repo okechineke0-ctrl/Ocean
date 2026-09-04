@@ -30,19 +30,9 @@ export const Footer: React.FC<FooterProps> = ({
 }) => {
   const [subscribedEmail, setSubscribedEmail] = useState('');
   const [subscribedSuccess, setSubscribedSuccess] = useState(false);
-  const [logoClicks, setLogoClicks] = useState<number[]>([]);
 
   const handleFooterLogoClick = () => {
-    const now = Date.now();
-    const recentClicks = [...logoClicks.filter((t) => now - t < 1500), now];
-    setLogoClicks(recentClicks);
-
-    if (recentClicks.length >= 3) {
-      setLogoClicks([]);
-      onNavigate('admin-inbox');
-    } else {
-      onNavigate('home');
-    }
+    onNavigate('home');
   };
 
   const handleSubscribe = (e: React.FormEvent) => {
@@ -163,7 +153,7 @@ export const Footer: React.FC<FooterProps> = ({
                   onClick={() => onNavigate('services')} 
                   className="hover:text-sky-300 transition-colors text-left text-slate-400 hover:text-slate-200"
                 >
-                  Database Repair & Cloud Setup
+                  Cloud Infrastructure & Performance
                 </button>
               </li>
             </ul>

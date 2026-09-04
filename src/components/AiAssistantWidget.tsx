@@ -33,7 +33,7 @@ export const AiAssistantWidget: React.FC = () => {
   // Estimator Form State
   const [estimatorType, setEstimatorType] = useState('Web Application / Portal');
   const [estimatorPlatforms, setEstimatorPlatforms] = useState('Web & Mobile Browser');
-  const [estimatorFeatures, setEstimatorFeatures] = useState('Authentication, Database, Paystack/Flutterwave Payments, Admin Dashboard');
+  const [estimatorFeatures, setEstimatorFeatures] = useState('Authentication, Cloud Backend, Paystack/Flutterwave Payments, Admin Dashboard');
   const [estimatorTimeline, setEstimatorTimeline] = useState('3-4 Weeks');
   const [estimatorResult, setEstimatorResult] = useState<string | null>(null);
   const [isEstimating, setIsEstimating] = useState(false);
@@ -480,7 +480,7 @@ export const AiAssistantWidget: React.FC = () => {
                   >
                     <option>500 Internal Server Error / Website Down</option>
                     <option>Broken Payment Gateway / Webhook Failure</option>
-                    <option>Database Connection / Timeout Error</option>
+                    <option>Server & API Connection / Timeout Error</option>
                     <option>SSL Certificate / HTTPS Security Warning</option>
                     <option>Hacked Site / WordPress Malware Infection</option>
                     <option>Mobile App Build / Play Store Crash</option>
@@ -505,7 +505,7 @@ export const AiAssistantWidget: React.FC = () => {
                     value={triageDescription}
                     onChange={(e) => setTriageDescription(e.target.value)}
                     required
-                    placeholder="e.g. When customers click Checkout, the screen goes white or shows 'Database connection failed'..."
+                    placeholder="e.g. When customers click Checkout, the screen goes white or shows 'Connection failed'..."
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 resize-none"
                   />
                 </div>

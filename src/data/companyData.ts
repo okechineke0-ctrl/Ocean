@@ -2,6 +2,8 @@ import { ServiceItem, MaintenancePlan, ProjectCaseStudy, Testimonial, FAQItem } 
 
 export const COMPANY_INFO = {
   name: 'Ocean Technologies',
+  fullName: 'Ocean Tech Institute',
+  motto: 'INNOVATE • EDUCATE • EMPOWER',
   tagline: 'Reliable Website Maintenance, App Development & Software Solutions',
   subtagline: 'Empowering businesses with custom websites, high-performance mobile apps, and 24/7 software troubleshooting.',
   address: 'Agbani, Enugu State, Nigeria (ESUT Corridor, Enugu State University of Science and Technology)',
@@ -81,7 +83,7 @@ export const SERVICES: ServiceItem[] = [
     title: 'Website Maintenance & Retainers',
     category: 'Website Maintenance',
     tagline: 'Keep your website fast, updated, secured against hackers, and 100% bug-free.',
-    description: 'Do not let a slow, hacked, or outdated website cost you customers. Our dedicated maintenance engineers handle daily cloud backups, security patching, WordPress plugin updates, database optimization, broken link fixes, and regular content uploads so you can focus on running your business.',
+    description: 'Do not let a slow, hacked, or outdated website cost you customers. Our dedicated maintenance engineers handle daily cloud backups, security patching, WordPress plugin updates, speed optimization, broken link fixes, and regular content uploads so you can focus on running your business.',
     keyBenefits: [
       '24/7 Automated Uptime & Performance Monitoring',
       'Daily Off-Site Cloud Backups with instant 1-click restore',
@@ -107,8 +109,8 @@ export const SERVICES: ServiceItem[] = [
     id: 'software-issue-troubleshooting',
     title: 'Software Issue Troubleshooting & Bug Fixes',
     category: 'Software Troubleshooting',
-    tagline: 'Fast diagnostic and permanent resolution for crashing apps, broken websites, and database errors.',
-    description: 'Experiencing a broken checkout, database connection failure, white screen of death, or buggy mobile app? Our senior software engineers diagnose the root cause and apply permanent code and server fixes quickly to get your business back online.',
+    tagline: 'Fast diagnostic and permanent resolution for crashing apps, broken websites, and system errors.',
+    description: 'Experiencing a broken checkout, server connection failure, white screen of death, or buggy mobile app? Our senior software engineers diagnose the root cause and apply permanent code and server fixes quickly to get your business back online.',
     keyBenefits: [
       'Rapid emergency diagnostic within 2 hours',
       'Fix for broken payment integrations (Paystack, Flutterwave, Stripe)',
@@ -162,7 +164,7 @@ export const SERVICES: ServiceItem[] = [
     title: 'Software Development & Engineering',
     category: 'Software Engineering',
     tagline: 'Enterprise-grade custom web platforms, automated business engines, and microservices.',
-    description: 'Bespoke software engineering built with modular code architecture, high scalability, and military-grade security. We engineer backends, admin suites, fintech interfaces, and database architectures tailored to eliminate operational friction.',
+    description: 'Bespoke software engineering built with modular code architecture, high scalability, and military-grade security. We engineer backends, admin suites, fintech interfaces, and cloud architectures tailored to eliminate operational friction.',
     keyBenefits: [
       'Microservice & REST/GraphQL API Architecture',
       'Payment gateway integrations with Paystack, Flutterwave, and Stripe',
@@ -189,7 +191,7 @@ export const SERVICES: ServiceItem[] = [
     title: 'Software Management & SLA Operations',
     category: 'Software Management',
     tagline: 'Proactive 24/7 system telemetry, automated cloud backups, security patching, and on-call triage.',
-    description: 'Protect your mission-critical software from downtime, unexpected data corruption, and malicious intrusions. Our dedicated system engineers perform round-the-clock telemetry monitoring, database index tuning, zero-downtime hotfixes, and scheduled off-site disaster recovery snapshots.',
+    description: 'Protect your mission-critical software from downtime, unexpected data corruption, and malicious intrusions. Our dedicated system engineers perform round-the-clock telemetry monitoring, system speed tuning, zero-downtime hotfixes, and scheduled off-site disaster recovery snapshots.',
     keyBenefits: [
       'Guaranteed 99.9% Production Uptime SLA',
       'Automated daily encrypted cloud snapshots with 1-click recovery',
@@ -247,7 +249,7 @@ export const MAINTENANCE_PLANS: MaintenancePlan[] = [
     features: [
       'Daily cloud backups with 1-click disaster recovery',
       'Continuous 24/7 server & uptime monitoring',
-      'Monthly speed & database performance optimization',
+      'Monthly speed & system performance optimization',
       'Up to 6 content updates / product uploads per month',
       'Payment gateway checks (Paystack/Flutterwave)',
       'Priority WhatsApp hotline to lead engineer',
@@ -269,7 +271,7 @@ export const MAINTENANCE_PLANS: MaintenancePlan[] = [
       'Real-time automated backups and server replication',
       'Dedicated software engineer assigned to your system',
       'Unlimited bug fixes & emergency troubleshooting',
-      'Mobile app API & database maintenance',
+      'Mobile app API & backend system maintenance',
       'Security audit & penetration testing prevention',
       'Direct phone & WhatsApp emergency escalation',
       'Custom feature additions (Up to 10 dev hours/mo)'
@@ -287,7 +289,7 @@ export const MAINTENANCE_PLANS: MaintenancePlan[] = [
     billingCycle: 'per-incident',
     responseTime: 'Under 2 Hours Immediate Triage',
     features: [
-      'Immediate code & database diagnostic inspection',
+      'Immediate code & infrastructure diagnostic inspection',
       'Malware cleaning & website un-blacklisting',
       'Fixing White Screen of Death / PHP Fatal Errors',
       'Restoring broken payment forms & checkouts',
@@ -342,11 +344,11 @@ export const CASE_STUDIES: ProjectCaseStudy[] = [
   },
   {
     id: 'fintech-checkout-rescue',
-    title: 'Emergency Bug Fix & Database Recovery for E-Commerce Store',
+    title: 'Emergency Bug Fix & System Recovery for E-Commerce Store',
     client: 'NaijaGadgets Online',
     clientType: 'E-Commerce',
     category: 'Software Rescue & Maintenance',
-    summary: 'Diagnosed and repaired a critical database deadlock and broken checkout that was costing ₦800,000+ in lost daily sales.',
+    summary: 'Diagnosed and repaired a critical backend deadlock and broken checkout that was costing ₦800,000+ in lost daily sales.',
     challenge: 'After a plugin upgrade, customers could not checkout and were receiving 500 Server Errors on payment verification.',
     solution: 'Ocean Technologies engineers resolved the SQL deadlock within 90 minutes, cleaned corrupted session tables, and configured Paystack webhook retries.',
     technologies: ['MySQL', 'PHP', 'WordPress / WooCommerce', 'Paystack Webhooks', 'Cloudflare'],
@@ -399,7 +401,7 @@ export const TESTIMONIALS: Testimonial[] = [
     role: 'Founder & CEO',
     company: 'Zuri Essentials Boutique',
     location: 'Agbani / ESUT Campus Area',
-    comment: 'When our e-commerce checkout crashed during a major sales weekend, Ocean Technologies answered my call immediately at 09129216768 and resolved the database issue within 2 hours. They saved my business from huge embarrassment.',
+    comment: 'When our e-commerce checkout crashed during a major sales weekend, Ocean Technologies answered my call immediately at 09129216768 and resolved the system issue within 2 hours. They saved my business from huge embarrassment.',
     serviceReceived: 'Emergency Bug Troubleshooting & Speed Optimization',
     rating: 5
   },
@@ -436,19 +438,19 @@ export const FAQS: FAQItem[] = [
     id: '2',
     category: 'Website Development',
     question: 'How long does it take to develop a new website?',
-    answer: 'A standard professional business website typically takes 1 to 2 weeks. Custom web applications, portals, and complex e-commerce stores take between 2 to 4 weeks depending on the required features and database complexity.'
+    answer: 'A standard professional business website typically takes 1 to 2 weeks. Custom web applications, portals, and complex e-commerce stores take between 2 to 4 weeks depending on the required features and architectural scope.'
   },
   {
     id: '3',
     category: 'Maintenance & Retainers',
     question: 'What is included in your Website Maintenance packages?',
-    answer: 'Our maintenance packages include 24/7 uptime monitoring, scheduled cloud backups, WordPress core and plugin security patches, database cleanup, speed optimization, malware removal, and dedicated developer hours for routine content updates and text changes.'
+    answer: 'Our maintenance packages include 24/7 uptime monitoring, scheduled cloud backups, WordPress core and plugin security patches, system cleanup, speed optimization, malware removal, and dedicated developer hours for routine content updates and text changes.'
   },
   {
     id: '4',
     category: 'Urgent Software Fixes',
     question: 'My website or mobile app has an urgent error/crash. How quickly can you fix it?',
-    answer: 'We have an active 24/7 software emergency hotline (09129216768 / WhatsApp). For critical issues like payment failures, database errors, or server crashes, our engineers begin diagnostics immediately and typically resolve issues within 1 to 3 hours.'
+    answer: 'We have an active 24/7 software emergency hotline (09129216768 / WhatsApp). For critical issues like payment failures, server errors, or crash events, our engineers begin diagnostics immediately and typically resolve issues within 1 to 3 hours.'
   },
   {
     id: '5',
@@ -467,7 +469,7 @@ export const FAQS: FAQItem[] = [
 export const WHY_CHOOSE_US = [
   {
     title: 'Root-Cause Problem Solvers',
-    description: 'We do not just patch surface symptoms. We diagnose underlying database, server, and code architecture to ensure your software never fails again.',
+    description: 'We do not just patch surface symptoms. We diagnose underlying infrastructure, server configuration, and code architecture to ensure your software never fails again.',
     icon: 'ShieldCheck'
   },
   {

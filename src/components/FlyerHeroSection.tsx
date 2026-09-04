@@ -369,7 +369,7 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                     </h3>
 
                     <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
-                      Never worry about crashing servers, broken checkouts, or security breaches. Our engineering leads monitor database health, automate backups, and patch vulnerabilities around the clock.
+                      Never worry about crashing servers, broken checkouts, or security breaches. Our engineering leads monitor system health, automate backups, and patch vulnerabilities around the clock.
                     </p>
 
                     {/* Management Capabilities Grid */}
@@ -380,7 +380,7 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                       </div>
                       <div className="flex items-center gap-2 p-2 rounded-lg bg-slate-900/90 border border-slate-800">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                        <span>Database Query Tuning</span>
+                        <span>System Speed Optimization</span>
                       </div>
                       <div className="flex items-center gap-2 p-2 rounded-lg bg-slate-900/90 border border-slate-800">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
@@ -506,7 +506,7 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                       SOFTWARE MANAGEMENT
                     </h3>
                     <p className="text-xs text-slate-600 leading-relaxed mt-1">
-                      System maintenance, security updates, performance monitoring, database optimization, and support to keep your software running at its best.
+                      System maintenance, security updates, performance monitoring, speed optimization, and support to keep your software running at its best.
                     </p>
                   </div>
                 </div>

@@ -1,0 +1,247 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <defs>
+    <!-- Background subtle radial fill if needed, here pure white -->
+    <rect id="bg" width="1000" height="1000" fill="#ffffff" />
+
+    <!-- Wave Gradients -->
+    <linearGradient id="waveDark" x1="0%" y1="100%" x2="40%" y2="0%">
+      <stop offset="0%" stop-color="#021533" />
+      <stop offset="50%" stop-color="#042759" />
+      <stop offset="100%" stop-color="#083d82" />
+    </linearGradient>
+
+    <linearGradient id="waveMidDark" x1="0%" y1="100%" x2="60%" y2="0%">
+      <stop offset="0%" stop-color="#052f6d" />
+      <stop offset="60%" stop-color="#0253a6" />
+      <stop offset="100%" stop-color="#006bc2" />
+    </linearGradient>
+
+    <linearGradient id="waveMid" x1="10%" y1="100%" x2="80%" y2="10%">
+      <stop offset="0%" stop-color="#005ea6" />
+      <stop offset="60%" stop-color="#007ecc" />
+      <stop offset="100%" stop-color="#0096e6" />
+    </linearGradient>
+
+    <linearGradient id="waveCyan" x1="20%" y1="90%" x2="90%" y2="20%">
+      <stop offset="0%" stop-color="#0077c2" />
+      <stop offset="50%" stop-color="#009ee8" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </linearGradient>
+
+    <!-- OT Monogram Gradient -->
+    <linearGradient id="monogramGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#031f4b" />
+      <stop offset="70%" stop-color="#063271" />
+      <stop offset="100%" stop-color="#0a4694" />
+    </linearGradient>
+
+    <!-- Circuit Trace Gradient -->
+    <linearGradient id="circuitGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0080d8" />
+      <stop offset="100%" stop-color="#00a3ff" />
+    </linearGradient>
+
+    <!-- Lighthouse Beam Left Gradient -->
+    <linearGradient id="lightBeamLeft" x1="100%" y1="50%" x2="0%" y2="50%">
+      <stop offset="0%" stop-color="#7dd3fc" stop-opacity="0.85" />
+      <stop offset="40%" stop-color="#38bdf8" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.0" />
+    </linearGradient>
+
+    <!-- Lighthouse Beam Right Gradient -->
+    <linearGradient id="lightBeamRight" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#7dd3fc" stop-opacity="0.85" />
+      <stop offset="40%" stop-color="#38bdf8" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1000" height="1000" fill="#ffffff" />
+
+  <!-- EMBLEM GROUP (Centered at X=500, Y=370) -->
+  <g id="emblem" transform="translate(0, 5)">
+
+    <!-- Outer Circular Ring Accent (Top Right Crescent Arc) -->
+    <path d="M 500 115 A 255 255 0 0 1 732 445 C 728 470 710 495 686 525 C 705 480 720 435 715 385 A 235 235 0 0 0 495 135 Z" fill="#072042" />
+    
+    <!-- Outer Lower Right Crescent Base -->
+    <path d="M 430 615 C 470 622 515 620 560 605 C 635 580 695 530 724 445 C 720 475 700 520 655 565 C 605 615 540 635 465 635 C 430 635 390 625 365 615 C 385 616 410 616 430 615 Z" fill="#041a38" />
+
+    <!-- ==================== OT MONOGRAM ==================== -->
+    <!-- Letter "O" -->
+    <g id="letter-O">
+      <!-- Outer O Circle -->
+      <path d="M 488 190 A 108 108 0 1 0 488 406 A 108 108 0 1 0 488 190 Z 
+               M 488 238 A 60 60 0 1 1 488 358 A 60 60 0 1 1 488 238 Z" 
+            fill="url(#monogramGrad)" />
+    </g>
+
+    <!-- Letter "T" -->
+    <g id="letter-T">
+      <!-- Horizontal Top Bar with modern 45-deg angled cut on the right tip -->
+      <path d="M 500 262 L 672 262 L 696 294 L 500 294 Z" fill="url(#monogramGrad)" />
+      <!-- Vertical Stem of T -->
+      <rect x="582" y="294" width="32" height="105" fill="url(#monogramGrad)" rx="2" />
+    </g>
+
+    <!-- ==================== OCEAN WAVES (LEFT SIDE) ==================== -->
+    <!-- Wave 1: Dark Navy Outer Sweeping Base -->
+    <path d="M 245 425 
+             C 240 380 250 330 280 280 
+             C 290 265 305 248 322 232 
+             C 300 255 270 295 255 345 
+             C 240 395 240 455 260 515 
+             C 285 585 345 635 435 645 
+             C 515 655 580 625 630 575 
+             C 560 620 480 635 410 620 
+             C 330 600 270 545 250 470 
+             C 245 455 245 440 245 425 Z" 
+          fill="url(#waveDark)" />
+
+    <!-- Wave 2: Deep Blue Sculpted Layer -->
+    <path d="M 268 490 
+             C 255 430 260 365 295 305 
+             C 310 280 335 255 365 235 
+             C 340 260 315 295 300 340 
+             C 280 400 285 465 315 525 
+             C 345 585 400 625 470 630 
+             C 410 625 355 595 320 550 
+             C 285 505 275 460 268 490 Z" 
+          fill="url(#waveMidDark)" />
+
+    <!-- Wave 3: Mid Blue Curving Crest -->
+    <path d="M 288 470 
+             C 275 415 285 350 325 300 
+             C 350 270 380 250 410 238 
+             C 380 260 345 295 330 345 
+             C 310 405 318 470 355 525 
+             C 385 570 435 605 490 610 
+             C 435 605 385 575 350 535 
+             C 310 490 295 445 288 470 Z" 
+          fill="url(#waveMid)" />
+
+    <!-- Wave 4: Vibrant Cyan Inner Curling Wave -->
+    <path d="M 320 440 
+             C 305 390 320 335 360 290 
+             C 390 258 428 240 458 235 
+             C 430 250 395 280 375 325 
+             C 350 380 355 440 390 495 
+             C 425 545 475 575 530 585 
+             C 475 578 425 550 390 510 
+             C 350 465 330 420 320 440 Z" 
+          fill="url(#waveCyan)" />
+
+    <!-- Highlight Crest Splashes along wave tips -->
+    <path d="M 370 290 C 390 265 425 245 455 238 C 430 252 400 280 382 315 C 374 330 368 350 366 370 C 362 340 364 310 370 290 Z" fill="#e0f2fe" opacity="0.9" />
+
+    <!-- ==================== CIRCUIT BOARD (RIGHT SIDE) ==================== -->
+    <g id="circuits" stroke="url(#circuitGrad)" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Circuit Trace 1 (Top) -->
+      <path d="M 552 470 L 590 432 L 690 432" />
+      <circle cx="706" cy="432" r="7" stroke="url(#circuitGrad)" stroke-width="4" fill="#ffffff" />
+      <circle cx="706" cy="432" r="3" fill="#0080d8" stroke="none" />
+
+      <!-- Circuit Trace 2 (Upper Middle) -->
+      <path d="M 568 456 L 610 414 L 718 414" />
+      <circle cx="734" cy="414" r="7" stroke="url(#circuitGrad)" stroke-width="4" fill="#ffffff" />
+      <circle cx="734" cy="414" r="3" fill="#0080d8" stroke="none" />
+
+      <!-- Circuit Trace 3 (Middle) -->
+      <path d="M 584 442 L 632 394 L 746 394" />
+      <circle cx="762" cy="394" r="7" stroke="url(#circuitGrad)" stroke-width="4" fill="#ffffff" />
+      <circle cx="762" cy="394" r="3" fill="#0080d8" stroke="none" />
+
+      <!-- Circuit Trace 4 (Lower) -->
+      <path d="M 540 488 L 574 454 L 664 454" />
+      <circle cx="680" cy="454" r="7" stroke="url(#circuitGrad)" stroke-width="4" fill="#ffffff" />
+      <circle cx="680" cy="454" r="3" fill="#0080d8" stroke="none" />
+    </g>
+
+    <!-- ==================== LIGHTHOUSE BEAMS ==================== -->
+    <!-- Left Light Beam Cone -->
+    <polygon points="518,467 410,448 410,486" fill="url(#lightBeamLeft)" />
+    <!-- Right Light Beam Cone -->
+    <polygon points="518,467 626,448 626,486" fill="url(#lightBeamRight)" />
+
+    <!-- Central Glowing Lamp Flare -->
+    <circle cx="518" cy="467" r="14" fill="#bae6fd" opacity="0.8" />
+    <circle cx="518" cy="467" r="6" fill="#ffffff" />
+
+    <!-- ==================== OPEN BOOK BASE ==================== -->
+    <g id="open-book">
+      <!-- Dark Blue Spine and Base -->
+      <path d="M 518 554 L 518 535 C 518 535 480 522 432 534 L 432 546 C 475 536 505 546 518 554 Z" fill="#041b3a" />
+      <path d="M 518 554 L 518 535 C 518 535 556 522 604 534 L 604 546 C 561 536 531 546 518 554 Z" fill="#041b3a" />
+
+      <!-- Left Page Layers -->
+      <path d="M 518 544 C 480 532 444 540 432 546 C 446 536 480 526 518 536 Z" fill="#082b59" />
+      <path d="M 518 536 C 480 525 448 531 436 536 C 452 526 484 518 518 528 Z" fill="#0f3c78" />
+      <path d="M 518 528 C 482 516 450 522 440 526 C 456 516 488 509 518 518 Z" fill="#ffffff" stroke="#041b3a" stroke-width="2.5" />
+
+      <!-- Right Page Layers -->
+      <path d="M 518 544 C 556 532 592 540 604 546 C 590 536 556 526 518 536 Z" fill="#082b59" />
+      <path d="M 518 536 C 556 525 588 531 600 536 C 584 526 552 518 518 528 Z" fill="#0f3c78" />
+      <path d="M 518 528 C 554 516 586 522 596 526 C 580 516 548 509 518 518 Z" fill="#ffffff" stroke="#041b3a" stroke-width="2.5" />
+    </g>
+
+    <!-- ==================== LIGHTHOUSE TOWER ==================== -->
+    <g id="lighthouse">
+      <!-- Lighthouse Foundation Pedestal resting on Book -->
+      <polygon points="502,520 534,520 537,526 499,526" fill="#041b3a" />
+      
+      <!-- Tapered Tower Body -->
+      <polygon points="506,478 530,478 534,520 502,520" fill="#072042" />
+      
+      <!-- White Horizontal Architectural Stripes / Windows -->
+      <polygon points="508,485 528,485 529,491 507,491" fill="#ffffff" />
+      <polygon points="505,498 531,498 532,504 504,504" fill="#ffffff" />
+      <polygon points="503,510 533,510 534,516 502,516" fill="#ffffff" />
+
+      <!-- Balcony Gallery Platform -->
+      <rect x="502" y="475" width="32" height="4" fill="#021226" rx="1" />
+      <!-- Railing -->
+      <line x1="504" y1="472" x2="532" y2="472" stroke="#021226" stroke-width="1.5" />
+      <line x1="506" y1="472" x2="506" y2="475" stroke="#021226" stroke-width="1" />
+      <line x1="518" y1="472" x2="518" y2="475" stroke="#021226" stroke-width="1" />
+      <line x1="530" y1="472" x2="530" y2="475" stroke="#021226" stroke-width="1" />
+
+      <!-- Lantern Glass Chamber Room -->
+      <rect x="508" y="460" width="20" height="15" fill="#072042" />
+      <rect x="511" y="462" width="14" height="11" fill="#e0f2fe" />
+
+      <!-- Cupola / Roof Dome -->
+      <path d="M 506 460 C 506 450 530 450 530 460 Z" fill="#041b3a" />
+      <!-- Finial Spire Tip -->
+      <line x1="518" y1="447" x2="518" y2="451" stroke="#041b3a" stroke-width="2.5" stroke-linecap="round" />
+      <circle cx="518" cy="446" r="2" fill="#041b3a" />
+    </g>
+
+  </g>
+
+  <!-- ==================== TYPOGRAPHY SECTION ==================== -->
+  <g id="branding-text">
+    <!-- Main Headline: OCEAN TECH -->
+    <text x="500" y="722" text-anchor="middle" font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="82" letter-spacing="-0.02em">
+      <tspan fill="#061c3d">OCEAN </tspan>
+      <tspan fill="#0080d8">TECH</tspan>
+    </text>
+
+    <!-- Subtitle: — I N S T I T U T E — -->
+    <!-- Left Accent Horizontal Rule -->
+    <line x1="128" y1="768" x2="250" y2="768" stroke="#0080d8" stroke-width="3.5" stroke-linecap="round" />
+    <!-- INSTITUTE Text -->
+    <text x="500" y="777" text-anchor="middle" fill="#061c3d" font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="28" letter-spacing="0.38em">I N S T I T U T E</text>
+    <!-- Right Accent Horizontal Rule -->
+    <line x1="750" y1="768" x2="872" y2="768" stroke="#0080d8" stroke-width="3.5" stroke-linecap="round" />
+
+    <!-- Motto: INNOVATE • EDUCATE • EMPOWER -->
+    <text x="500" y="826" text-anchor="middle" fill="#061c3d" font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="18.5" letter-spacing="0.25em">
+      <tspan>INNOVATE</tspan>
+      <tspan fill="#0080d8" font-size="22">  •  </tspan>
+      <tspan>EDUCATE</tspan>
+      <tspan fill="#0080d8" font-size="22">  •  </tspan>
+      <tspan>EMPOWER</tspan>
+    </text>
+  </g>
+</svg>

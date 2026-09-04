@@ -225,7 +225,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                   <option value="Software Troubleshooting">Software Debugging & Issue Troubleshooting</option>
                   <option value="Custom Portals & APIs">Custom Management Portal / School / Hospital Portal</option>
                   <option value="Internship / IT & SIWES Placement">Student Internship / IT & SIWES Placement (Agbani Hub)</option>
-                  <option value="Server / Database Tuning">Database & Cloud Server Setup</option>
+                  <option value="Cloud Infrastructure & Performance">Cloud Infrastructure & Server Setup</option>
                 </select>
               </div>
 
@@ -313,10 +313,10 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                   className="px-5 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-700 disabled:bg-sky-400 text-white font-semibold text-xs tracking-wide flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
                 >
                   {submitting ? (
-                    <span>Submitting...</span>
+                    <span>Sending Request...</span>
                   ) : (
                     <>
-                      <span>Submit Request</span>
+                      <span>Send Quote Request</span>
                       <Send className="w-3.5 h-3.5" />
                     </>
                   )}

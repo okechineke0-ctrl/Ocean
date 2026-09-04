@@ -67,7 +67,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                 Peace of Mind with Proactive Software & Cloud Care
               </h1>
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                Eliminate server downtime, database corruptions, and broken payment checkouts. Our dedicated Agbani engineering operations team keeps your web systems and mobile backends running at peak performance 24/7/365.
+                Eliminate server downtime, system breakdowns, and broken payment checkouts. Our dedicated Agbani engineering operations team keeps your web systems and mobile backends running at peak performance 24/7/365.
               </p>
               <div className="flex items-center gap-4 mt-6">
                 <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg">
@@ -96,7 +96,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                     24/7 Infrastructure Triage
                   </span>
                   <p className="text-xs font-bold font-display">Ocean Cloud Operations Center</p>
-                  <p className="text-[11px] text-slate-300">Continuous monitoring, zero-downtime hotfixes & database replication.</p>
+                  <p className="text-[11px] text-slate-300">Continuous monitoring, zero-downtime hotfixes & automated cloud redundancy.</p>
                 </div>
               </div>
             </div>
@@ -136,7 +136,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
               <Zap className="w-5 h-5" />
             </div>
             <h3 className="font-bold text-sm text-slate-900 font-display mb-1">Speed & Cache Tuning</h3>
-            <p className="text-xs text-slate-600">Database cleanup, image compression, and CDN tuning to keep load times under 1.5 seconds.</p>
+            <p className="text-xs text-slate-600">Deep cache cleanup, image compression, and CDN tuning to keep load times under 1.5 seconds.</p>
           </div>
         </div>
 
@@ -227,7 +227,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
               One-Off Software Bug & Crash Diagnostic
             </h3>
             <p className="text-xs sm:text-sm text-amber-100 max-w-xl">
-              Pay-as-you-go emergency repairs starting from ₦20,000. We diagnose root causes and restore your broken checkout, database, or mobile app endpoints within 2 hours.
+              Pay-as-you-go emergency repairs starting from ₦20,000. We diagnose root causes and restore your broken checkout, backend systems, or mobile app endpoints within 2 hours.
             </p>
           </div>
 

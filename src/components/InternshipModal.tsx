@@ -59,7 +59,7 @@ const PROGRAM_TYPES = [
 const TECH_TRACKS = [
   'Frontend Web Development (React, Next.js, Tailwind CSS)',
   'Mobile App Development (Flutter, iOS & Android)',
-  'Backend & Cloud Databases (Node.js, PostgreSQL, Firestore)',
+  'Backend & Cloud Engineering (Node.js, REST APIs, Cloud Backends)',
   'Full-Stack Software Engineering (End-to-End Applications)',
   'Computer Hardware, Networking & Server Maintenance',
   'UI/UX Product Design (Figma, Systems & Wireframing)',
@@ -124,7 +124,7 @@ export const InternshipModal: React.FC<InternshipModalProps> = ({ isOpen, onClos
     } catch (err: any) {
       console.error('Registration failed:', err);
       setErrorMessage(
-        err.message || 'An error occurred while saving your registration. Please check your connection and retry.'
+        err.message || 'Unable to submit your application right now. Please check your internet connection and retry, or reach out to our placement desk directly on WhatsApp.'
       );
     } finally {
       setIsSubmitting(false);
@@ -490,7 +490,7 @@ export const InternshipModal: React.FC<InternshipModalProps> = ({ isOpen, onClos
                   {isSubmitting ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span>Submitting Registration Application...</span>
+                      <span>Processing Application...</span>
                     </>
                   ) : (
                     <>

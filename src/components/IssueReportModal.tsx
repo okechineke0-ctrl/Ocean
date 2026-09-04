@@ -226,7 +226,7 @@ export const IssueReportModal: React.FC<IssueReportModalProps> = ({
                   <option value="WordPress Website">WordPress / WooCommerce Site</option>
                   <option value="Custom Web App (React/Node/PHP)">Custom Web App (React / Node / PHP)</option>
                   <option value="Mobile App (Android/iOS)">Mobile App (Flutter / React Native / Android)</option>
-                  <option value="Database / Server">Database / Server / cPanel</option>
+                  <option value="Database / Server">Server, Cloud & Infrastructure</option>
                   <option value="E-Commerce Store">E-Commerce Store (Payment Gateway Failure)</option>
                   <option value="Other">Other Software / System</option>
                 </select>
@@ -254,7 +254,7 @@ export const IssueReportModal: React.FC<IssueReportModalProps> = ({
               <textarea
                 required
                 rows={3}
-                placeholder="e.g. Payment gives error 500, white blank screen after login, database error, server timeout..."
+                placeholder="e.g. Payment gives error 500, white blank screen after login, system crash, server timeout..."
                 value={formData.errorDescription}
                 onChange={(e) => setFormData({ ...formData, errorDescription: e.target.value })}
                 className="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 text-sm text-slate-800 focus:bg-white focus:outline-hidden focus:border-amber-600 focus:ring-1 focus:ring-amber-600"

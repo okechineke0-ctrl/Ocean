@@ -266,7 +266,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
               Have an Existing Website with Bugs or Crash Errors?
             </h3>
             <p className="text-xs text-slate-300">
-              We provide rapid troubleshooting for WordPress, custom React/Node apps, Paystack checkouts, and database deadlocks.
+              We provide rapid troubleshooting for WordPress, custom React/Node apps, Paystack checkouts, and backend system freezes.
             </p>
           </div>
 

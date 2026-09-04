@@ -1,6 +1,7 @@
 import React from 'react';
 import { ViewMode } from '../types';
 import { COMPANY_INFO, WHY_CHOOSE_US } from '../data/companyData';
+import { Logo } from '../components/Logo';
 import softwareEngineerImg from '../assets/images/software_engineer_team_1788530472353.jpg';
 import { 
   Building2, 
@@ -36,16 +37,21 @@ export const AboutView: React.FC<AboutViewProps> = ({
       {/* Header Banner */}
       <section className="bg-white border-b border-slate-200 py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <span className="text-sky-600 font-bold text-xs uppercase tracking-wider">
-              About Ocean Technologies • Agbani, Enugu State, Nigeria
-            </span>
-            <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 font-display mt-2 mb-4">
-              Engineering Scalable Software & Reliable Website Maintenance
-            </h1>
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-              Based in Agbani, Enugu State (within the ESUT university corridor), Ocean Technologies is a modern technology company built on one core mission: delivering dependable, high-speed software solutions that empower businesses to grow without technical interruptions.
-            </p>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="max-w-3xl">
+              <span className="text-[#0284C7] font-bold text-xs uppercase tracking-wider bg-sky-50 px-3 py-1 rounded-full border border-sky-200 inline-block mb-3">
+                Official Institutional Profile • Agbani, Enugu State, Nigeria
+              </span>
+              <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 font-display mt-1 mb-4">
+                Engineering Scalable Software & Reliable Website Maintenance
+              </h1>
+              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                Based in Agbani, Enugu State (within the ESUT university corridor), Ocean Technologies Institute is a premier software engineering institution built on one core mission: delivering dependable, high-speed software solutions that empower businesses to grow without technical interruptions.
+              </p>
+            </div>
+            <div className="shrink-0 p-4 bg-slate-50 rounded-2xl border border-slate-200 self-start md:self-center shadow-xs">
+              <Logo variant="full" size="lg" showTagline={true} />
+            </div>
           </div>
         </div>
       </section>
@@ -173,7 +179,7 @@ export const AboutView: React.FC<AboutViewProps> = ({
                 Root-Cause Fixes, Never Surface Hacks
               </h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                When troubleshooting software bugs or website crashes, we trace the issue down to the database schema, server config, and code algorithms to ensure it never breaks again.
+                When troubleshooting software bugs or website crashes, we trace the issue down to the architecture, server config, and code algorithms to ensure it never breaks again.
               </p>
             </div>
 
@@ -214,7 +220,7 @@ export const AboutView: React.FC<AboutViewProps> = ({
               Open for Internships, Industrial Training (IT) & SIWES in Agbani
             </h3>
             <p className="text-slate-300 text-sm leading-relaxed mb-6">
-              Located right along the university corridor in Agbani (near Enugu State University of Science and Technology - ESUT), Ocean Technologies is deeply committed to closing the gap between academic theory and industry engineering. We welcome undergraduates across Nigeria for intensive 3-month, 6-month, and 1-year Industrial Training (IT) and SIWES placements, providing hands-on coding, live database deployments, and professional software craft.
+              Located right along the university corridor in Agbani (near Enugu State University of Science and Technology - ESUT), Ocean Technologies is deeply committed to closing the gap between academic theory and industry engineering. We welcome undergraduates across Nigeria for intensive 3-month, 6-month, and 1-year Industrial Training (IT) and SIWES placements, providing hands-on coding, live cloud deployments, and professional software craft.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <button

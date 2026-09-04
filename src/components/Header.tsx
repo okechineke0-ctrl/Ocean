@@ -37,21 +37,10 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [logoClicks, setLogoClicks] = useState<number[]>([]);
 
   const handleLogoClick = () => {
-    const now = Date.now();
-    const recentClicks = [...logoClicks.filter((t) => now - t < 1500), now];
-    setLogoClicks(recentClicks);
-
-    if (recentClicks.length >= 3) {
-      setLogoClicks([]);
-      onNavigate('admin-inbox');
-      setMobileMenuOpen(false);
-    } else {
-      onNavigate('home');
-      setMobileMenuOpen(false);
-    }
+    onNavigate('home');
+    setMobileMenuOpen(false);
   };
 
   useEffect(() => {
@@ -125,7 +114,7 @@ export const Header: React.FC<HeaderProps> = ({
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           
-          {/* Logo Brand (Click 3 times to open database portal) */}
+          {/* Logo Brand */}
           <div 
             onClick={handleLogoClick}
             className="cursor-pointer select-none"
