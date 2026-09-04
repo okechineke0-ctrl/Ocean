@@ -1,6 +1,7 @@
 import React from 'react';
 import { ViewMode } from '../types';
 import { COMPANY_INFO, WHY_CHOOSE_US } from '../data/companyData';
+import softwareEngineerImg from '../assets/images/software_engineer_team_1788530472353.jpg';
 import { 
   Building2, 
   MapPin, 
@@ -81,17 +82,17 @@ export const AboutView: React.FC<AboutViewProps> = ({
 
           {/* Agbani Headquarters Card */}
           <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-            <div className="relative h-44 w-full bg-slate-900">
+            <div className="relative h-48 w-full bg-slate-900">
               <img 
-                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" 
-                alt="Ocean Technologies Team at Work"
+                src={softwareEngineerImg} 
+                alt="Ocean Technologies Software Engineering Team in Agbani, Enugu State"
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-cover opacity-80"
+                className="w-full h-full object-cover filter brightness-90 contrast-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent"></div>
               <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
                 <div>
-                  <h3 className="font-bold text-base font-display">Ocean Technologies Development Hub</h3>
+                  <h3 className="font-bold text-base font-display">Ocean Technologies Engineering Lab</h3>
                   <p className="text-xs text-sky-300">Agbani, Enugu State, Nigeria</p>
                 </div>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-400/30">

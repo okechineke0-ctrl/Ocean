@@ -36,6 +36,8 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
     'All',
     'Website Development',
     'Mobile App Development',
+    'Software Engineering',
+    'Software Management',
     'Website Maintenance',
     'Software Troubleshooting',
     'Custom Portals & APIs'
@@ -55,6 +57,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
       case 'Wrench': return <Wrench className="w-5 h-5 text-emerald-600" />;
       case 'Bug': return <Bug className="w-5 h-5 text-amber-600" />;
       case 'Server': return <Server className="w-5 h-5 text-cyan-600" />;
+      case 'Settings': return <Layers className="w-5 h-5 text-indigo-600" />;
       default: return <Code className="w-5 h-5 text-sky-600" />;
     }
   };

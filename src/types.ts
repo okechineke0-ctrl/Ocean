@@ -12,6 +12,9 @@ export type ServiceCategory =
   | 'All'
   | 'Website Development'
   | 'Mobile App Development'
+  | 'Software Engineering'
+  | 'Software Management'
+  | 'IT Consulting & Support'
   | 'Website Maintenance'
   | 'Software Troubleshooting'
   | 'Custom Portals & APIs';
@@ -28,7 +31,7 @@ export interface ServiceItem {
   deliveryTime: string;
   startingPriceNGN: number;
   startingPriceUSD: number;
-  iconName: 'Globe' | 'Smartphone' | 'Wrench' | 'Bug' | 'Server' | 'ShieldCheck' | 'Cpu' | 'Code';
+  iconName: 'Globe' | 'Smartphone' | 'Wrench' | 'Bug' | 'Server' | 'ShieldCheck' | 'Cpu' | 'Code' | 'Settings';
   isPopular?: boolean;
 }
 

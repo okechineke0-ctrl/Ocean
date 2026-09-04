@@ -175,7 +175,7 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
   };
 
   const handleDeleteInquiryItem = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this message record from the PostgreSQL database?')) {
+    if (window.confirm('Are you sure you want to permanently remove this inquiry record?')) {
       await deleteInquiry(id);
       if (selectedInquiry?.id === id) {
         setSelectedInquiry(null);
@@ -184,7 +184,7 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
   };
 
   const handleDeleteInternshipItem = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this student internship record from the database?')) {
+    if (window.confirm('Are you sure you want to permanently remove this student internship record?')) {
       await deleteInternship(id);
       if (selectedInternship?.id === id) {
         setSelectedInternship(null);
@@ -293,13 +293,13 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
             Admin Access Verification
           </h2>
           <p className="text-xs text-center text-slate-400 mb-6">
-            Database records, client quotes, and student internship registrations are restricted to authorized personnel.
+            Inquiries, client quotes, and student internship registrations are restricted to authorized personnel.
           </p>
 
           <form onSubmit={handleAdminLogin} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                Enter Database Password:
+                Enter Administrative Passcode:
               </label>
               <input
                 type="password"
@@ -323,7 +323,7 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
               type="submit"
               className="w-full py-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-lg cursor-pointer"
             >
-              Unlock Database Portal
+              Access Administrative Portal
             </button>
           </form>
 
@@ -355,10 +355,10 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold font-display text-white">PostgreSQL & Cloud Firestore Portal</h1>
+                <h1 className="text-xl font-bold font-display text-white">Ocean Technologies Administrative Portal</h1>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span>Database Live & Synced</span>
+                  <span>System Active & Synchronized</span>
                 </span>
               </div>
               <p className="text-xs text-slate-400">
@@ -373,7 +373,7 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
               className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors border border-slate-700 cursor-pointer"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-sky-400' : ''}`} />
-              <span>Refresh Database</span>
+              <span>Refresh Records</span>
             </button>
             <button
               onClick={() => onNavigate('home')}
@@ -397,9 +397,9 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
                 : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
             }`}
           >
-            <p className="text-xs text-slate-400 font-medium">All Database Records</p>
+            <p className="text-xs text-slate-400 font-medium">All Recorded Submissions</p>
             <p className="text-2xl font-bold font-display text-white mt-1">{counts.totalRecords}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">PostgreSQL & Firestore</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Verified Sync</p>
           </div>
 
           {/* Card 2: Internships & SIWES */}
@@ -529,7 +529,7 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
                     ? `Student Internship Registrations (${filteredInternships.length})`
                     : activeTab === 'quotes'
                     ? `Project Quotes (${filteredInquiries.length})`
-                    : `Database Entries (${filteredInternships.length + filteredInquiries.length})`}
+                    : `All Submissions (${filteredInternships.length + filteredInquiries.length})`}
                 </span>
               </h2>
               {loading && <RefreshCw className="w-4 h-4 text-sky-400 animate-spin" />}
@@ -665,7 +665,7 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
               {filteredInternships.length === 0 && filteredInquiries.length === 0 && (
                 <div className="p-12 text-center text-slate-500 text-xs">
                   <Inbox className="w-8 h-8 text-slate-600 mx-auto mb-2 opacity-50" />
-                  <p>No database records match your filter.</p>
+                  <p>No submission records match your filter.</p>
                   <p className="text-[10px] text-slate-600 mt-1">
                     Student registrations submitted via the Internship form and quotes will appear here in real-time.
                   </p>
@@ -820,7 +820,7 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
                 {/* Admin Internal Notes Box */}
                 <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
                   <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                    Internal Admin & Interview Notes (Synced to Database):
+                    Internal Administrative & Interview Notes:
                   </label>
                   <textarea
                     rows={3}
@@ -836,7 +836,7 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
                       className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                     >
                       {savingNote ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
-                      <span>Save Notes to Database</span>
+                      <span>Save Notes</span>
                     </button>
 
                     <button
@@ -1003,7 +1003,7 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
                 {/* Admin Notes Section */}
                 <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
                   <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                    Internal Engineer Notes (Synced to PostgreSQL Database):
+                    Internal Engineering & Triage Notes:
                   </label>
                   <textarea
                     rows={3}
@@ -1019,7 +1019,7 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
                       className="px-4 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                     >
                       {savingNote ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
-                      <span>Save Notes to Database</span>
+                      <span>Save Notes</span>
                     </button>
 
                     <button
@@ -1037,7 +1037,7 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
               /* Blank state when no item is selected */
               <div className="py-24 text-center text-slate-500">
                 <Inbox className="w-12 h-12 text-slate-700 mx-auto mb-3 opacity-50" />
-                <h3 className="text-sm font-bold text-slate-300">Select a Database Record</h3>
+                <h3 className="text-sm font-bold text-slate-300">Select a Record</h3>
                 <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
                   Click on any student internship application or client quote from the list to view complete details, copy coordinates, or reply on WhatsApp.
                 </p>

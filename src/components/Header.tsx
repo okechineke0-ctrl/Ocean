@@ -15,8 +15,7 @@ import {
   ArrowRight,
   ShieldCheck,
   MessageCircle,
-  Clock,
-  Database
+  Clock
 } from 'lucide-react';
 
 interface HeaderProps {

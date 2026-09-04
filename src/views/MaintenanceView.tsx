@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ViewMode } from '../types';
 import { MAINTENANCE_PLANS, COMPANY_INFO } from '../data/companyData';
+import softwareManagementImg from '../assets/images/software_management_devops_1788530496723.jpg';
 import { 
   Wrench, 
   ShieldCheck, 
@@ -14,7 +15,9 @@ import {
   MessageCircle,
   Database,
   Lock,
-  RefreshCw
+  RefreshCw,
+  Activity,
+  Server
 } from 'lucide-react';
 
 interface MaintenanceViewProps {
@@ -55,16 +58,48 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
       {/* Header Banner */}
       <section className="bg-white border-b border-slate-200 py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <span className="text-emerald-700 font-bold text-xs uppercase tracking-wider bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 inline-block mb-3">
-              Ocean Technologies Website Maintenance Retainers
-            </span>
-            <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 font-display mb-4">
-              Peace of Mind with Proactive Website & Software Care
-            </h1>
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-              Eliminate website downtime, malware infections, and broken payment checkouts. Our Agbani engineering team keeps your digital assets running at peak speed 24/7/365.
-            </p>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-7">
+              <span className="text-emerald-700 font-bold text-xs uppercase tracking-wider bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 inline-block mb-3">
+                Ocean Technologies Software Management & SLA Operations
+              </span>
+              <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 font-display mb-4">
+                Peace of Mind with Proactive Software & Cloud Care
+              </h1>
+              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                Eliminate server downtime, database corruptions, and broken payment checkouts. Our dedicated Agbani engineering operations team keeps your web systems and mobile backends running at peak performance 24/7/365.
+              </p>
+              <div className="flex items-center gap-4 mt-6">
+                <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg">
+                  <Activity className="w-4 h-4 text-emerald-600 animate-pulse" />
+                  <span>99.9% Uptime SLA</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg">
+                  <Server className="w-4 h-4 text-sky-600" />
+                  <span>Automated Cloud Backups</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Operations Center Image Card */}
+            <div className="lg:col-span-5">
+              <div className="relative rounded-3xl overflow-hidden shadow-xl border border-slate-800 h-64 sm:h-72">
+                <img 
+                  src={softwareManagementImg} 
+                  alt="Ocean Technologies Software Operations & Cloud Control Center"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover filter brightness-95"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                <div className="absolute bottom-4 left-4 right-4 text-white">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/30 text-sky-300 border border-sky-400/40 uppercase tracking-wider mb-1 inline-block">
+                    24/7 Infrastructure Triage
+                  </span>
+                  <p className="text-xs font-bold font-display">Ocean Cloud Operations Center</p>
+                  <p className="text-[11px] text-slate-300">Continuous monitoring, zero-downtime hotfixes & database replication.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

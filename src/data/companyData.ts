@@ -156,6 +156,60 @@ export const SERVICES: ServiceItem[] = [
     startingPriceUSD: 360,
     iconName: 'Server',
     isPopular: false,
+  },
+  {
+    id: 'software-engineering',
+    title: 'Software Development & Engineering',
+    category: 'Software Engineering',
+    tagline: 'Enterprise-grade custom web platforms, automated business engines, and microservices.',
+    description: 'Bespoke software engineering built with modular code architecture, high scalability, and military-grade security. We engineer backends, admin suites, fintech interfaces, and database architectures tailored to eliminate operational friction.',
+    keyBenefits: [
+      'Microservice & REST/GraphQL API Architecture',
+      'Payment gateway integrations with Paystack, Flutterwave, and Stripe',
+      'Strict OWASP security protocols and data encryption',
+      'Automated CI/CD staging and test coverage',
+      'Role-based permissions and complete audit logging'
+    ],
+    deliverables: [
+      'Architectural Blueprint & Database Schema Documentation',
+      'Clean Modular Production Codebase with Git Repository Access',
+      'Production Staging Deployment on Cloud Infrastructure',
+      'Automated Test Suites & API Documentation',
+      'Comprehensive Engineering Handover & Support'
+    ],
+    technologies: ['TypeScript', 'React', 'Node.js', 'PostgreSQL', 'Python', 'Redis', 'Docker', 'AWS / DigitalOcean'],
+    deliveryTime: '3 to 6 Weeks',
+    startingPriceNGN: 400000,
+    startingPriceUSD: 320,
+    iconName: 'Code',
+    isPopular: true,
+  },
+  {
+    id: 'software-management',
+    title: 'Software Management & SLA Operations',
+    category: 'Software Management',
+    tagline: 'Proactive 24/7 system telemetry, automated cloud backups, security patching, and on-call triage.',
+    description: 'Protect your mission-critical software from downtime, unexpected data corruption, and malicious intrusions. Our dedicated system engineers perform round-the-clock telemetry monitoring, database index tuning, zero-downtime hotfixes, and scheduled off-site disaster recovery snapshots.',
+    keyBenefits: [
+      'Guaranteed 99.9% Production Uptime SLA',
+      'Automated daily encrypted cloud snapshots with 1-click recovery',
+      'Sub-2-hour emergency diagnostic and bug resolution protocol',
+      'Database query optimization and server memory load balancing',
+      'Zero-downtime rolling security and patch deployments'
+    ],
+    deliverables: [
+      'Real-Time Telemetry & Uptime Monitoring Dashboard',
+      'Automated Cloud Backup Verification Logs',
+      'Dedicated Senior Engineering On-Call Hotline',
+      'Monthly Security Vulnerability & Audit Reports',
+      'Proactive Database Optimization Routines'
+    ],
+    technologies: ['Linux / Ubuntu Server', 'Docker', 'PostgreSQL / MySQL', 'Nginx', 'Cloudflare Enterprise DNS', 'Prometheus / Grafana'],
+    deliveryTime: 'Continuous Dedicated Operations',
+    startingPriceNGN: 50000,
+    startingPriceUSD: 40,
+    iconName: 'Settings',
+    isPopular: true,
   }
 ];
 

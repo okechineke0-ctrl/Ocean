@@ -189,7 +189,7 @@ export const InternshipModal: React.FC<InternshipModalProps> = ({ isOpen, onClos
                   Welcome aboard, {registrationResult.fullName}!
                 </h3>
                 <p className="text-slate-600 text-sm max-w-md mx-auto mt-1">
-                  Your student internship application has been officially recorded in Ocean Technologies' database.
+                  Your student internship application has been successfully received by Ocean Technologies.
                 </p>
               </div>
 
@@ -473,7 +473,7 @@ export const InternshipModal: React.FC<InternshipModalProps> = ({ isOpen, onClos
                 </label>
                 <textarea
                   rows={2}
-                  placeholder="e.g. I want to build real-world React and backend APIs, understand database architecture, and complete my SIWES logbook with hands-on projects..."
+                  placeholder="e.g. I want to build real-world web and mobile applications, understand cloud architecture, and complete my SIWES logbook with hands-on projects..."
                   value={formData.statementOfPurpose}
                   onChange={(e) => setFormData({ ...formData, statementOfPurpose: e.target.value })}
                   className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-slate-900 bg-white placeholder-slate-400 text-sm transition-colors resize-none"
@@ -485,12 +485,12 @@ export const InternshipModal: React.FC<InternshipModalProps> = ({ isOpen, onClos
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {isSubmitting ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span>Saving Student Registration to Database...</span>
+                      <span>Submitting Registration Application...</span>
                     </>
                   ) : (
                     <>
@@ -500,7 +500,7 @@ export const InternshipModal: React.FC<InternshipModalProps> = ({ isOpen, onClos
                   )}
                 </button>
                 <p className="text-center text-[11px] text-slate-500 mt-2">
-                  🔒 Data is securely saved to Cloud Firestore & Ocean Technologies PostgreSQL Database.
+                  🔒 Your details are securely transmitted to the Ocean Technologies Admissions & IT Placement Desk.
                 </p>
               </div>
             </form>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ViewMode } from '../types';
 import { SERVICES, MAINTENANCE_PLANS, CASE_STUDIES, TESTIMONIALS, WHY_CHOOSE_US, COMPANY_INFO } from '../data/companyData';
+import { FlyerHeroSection } from '../components/FlyerHeroSection';
 import { 
   Globe, 
   Smartphone, 
@@ -37,13 +38,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
   onOpenIssueReport,
   onOpenInternship
 }) => {
-  const [activeTab, setActiveTab] = useState<'all' | 'web' | 'app' | 'maintenance'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'web' | 'app' | 'engineering' | 'management' | 'maintenance'>('all');
 
   const filteredServices = SERVICES.filter((s) => {
     if (activeTab === 'all') return true;
     if (activeTab === 'web') return s.category === 'Website Development';
     if (activeTab === 'app') return s.category === 'Mobile App Development';
-    if (activeTab === 'maintenance') return s.category === 'Website Maintenance' || s.category === 'Software Troubleshooting';
+    if (activeTab === 'engineering') return s.category === 'Software Engineering' || s.category === 'Custom Portals & APIs';
+    if (activeTab === 'management') return s.category === 'Software Management' || s.category === 'Website Maintenance';
+    if (activeTab === 'maintenance') return s.category === 'Software Management' || s.category === 'Website Maintenance' || s.category === 'Software Troubleshooting';
     return true;
   });
 
@@ -54,6 +57,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       case 'Wrench': return <Wrench className="w-6 h-6 text-emerald-600" />;
       case 'Bug': return <Bug className="w-6 h-6 text-amber-600" />;
       case 'Server': return <Server className="w-6 h-6 text-cyan-600" />;
+      case 'Settings': return <Wrench className="w-6 h-6 text-indigo-600" />;
       default: return <Code2 className="w-6 h-6 text-sky-600" />;
     }
   };
@@ -61,199 +65,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
   return (
     <div className="bg-slate-50 min-h-screen text-slate-900 selection:bg-sky-100 selection:text-sky-900">
       
-      {/* 1. Hero Section */}
-      <section className="relative pt-10 pb-16 md:pt-16 md:pb-24 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white border-b border-slate-800 overflow-hidden">
-        {/* Glow Effects & Tech Grid */}
-        <div className="absolute inset-0 bg-[radial-gradient(#0284c7_1px,transparent_1px)] [background-size:32px_32px] opacity-20 pointer-events-none"></div>
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-sky-500/15 rounded-full filter blur-[100px] pointer-events-none"></div>
-        <div className="absolute -top-24 right-0 w-96 h-96 bg-blue-600/15 rounded-full filter blur-3xl pointer-events-none"></div>
+      {/* 1. Official Flyer Hero Section matching user design */}
+      <FlyerHeroSection
+        onNavigate={onNavigate}
+        onOpenQuote={onOpenQuote}
+        onOpenIssueReport={onOpenIssueReport}
+        onOpenInternship={onOpenInternship}
+      />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-            
-            {/* Left Content Column (7 cols) */}
-            <div className="lg:col-span-7">
-              {/* Location & Status Tag */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-400/30 text-sky-300 text-xs font-semibold mb-6 shadow-xs backdrop-blur-md">
-                <span className="flex h-2 w-2 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-400"></span>
-                </span>
-                <span>Agbani, Enugu State, Nigeria • Near ESUT Corridor</span>
-              </div>
-
-              {/* Headline */}
-              <h1 className="text-3xl sm:text-5xl lg:text-5xl font-extrabold text-white tracking-tight font-display leading-[1.15] mb-5">
-                Modern <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-blue-400">Web & Mobile Apps</span>, Custom Systems & 24/7 Support
-              </h1>
-
-              {/* Subtitle */}
-              <p className="text-sm sm:text-base text-slate-300 leading-relaxed mb-8 max-w-2xl font-normal">
-                Ocean Technologies engineers high-converting websites, iOS/Android mobile apps, and provides emergency 500 error & database triage for businesses in Enugu and across Nigeria.
-              </p>
-
-              {/* CTAs */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 mb-10">
-                <button
-                  id="hero-request-quote-cta"
-                  onClick={() => onOpenQuote()}
-                  className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold text-sm tracking-wide shadow-lg shadow-sky-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <span>Get a Free Project Quote</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-
-                <button
-                  id="hero-emergency-fix-cta"
-                  onClick={onOpenIssueReport}
-                  className="px-5 py-3.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/40 text-amber-300 font-semibold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer backdrop-blur-md"
-                >
-                  <AlertTriangle className="w-4 h-4 text-amber-400" />
-                  <span>Fix Broken Site / Bug</span>
-                </button>
-
-                <a
-                  id="hero-call-cta"
-                  href={COMPANY_INFO.phoneTel}
-                  className="px-4 py-3.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-semibold text-sm transition-colors flex items-center justify-center gap-2"
-                >
-                  <Phone className="w-4 h-4 text-emerald-400" />
-                  <span>{COMPANY_INFO.phone}</span>
-                </a>
-              </div>
-
-              {/* Trust Metrics Bar */}
-              <div className="pt-6 border-t border-slate-800/80 grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div>
-                  <p className="text-2xl font-black text-white font-display">120+</p>
-                  <p className="text-xs text-slate-400 font-medium">Projects Delivered</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-black text-white font-display">99.9%</p>
-                  <p className="text-xs text-slate-400 font-medium">Uptime Guarantee</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-black text-sky-400 font-display">&lt; 2 Hrs</p>
-                  <p className="text-xs text-slate-400 font-medium">Emergency Triage</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-black text-emerald-400 font-display">₦25k/mo</p>
-                  <p className="text-xs text-slate-400 font-medium">Starter Maintenance</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Interactive Tech Showcase & Terminal (5 cols) */}
-            <div className="lg:col-span-5 relative">
-              {/* Code Terminal Frame */}
-              <div className="bg-slate-900/90 rounded-2xl border border-slate-700/80 shadow-2xl overflow-hidden backdrop-blur-xl">
-                {/* Terminal Window Header */}
-                <div className="bg-slate-950/80 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
-                    <span className="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
-                    <span className="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
-                  </div>
-                  <span className="text-[11px] font-mono text-slate-400">ocean-tech-engine.ts</span>
-                  <div className="flex items-center gap-1.5 text-[10px] text-emerald-400 font-mono">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>ONLINE</span>
-                  </div>
-                </div>
-
-                {/* Code Terminal Body */}
-                <div className="p-5 font-mono text-xs leading-relaxed space-y-2 text-slate-300">
-                  <div className="text-slate-500">// Ocean Technologies Stack Engine</div>
-                  <div>
-                    <span className="text-sky-400">const</span> <span className="text-amber-300">oceanDeploy</span> = {'{'}
-                  </div>
-                  <div className="pl-4 space-y-1">
-                    <div><span className="text-slate-400">location:</span> <span className="text-emerald-300">"Agbani, Enugu State, Nigeria"</span>,</div>
-                    <div><span className="text-slate-400">techStack:</span> [<span className="text-emerald-300">"React"</span>, <span className="text-emerald-300">"Next.js"</span>, <span className="text-emerald-300">"Flutter"</span>, <span className="text-emerald-300">"Node"</span>],</div>
-                    <div><span className="text-slate-400">payments:</span> [<span className="text-emerald-300">"Paystack"</span>, <span className="text-emerald-300">"Flutterwave"</span>, <span className="text-emerald-300">"Stripe"</span>],</div>
-                    <div><span className="text-slate-400">database:</span> <span className="text-emerald-300">"PostgreSQL & Cloud Firestore"</span>,</div>
-                    <div><span className="text-slate-400">slaUptime:</span> <span className="text-sky-300">"99.9% Uptime Guarantee"</span>,</div>
-                    <div><span className="text-slate-400">emergencyLine:</span> <span className="text-emerald-300">"09129216768"</span></div>
-                  </div>
-                  <div>{'};'}</div>
-                  <div className="pt-2 text-emerald-400 flex items-center gap-2">
-                    <span className="text-slate-500">&gt;</span>
-                    <span>Ready for project kickoff and emergency triage.</span>
-                  </div>
-                </div>
-
-                {/* Visual Image Banner inside terminal frame */}
-                <div className="relative h-36 bg-slate-950 overflow-hidden border-t border-slate-800">
-                  <img 
-                    src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" 
-                    alt="Ocean Technologies Engineering Team"
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover opacity-60"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
-                  <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
-                    <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                      <ShieldCheck className="w-4 h-4 text-sky-400" />
-                      <span>Certified Software Engineering</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-400/30">
-                      ESUT Corridor
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Floating Verified Badge */}
-              <div className="hidden sm:flex absolute -bottom-5 -left-5 bg-slate-800/90 border border-slate-700 p-3 rounded-xl shadow-xl backdrop-blur-md items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
-                  ✓
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-white">Verified Paystack & Flutterwave</p>
-                  <p className="text-[10px] text-slate-400">Secure Payment Architecture</p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* 2. Direct Contact Notice Strip */}
-      <section className="bg-slate-900 text-white py-4 px-4 border-y border-slate-800">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-xs sm:text-sm">
-          <div className="flex items-center gap-3">
-            <span className="p-1.5 rounded-md bg-sky-600 text-white">
-              <MapPin className="w-4 h-4" />
-            </span>
-            <span>
-              <strong>Physical Office:</strong> Agbani, Enugu State, Nigeria (ESUT Corridor)
-            </span>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-4 text-xs">
-            <a 
-              href={COMPANY_INFO.emailMailto}
-              className="text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors"
-            >
-              <span>Email:</span>
-              <strong className="text-sky-300">{COMPANY_INFO.email}</strong>
-            </a>
-            <span className="text-slate-600 hidden sm:inline">|</span>
-            <a 
-              href={COMPANY_INFO.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-emerald-400 hover:text-emerald-300 flex items-center gap-1 font-bold transition-colors"
-            >
-              <MessageCircle className="w-3.5 h-3.5" />
-              <span>WhatsApp: 09129216768</span>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* 2.5 AI Assistant Feature Strip */}
+      {/* 2. AI Assistant Feature Strip */}
       <section className="bg-gradient-to-r from-sky-900 via-slate-900 to-blue-950 text-white py-6 px-4">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
@@ -302,6 +122,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
               { id: 'all', label: 'All Capabilities' },
               { id: 'web', label: 'Website Development' },
               { id: 'app', label: 'Mobile Apps' },
+              { id: 'engineering', label: 'Software Engineering' },
+              { id: 'management', label: 'Software Management' },
               { id: 'maintenance', label: 'Maintenance & Troubleshooting' }
             ].map((tab) => (
               <button
@@ -309,7 +131,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                   activeTab === tab.id
-                    ? 'bg-sky-600 text-white shadow-xs'
+                    ? 'bg-[#0284C7] text-white shadow-xs'
                     : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
                 }`}
               >
