@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ViewMode } from '../types';
 import { Logo } from './Logo';
+import { RealBarcode } from './RealBarcode';
 import { 
   Monitor, 
   Smartphone, 
@@ -12,6 +13,7 @@ import {
   ShieldCheck, 
   Users, 
   PhoneCall, 
+  Phone,
   Mail, 
   Globe, 
   MapPin, 
@@ -61,9 +63,16 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
           {/* Left Column (7 cols): Brand Logo, Big Impact Headline, Intro & CTAs */}
           <div className="lg:col-span-7 flex flex-col justify-between">
             <div>
-              {/* Top Flyer Brand Identity */}
-              <div className="flex items-center gap-4 mb-6">
-                <Logo variant="horizontal" size="lg" showTagline={true} />
+              {/* Elite Engineering Institution Badge */}
+              <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-sky-50 via-blue-50 to-indigo-50 border border-sky-200/80 shadow-xs mb-5">
+                <span className="flex h-2 w-2 rounded-full bg-sky-500 animate-pulse" />
+                <span className="text-xs font-bold tracking-wide uppercase text-sky-900 font-display">
+                  Premier Software Engineering & IT Institute
+                </span>
+                <span className="text-slate-300">|</span>
+                <span className="text-xs font-semibold text-slate-600">
+                  Agbani, Enugu State
+                </span>
               </div>
 
               {/* Massive Display Headline */}
@@ -438,8 +447,8 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                   onClick={() => onOpenQuote('Website Design & Development')}
                   className="group p-4 rounded-2xl bg-white border border-slate-200 hover:border-sky-400 hover:shadow-md transition-all flex items-start gap-4 cursor-pointer"
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-[#0B2545] group-hover:bg-[#0284C7] text-white flex items-center justify-center shrink-0 transition-colors shadow-sm">
-                    <Monitor className="w-6 h-6 text-[#38BDF8] group-hover:text-white" />
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-sky-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-sky-500/20 group-hover:scale-105 transition-all">
+                    <Monitor className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h3 className="text-sm font-black text-[#0B2545] group-hover:text-[#0284C7] uppercase tracking-wide transition-colors">
@@ -456,8 +465,8 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                   onClick={() => onOpenQuote('Mobile App Development')}
                   className="group p-4 rounded-2xl bg-white border border-slate-200 hover:border-sky-400 hover:shadow-md transition-all flex items-start gap-4 cursor-pointer"
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-[#0B2545] group-hover:bg-[#0284C7] text-white flex items-center justify-center shrink-0 transition-colors shadow-sm">
-                    <Smartphone className="w-6 h-6 text-[#38BDF8] group-hover:text-white" />
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-all">
+                    <Smartphone className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h3 className="text-sm font-black text-[#0B2545] group-hover:text-[#0284C7] uppercase tracking-wide transition-colors">
@@ -477,7 +486,7 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                   <span className="absolute -top-2.5 right-4 px-2 py-0.5 rounded-full bg-[#0284C7] text-white text-[9px] font-black uppercase tracking-wider">
                     Core Discipline
                   </span>
-                  <div className="w-12 h-12 rounded-2xl bg-[#0284C7] text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-600 to-cyan-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-sky-500/25 group-hover:scale-105 transition-all">
                     <Code2 className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -498,7 +507,7 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                   <span className="absolute -top-2.5 right-4 px-2 py-0.5 rounded-full bg-indigo-600 text-white text-[9px] font-black uppercase tracking-wider">
                     24/7 SLA Protection
                   </span>
-                  <div className="w-12 h-12 rounded-2xl bg-indigo-700 text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-900 to-indigo-800 text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-900/30 group-hover:scale-105 transition-all">
                     <Settings className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -516,8 +525,8 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                   onClick={() => onOpenQuote('IT Consulting & Support')}
                   className="group p-4 rounded-2xl bg-white border border-slate-200 hover:border-sky-400 hover:shadow-md transition-all flex items-start gap-4 cursor-pointer"
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-[#0B2545] group-hover:bg-[#0284C7] text-white flex items-center justify-center shrink-0 transition-colors shadow-sm">
-                    <Cloud className="w-6 h-6 text-[#38BDF8] group-hover:text-white" />
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-600 to-emerald-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-teal-500/20 group-hover:scale-105 transition-all">
+                    <Cloud className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h3 className="text-sm font-black text-[#0B2545] group-hover:text-[#0284C7] uppercase tracking-wide transition-colors">
@@ -633,15 +642,21 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
         </div>
       </section>
 
-      {/* 4. Deep Navy Blue Contact Callout Banner with QR Code (Matching Flyer) */}
+      {/* 4. Deep Navy Blue Contact Callout Banner with Original Flyer QR Barcode (Matching Flyer) */}
       <section className="bg-[#0B1E38] text-white py-8 px-4 sm:px-6 lg:px-8 border-y border-slate-800">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
             
-            {/* Left Box: LET'S BUILD THE FUTURE TOGETHER */}
+            {/* Left Box: LET'S BUILD THE FUTURE TOGETHER with Flyer-Authentic Phone Emblem */}
             <div className="md:col-span-4 flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-sky-500/20 text-sky-400 border border-sky-400/30 flex items-center justify-center shrink-0">
-                <PhoneCall className="w-7 h-7 text-sky-400" />
+              <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 via-sky-600 to-cyan-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-sky-500/25 border border-sky-400/30 group-hover:scale-105 transition-all">
+                <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center">
+                  <Phone className="w-5 h-5 text-white" />
+                </div>
+                <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
               </div>
               <div>
                 <h3 className="text-base sm:text-lg font-black font-display text-white uppercase tracking-tight leading-snug">
@@ -654,76 +669,74 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
               </div>
             </div>
 
-            {/* Center: Contact Details Grid */}
+            {/* Center: Modern Contact Coordinates with Sleek Gradient Badges */}
             <div className="md:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              
+              {/* Phone Line */}
               <a
                 href="tel:09129216768"
-                className="flex items-center gap-2 text-slate-200 hover:text-white transition-colors"
+                className="group flex items-center gap-3 p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-sky-400/50 transition-all text-slate-200 hover:text-white"
               >
-                <span className="p-1 rounded bg-sky-600/30 text-sky-300">📞</span>
-                <span className="font-bold font-mono">09129216768</span>
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-sky-500 text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+                  <Phone className="w-4 h-4 text-white" />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[10px] text-sky-400 font-semibold uppercase tracking-wider">Direct Hotline</span>
+                  <span className="font-bold font-mono text-xs sm:text-sm text-white truncate">09129216768</span>
+                </div>
               </a>
 
+              {/* Messages / Official Email */}
               <a
                 href="mailto:oceantechnologies62@gmail.com"
-                className="flex items-center gap-2 text-slate-200 hover:text-white transition-colors break-all"
+                className="group flex items-center gap-3 p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-indigo-400/50 transition-all text-slate-200 hover:text-white"
               >
-                <span className="p-1 rounded bg-sky-600/30 text-sky-300">✉️</span>
-                <span className="font-medium text-[11px]">oceantechnologies62@gmail.com</span>
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+                  <Mail className="w-4 h-4 text-white" />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[10px] text-indigo-300 font-semibold uppercase tracking-wider">Official Inquiries</span>
+                  <span className="font-medium text-[11px] text-slate-200 truncate">oceantechnologies62@gmail.com</span>
+                </div>
               </a>
 
-              <div className="flex items-center gap-2 text-slate-200">
-                <span className="p-1 rounded bg-sky-600/30 text-sky-300">🌐</span>
-                <span className="font-mono text-[11px]">www.ocean-f4gj.orrender.com</span>
+              {/* Official Website */}
+              <a
+                href="https://ocean-f4gj.onrender.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-3 p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-400/50 transition-all text-slate-200 hover:text-white"
+              >
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-teal-500 text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+                  <Globe className="w-4 h-4 text-white" />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[10px] text-teal-300 font-semibold uppercase tracking-wider">Official Web</span>
+                  <span className="font-mono text-[11px] text-slate-200 truncate">www.ocean-f4gj.orrender.com</span>
+                </div>
+              </a>
+
+              {/* Physical Location */}
+              <div className="flex items-center gap-3 p-2 rounded-xl bg-white/5 border border-white/10 text-slate-200">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-rose-500 to-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <MapPin className="w-4 h-4 text-white" />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[10px] text-rose-300 font-semibold uppercase tracking-wider">Physical Hub</span>
+                  <span className="font-medium text-[11px] text-slate-200 truncate">Agbani, Enugu State, Nigeria</span>
+                </div>
               </div>
 
-              <div className="flex items-center gap-2 text-slate-200">
-                <span className="p-1 rounded bg-sky-600/30 text-sky-300">📍</span>
-                <span className="font-medium">Agbani, Enugu State, Nigeria</span>
-              </div>
             </div>
 
-            {/* Right: SCAN ME QR Code Card */}
-            <div className="md:col-span-3 flex items-center justify-start md:justify-end gap-3.5">
-              {/* Precision Vector QR Code representation */}
-              <div className="bg-white p-2 rounded-xl shadow-md shrink-0">
-                <svg width="68" height="68" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  {/* Top-left position marker */}
-                  <rect x="5" y="5" width="30" height="30" rx="3" stroke="#0B2545" strokeWidth="6" />
-                  <rect x="14" y="14" width="12" height="12" fill="#0284C7" />
-
-                  {/* Top-right position marker */}
-                  <rect x="65" y="5" width="30" height="30" rx="3" stroke="#0B2545" strokeWidth="6" />
-                  <rect x="74" y="14" width="12" height="12" fill="#0284C7" />
-
-                  {/* Bottom-left position marker */}
-                  <rect x="5" y="65" width="30" height="30" rx="3" stroke="#0B2545" strokeWidth="6" />
-                  <rect x="14" y="74" width="12" height="12" fill="#0284C7" />
-
-                  {/* Data matrix dots */}
-                  <rect x="42" y="10" width="8" height="8" fill="#0B2545" />
-                  <rect x="42" y="24" width="8" height="8" fill="#0284C7" />
-                  <rect x="54" y="16" width="6" height="6" fill="#0B2545" />
-                  <rect x="10" y="42" width="8" height="8" fill="#0B2545" />
-                  <rect x="24" y="42" width="8" height="8" fill="#0284C7" />
-                  <rect x="42" y="42" width="16" height="16" rx="2" fill="#0B2545" />
-                  <rect x="64" y="42" width="8" height="8" fill="#0284C7" />
-                  <rect x="80" y="42" width="10" height="8" fill="#0B2545" />
-                  <rect x="42" y="64" width="8" height="8" fill="#0284C7" />
-                  <rect x="54" y="72" width="12" height="8" fill="#0B2545" />
-                  <rect x="72" y="64" width="16" height="8" fill="#0B2545" />
-                  <rect x="74" y="78" width="12" height="12" fill="#0284C7" />
-                </svg>
-              </div>
-
-              <div>
-                <span className="text-xs font-black tracking-wider text-sky-400 uppercase block">
-                  SCAN ME
-                </span>
-                <span className="text-[11px] text-slate-300 block">
-                  to visit our website
-                </span>
-              </div>
+            {/* Right: Authentic Original Flyer Barcode (SCAN ME / to visit our website) */}
+            <div className="md:col-span-3 flex items-center justify-start md:justify-end">
+              <RealBarcode 
+                label="SCAN ME"
+                subtitle="to visit our website"
+                targetUrl="https://ocean-f4gj.onrender.com"
+                className="shadow-2xl border-white/80"
+              />
             </div>
 
           </div>

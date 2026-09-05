@@ -6,6 +6,8 @@ import {
   MapPin, 
   Phone, 
   Mail, 
+  Globe,
+  GraduationCap,
   Clock, 
   MessageCircle, 
   Send, 
@@ -104,12 +106,13 @@ export const ContactView: React.FC<ContactViewProps> = ({
           <div className="lg:col-span-5 space-y-4">
             
             {/* Agbani Address Card */}
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-slate-300 transition-all">
               <div className="flex items-start gap-3.5">
-                <div className="p-3 bg-sky-50 text-sky-600 rounded-xl shrink-0 mt-1">
-                  <MapPin className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500 to-amber-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-rose-500/20">
+                  <MapPin className="w-5 h-5 text-white" />
                 </div>
                 <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-rose-600">Physical Hub</span>
                   <h3 className="font-bold text-sm text-slate-900 font-display mb-1">
                     Physical Office & Location
                   </h3>
@@ -124,12 +127,13 @@ export const ContactView: React.FC<ContactViewProps> = ({
             </div>
 
             {/* Direct Phone & WhatsApp Card */}
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4 hover:border-slate-300 transition-all">
               <div className="flex items-start gap-3.5">
-                <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl shrink-0 mt-1">
-                  <Phone className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-sky-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-sky-500/20">
+                  <Phone className="w-5 h-5 text-white" />
                 </div>
                 <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-sky-600">Direct Contact</span>
                   <h3 className="font-bold text-sm text-slate-900 font-display mb-1">
                     Official Hotline & WhatsApp
                   </h3>
@@ -161,13 +165,14 @@ export const ContactView: React.FC<ContactViewProps> = ({
               </div>
             </div>
 
-            {/* Official Email Card */}
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+            {/* Official Email / Messages Card */}
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-slate-300 transition-all">
               <div className="flex items-start gap-3.5">
-                <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl shrink-0 mt-1">
-                  <Mail className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-500/20">
+                  <Mail className="w-5 h-5 text-white" />
                 </div>
                 <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600">Electronic Mail</span>
                   <h3 className="font-bold text-sm text-slate-900 font-display mb-1">
                     Official Email Address
                   </h3>
@@ -181,11 +186,38 @@ export const ContactView: React.FC<ContactViewProps> = ({
               </div>
             </div>
 
+            {/* Official Website Card */}
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-slate-300 transition-all">
+              <div className="flex items-start gap-3.5">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-teal-500/20">
+                  <Globe className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-teal-600">Online Portal</span>
+                  <h3 className="font-bold text-sm text-slate-900 font-display mb-1">
+                    Official Website
+                  </h3>
+                  <a 
+                    href="https://ocean-f4gj.onrender.com" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-xs font-mono font-bold text-teal-700 hover:underline flex items-center gap-1"
+                  >
+                    <span>www.ocean-f4gj.orrender.com</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    Live application and client service portal
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Internships, IT & SIWES Card */}
             <div className="bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 text-white p-6 rounded-2xl border border-indigo-700/50 shadow-sm">
               <div className="flex items-start gap-3.5">
-                <div className="p-3 bg-indigo-500/20 text-indigo-300 rounded-xl shrink-0 mt-1 border border-indigo-400/30">
-                  <span className="text-xl">🎓</span>
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-300 flex items-center justify-center shrink-0 mt-1 border border-indigo-400/30">
+                  <GraduationCap className="w-5 h-5 text-indigo-300" />
                 </div>
                 <div>
                   <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-400/30 mb-1.5">

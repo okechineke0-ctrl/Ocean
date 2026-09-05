@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Logo } from './Logo';
 import { ViewMode } from '../types';
 import { COMPANY_INFO } from '../data/companyData';
@@ -6,6 +6,7 @@ import {
   Mail, 
   Phone, 
   MapPin, 
+  Globe,
   ShieldCheck, 
   CheckCircle2, 
   Send,
@@ -14,6 +15,7 @@ import {
   Clock,
   ExternalLink
 } from 'lucide-react';
+import { RealBarcode } from './RealBarcode';
 
 interface FooterProps {
   onNavigate: (view: ViewMode) => void;
@@ -31,8 +33,28 @@ export const Footer: React.FC<FooterProps> = ({
   const [subscribedEmail, setSubscribedEmail] = useState('');
   const [subscribedSuccess, setSubscribedSuccess] = useState(false);
 
-  const handleFooterLogoClick = () => {
-    onNavigate('home');
+  const clickTimesRef = useRef<number[]>([]);
+  const clickTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleFooterLogoClick = (e: React.MouseEvent) => {
+    const now = Date.now();
+    const recentClicks = [...clickTimesRef.current.filter((t) => now - t < 1800), now];
+    clickTimesRef.current = recentClicks;
+
+    if (e.detail >= 3 || recentClicks.length >= 3) {
+      clickTimesRef.current = [];
+      if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
+      sessionStorage.setItem('ocean_tech_admin_auth', 'true');
+      window.dispatchEvent(new CustomEvent('open-admin-portal'));
+      onNavigate('admin-inbox');
+      return;
+    }
+
+    if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
+    clickTimerRef.current = setTimeout(() => {
+      onNavigate('home');
+      clickTimesRef.current = [];
+    }, 380);
   };
 
   const handleSubscribe = (e: React.FormEvent) => {
@@ -213,35 +235,52 @@ export const Footer: React.FC<FooterProps> = ({
             <h4 className="text-white font-bold text-sm tracking-wider uppercase mb-4 font-display">
               Agbani Office & Contact
             </h4>
-            <div className="space-y-3 text-xs">
-              <div className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
+            <div className="space-y-3.5 text-xs">
+              
+              {/* Location */}
+              <div className="flex items-start gap-3">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-rose-500 to-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+                  <MapPin className="w-3.5 h-3.5 text-white" />
+                </div>
                 <span className="leading-relaxed text-slate-300">
                   Agbani, Enugu State, Nigeria<br />
-                  (ESUT Corridor, Enugu State University of Science and Technology)
+                  <span className="text-[11px] text-slate-400">ESUT Corridor, Enugu State University</span>
                 </span>
               </div>
               
-              <div className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
-                <a href={COMPANY_INFO.phoneTel} className="text-emerald-300 font-semibold hover:text-white">
+              {/* Phone */}
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-sky-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <Phone className="w-3.5 h-3.5 text-white" />
+                </div>
+                <a href={COMPANY_INFO.phoneTel} className="text-slate-200 font-mono font-bold hover:text-white transition-colors">
                   {COMPANY_INFO.phone}
                 </a>
               </div>
               
-              <div className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-sky-400 shrink-0" />
-                <a href={COMPANY_INFO.emailMailto} className="text-slate-300 hover:text-white">
+              {/* Email */}
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <Mail className="w-3.5 h-3.5 text-white" />
+                </div>
+                <a href={COMPANY_INFO.emailMailto} className="text-slate-300 hover:text-white transition-colors break-all">
                   {COMPANY_INFO.email}
                 </a>
               </div>
-              
-              <div className="flex items-start gap-2.5 text-slate-400">
-                <Clock className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
-                <span>
-                  Mon – Sat: 8:00 AM – 7:00 PM<br />
-                  24/7 Software Emergency Call
-                </span>
+
+              {/* Website */}
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <Globe className="w-3.5 h-3.5 text-white" />
+                </div>
+                <a
+                  href="https://ocean-f4gj.onrender.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-teal-300 hover:text-white transition-colors font-mono text-[11px]"
+                >
+                  www.ocean-f4gj.orrender.com
+                </a>
               </div>
               
               <div className="pt-2 flex flex-col gap-2">
@@ -274,8 +313,9 @@ export const Footer: React.FC<FooterProps> = ({
             © {new Date().getFullYear()}{' '}
             <span 
               onClick={(e) => {
-                // Secret triple click to access admin portal without exposing UI to visitors
-                if (e.detail === 3) {
+                if (e.detail >= 3) {
+                  sessionStorage.setItem('ocean_tech_admin_auth', 'true');
+                  window.dispatchEvent(new CustomEvent('open-admin-portal'));
                   onNavigate('admin-inbox');
                 }
               }}

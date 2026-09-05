@@ -49,7 +49,7 @@ export const AboutView: React.FC<AboutViewProps> = ({
                 Based in Agbani, Enugu State (within the ESUT university corridor), Ocean Technologies Institute is a premier software engineering institution built on one core mission: delivering dependable, high-speed software solutions that empower businesses to grow without technical interruptions.
               </p>
             </div>
-            <div className="shrink-0 p-4 bg-slate-50 rounded-2xl border border-slate-200 self-start md:self-center shadow-xs">
+            <div className="shrink-0 p-2 bg-white rounded-full border border-slate-200/90 self-start md:self-center shadow-md ring-4 ring-sky-500/10">
               <Logo variant="full" size="lg" showTagline={true} />
             </div>
           </div>

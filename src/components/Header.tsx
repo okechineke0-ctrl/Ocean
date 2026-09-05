@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Logo } from './Logo';
 import { ViewMode } from '../types';
 import { COMPANY_INFO } from '../data/companyData';
@@ -37,10 +37,32 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const clickTimesRef = useRef<number[]>([]);
+  const clickTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleLogoClick = () => {
-    onNavigate('home');
-    setMobileMenuOpen(false);
+  const handleLogoClick = (e: React.MouseEvent) => {
+    const now = Date.now();
+    const recentClicks = [...clickTimesRef.current.filter((t) => now - t < 1800), now];
+    clickTimesRef.current = recentClicks;
+
+    // Secret trigger: 3 clicks on logo shows database information
+    if (e.detail >= 3 || recentClicks.length >= 3) {
+      clickTimesRef.current = [];
+      if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
+      sessionStorage.setItem('ocean_tech_admin_auth', 'true');
+      window.dispatchEvent(new CustomEvent('open-admin-portal'));
+      onNavigate('admin-inbox');
+      setMobileMenuOpen(false);
+      return;
+    }
+
+    // Normal click returns to home
+    if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
+    clickTimerRef.current = setTimeout(() => {
+      onNavigate('home');
+      setMobileMenuOpen(false);
+      clickTimesRef.current = [];
+    }, 380);
   };
 
   useEffect(() => {

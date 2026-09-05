@@ -31,6 +31,7 @@ export default function App() {
       const hash = window.location.hash.toLowerCase();
       const params = new URLSearchParams(window.location.search);
       if (hash === '#admin' || hash === '#portal' || hash === '#db' || params.get('admin') === 'true' || params.get('portal') === '1') {
+        sessionStorage.setItem('ocean_tech_admin_auth', 'true');
         setCurrentView('admin-inbox');
       }
     };
@@ -38,6 +39,16 @@ export default function App() {
     checkAdminHash();
     window.addEventListener('hashchange', checkAdminHash);
     return () => window.removeEventListener('hashchange', checkAdminHash);
+  }, []);
+
+  // Listen for open-admin-portal event (triggered by triple-clicking any logo on the site)
+  useEffect(() => {
+    const handleOpenAdmin = () => {
+      sessionStorage.setItem('ocean_tech_admin_auth', 'true');
+      setCurrentView('admin-inbox');
+    };
+    window.addEventListener('open-admin-portal', handleOpenAdmin);
+    return () => window.removeEventListener('open-admin-portal', handleOpenAdmin);
   }, []);
 
   // Secret keyboard shortcut: Ctrl+Shift+A or Cmd+Shift+A anywhere on the site

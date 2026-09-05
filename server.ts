@@ -268,6 +268,91 @@ app.patch('/api/internships/:id', async (req, res) => {
   }
 });
 
+// POST /api/internships/:id/accept (Accept request and generate official commencement email)
+app.post('/api/internships/:id/accept', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const { studentName, email, techTrack, school, regNumber, preferredStartDate } = req.body;
+    
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid internship ID' });
+    }
+
+    const note = `Accepted by Admin on ${new Date().toLocaleString('en-GB')}. Official admission and commencement instructions issued.`;
+    const updated = await updateInternshipRecord(id, 'admitted', note);
+
+    const safeName = studentName || 'Applicant';
+    const safeTrack = techTrack || 'Software Engineering / Full-Stack Track';
+    const safeRef = regNumber || `OCT-INT-2026-${id}`;
+    const safeStart = preferredStartDate || 'Immediate commencement';
+
+    const subject = `Official Offer of IT / SIWES Placement – Ocean Technologies Institute (Ref: ${safeRef})`;
+    const body = `OFFICIAL NOTIFICATION OF ADMISSION & COMMENCEMENT
+OCEAN TECHNOLOGIES INSTITUTE
+Software Engineering & Technology Innovation Hub
+Agbani, Enugu State, Nigeria (Near ESUT Corridor)
+Ref: ${safeRef}
+Date: ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+
+Dear ${safeName},
+
+We are pleased to formally notify you that following a thorough evaluation of your application credentials, your registration for the Industrial Training (IT) & SIWES Placement program at Ocean Technologies Institute has been officially ACCEPTED.
+
+==================================================
+PLACEMENT DETAILS
+==================================================
+• Student Full Name: ${safeName}
+• Academic Institution: ${school || 'Higher Institution'}
+• Designated Track: ${safeTrack}
+• Placement Reference ID: ${safeRef}
+• Designated Hub Location: Agbani Main Road (Near ESUT First Gate), Agbani, Enugu State
+
+==================================================
+COMMENCEMENT INSTRUCTIONS
+==================================================
+You are hereby formally invited and instructed to report to our technical hub on your commencement date: ${safeStart}.
+
+Please arrive promptly with the following mandatory onboarding requirements:
+1. Official IT / SIWES Placement Letter from your Institution.
+2. Official ITF SIWES Logbook (Form 8) and Student Training Guide.
+3. Valid Student Identity Card or National ID.
+4. Two (2) recent passport-sized photographs.
+5. Personal Laptop configured for software development.
+
+==================================================
+FIRST-DAY ONBOARDING & MENTORSHIP
+==================================================
+Upon arrival, you will undergo workspace assignment, receive your internal developer repository credentials, and be introduced to your designated Senior Engineering Mentor.
+
+Training Facility Hours: Monday – Friday | 8:30 AM – 5:00 PM
+Placement Coordinator Hotline / WhatsApp: +234 912 921 6768
+Official Portal: https://ocean-f4gj.onrender.com
+
+Congratulations on your selection. We look forward to working with you to build impactful software engineering competencies.
+
+Warm regards,
+
+Director of Technical Training & Placements
+Ocean Technologies Institute, Agbani, Enugu State
+Direct Contact: +234 912 921 6768 | okechineke0@gmail.com`;
+
+    res.json({
+      success: true,
+      message: 'Student application officially accepted.',
+      internship: updated,
+      email: {
+        to: email,
+        subject,
+        body,
+        mailtoUrl: `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+      }
+    });
+  } catch (error: any) {
+    console.error(`API POST /api/internships/${req.params.id}/accept failed:`, error);
+    res.status(500).json({ error: error.message || 'Failed to accept student application' });
+  }
+});
+
 // DELETE /api/internships/:id
 app.delete('/api/internships/:id', async (req, res) => {
   try {
