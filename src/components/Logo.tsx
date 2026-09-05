@@ -6,10 +6,10 @@ import realLogoSvg from '../assets/images/ocean_tech_institute_logo.svg';
 export { officialLogoImg, realLogoImg, realLogoSvg };
 
 // Direct URL paths for logo image files (loaded directly via HTTP URL path)
-export const LOGO_PRIMARY_URL = '/logo.png';
+export const LOGO_PRIMARY_URL = '/file_000000000b0081f480d72e4e38e653e3.png';
 export const LOGO_SVG_URL = '/logo.svg';
 export const LOGO_JPG_URL = '/logo.jpg';
-export const LOGO_IMAGE_URL = officialLogoImg || LOGO_PRIMARY_URL;
+export const LOGO_IMAGE_URL = LOGO_PRIMARY_URL;
 
 interface LogoProps {
   src?: string;
@@ -35,15 +35,13 @@ export const Logo: React.FC<LogoProps> = ({
   const clickTimesRef = useRef<number[]>([]);
 
   // Use directly imported official logo asset or custom passed src, with fallback chain
-  const activeLogoUrl = src || officialLogoImg || LOGO_PRIMARY_URL;
+  const activeLogoUrl = src || LOGO_PRIMARY_URL;
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     const target = e.currentTarget;
     const currentSrc = target.src;
-    // Fallback chain: imported asset -> /logo.png -> /logo.svg -> /logo.jpg
-    if (currentSrc !== LOGO_PRIMARY_URL && !currentSrc.includes('/logo.png')) {
-      target.src = LOGO_PRIMARY_URL;
-    } else if (currentSrc.includes('/logo.png')) {
+    // Fallback chain: new logo -> /logo.svg -> /logo.jpg
+    if (currentSrc !== LOGO_SVG_URL && !currentSrc.includes('/logo.svg')) {
       target.src = LOGO_SVG_URL;
     } else if (currentSrc.includes('/logo.svg')) {
       target.src = LOGO_JPG_URL;
