@@ -23,5 +23,15 @@ service cloud.firestore {
                     && request.resource.data.phone is string;
       allow read, update, delete: if true;
     }
+
+    // Course Registrations Collection (Online & Offline Classes):
+    // Students can submit course registrations. Read/write permitted for admin portal.
+    match /course_registrations/{registrationId} {
+      allow create: if request.resource.data.fullName is string
+                    && request.resource.data.fullName.size() > 0
+                    && request.resource.data.email is string
+                    && request.resource.data.phone is string;
+      allow read, update, delete: if true;
+    }
   }
 }

@@ -15,7 +15,8 @@ import {
   ArrowRight,
   ShieldCheck,
   MessageCircle,
-  Clock
+  Clock,
+  GraduationCap
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -25,6 +26,7 @@ interface HeaderProps {
   onOpenIssueReport: () => void;
   onOpenSearch: () => void;
   onOpenInternship?: () => void;
+  onOpenCourseRegistration?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -33,7 +35,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenQuote,
   onOpenIssueReport,
   onOpenSearch,
-  onOpenInternship
+  onOpenInternship,
+  onOpenCourseRegistration,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -45,11 +48,10 @@ export const Header: React.FC<HeaderProps> = ({
     const recentClicks = [...clickTimesRef.current.filter((t) => now - t < 1800), now];
     clickTimesRef.current = recentClicks;
 
-    // Secret trigger: 3 clicks on logo shows database information
+    // Secret trigger: 3 clicks on logo opens administration modal/portal requiring password okechineke0
     if (e.detail >= 3 || recentClicks.length >= 3) {
       clickTimesRef.current = [];
       if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
-      sessionStorage.setItem('ocean_tech_admin_auth', 'true');
       window.dispatchEvent(new CustomEvent('open-admin-portal'));
       onNavigate('admin-inbox');
       setMobileMenuOpen(false);
@@ -98,11 +100,19 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
             <span className="text-slate-600 hidden md:inline">•</span>
             <button
+              onClick={() => onOpenCourseRegistration ? onOpenCourseRegistration() : onOpenQuote('Course Registration')}
+              className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30 hover:bg-sky-500/30 transition-colors font-medium text-[11px] cursor-pointer"
+            >
+              <GraduationCap className="w-3.5 h-3.5 text-sky-300" />
+              <span>Register for Course (Online & In-Person)</span>
+            </button>
+            <span className="text-slate-600 hidden lg:inline">•</span>
+            <button
               onClick={() => onOpenInternship ? onOpenInternship() : onOpenQuote('Internship / IT & SIWES Placement')}
-              className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 hover:bg-indigo-500/30 transition-colors font-medium text-[11px] cursor-pointer"
+              className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 hover:bg-indigo-500/30 transition-colors font-medium text-[11px] cursor-pointer"
             >
               <span className="text-xs">🎓</span>
-              <span>Open for Internships, IT & SIWES</span>
+              <span>Internships & SIWES</span>
             </button>
           </div>
           
@@ -185,11 +195,21 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="font-mono text-[11px] text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200">⌘K</span>
             </button>
 
+            {/* Register for Course CTA */}
+            <button
+              id="header-register-course-btn"
+              onClick={() => onOpenCourseRegistration ? onOpenCourseRegistration() : onOpenQuote('Course Registration')}
+              className="px-3 py-2 rounded-lg bg-sky-50 hover:bg-sky-100 border border-sky-200 text-sky-800 font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+            >
+              <GraduationCap className="w-3.5 h-3.5 text-sky-600" />
+              <span>Register for Course</span>
+            </button>
+
             {/* Emergency Fix CTA */}
             <button
               id="header-emergency-btn"
               onClick={onOpenIssueReport}
-              className="px-3.5 py-2 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-2 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
               <span>Report Bug</span>
@@ -199,7 +219,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               id="header-quote-cta"
               onClick={() => onOpenQuote()}
-              className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs tracking-wide transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs tracking-wide transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
             >
               <span>Get Free Quote</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -256,10 +276,25 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="pt-4 mt-2 border-t border-slate-200 flex flex-col gap-2">
               <button
                 onClick={() => {
+                  if (onOpenCourseRegistration) {
+                    onOpenCourseRegistration();
+                  } else {
+                    onOpenQuote('Course Registration');
+                  }
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full py-2.5 px-4 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs tracking-wide text-center flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+              >
+                <GraduationCap className="w-4 h-4" />
+                <span>Register for a Course (Online & In-Person)</span>
+              </button>
+
+              <button
+                onClick={() => {
                   onOpenQuote();
                   setMobileMenuOpen(false);
                 }}
-                className="w-full py-2.5 px-4 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs tracking-wide text-center flex items-center justify-center gap-2"
+                className="w-full py-2.5 px-4 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs tracking-wide text-center flex items-center justify-center gap-2"
               >
                 <span>Request a Free Quote</span>
                 <ArrowRight className="w-3.5 h-3.5" />

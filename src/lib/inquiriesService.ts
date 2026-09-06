@@ -11,10 +11,17 @@ import {
   serverTimestamp 
 } from 'firebase/firestore';
 import { db } from './firebase';
-import { InquiryRecord, InternshipRecord, InternshipRegistrationFormData } from '../types';
+import { 
+  InquiryRecord, 
+  InternshipRecord, 
+  InternshipRegistrationFormData,
+  CourseRegistrationRecord,
+  CourseRegistrationFormData
+} from '../types';
 
 const LOCAL_STORAGE_KEY = 'ocean_tech_inquiries_cache';
 const LOCAL_STORAGE_INTERNSHIPS_KEY = 'ocean_tech_internships_cache';
+const LOCAL_STORAGE_COURSES_KEY = 'ocean_tech_course_registrations_cache';
 
 enum OperationType {
   CREATE = 'create',
@@ -792,6 +799,328 @@ export async function deleteInternship(id: string): Promise<void> {
     }
   } catch (error) {
     console.error(`Failed to delete internship ${id} from PostgreSQL:`, error);
+  }
+}
+
+// ==========================================
+// COURSE REGISTRATIONS SERVICE (ONLINE & OFFLINE)
+// ==========================================
+
+export function getLocalCourseRegistrations(): CourseRegistrationRecord[] {
+  try {
+    const saved = localStorage.getItem(LOCAL_STORAGE_COURSES_KEY);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (e) {
+    console.error('Failed to read course registrations from localStorage:', e);
+  }
+  return [];
+}
+
+export function saveLocalCourseRegistration(record: CourseRegistrationRecord): void {
+  try {
+    const current = getLocalCourseRegistrations();
+    const filtered = current.filter((r) => r.id !== record.id && r.registrationNumber !== record.registrationNumber);
+    const updated = [record, ...filtered];
+    localStorage.setItem(LOCAL_STORAGE_COURSES_KEY, JSON.stringify(updated));
+  } catch (e) {
+    console.error('Failed to save course registration to localStorage:', e);
+  }
+}
+
+/**
+ * Submit course registration to Firestore and PostgreSQL
+ */
+export async function submitCourseRegistration(
+  formData: CourseRegistrationFormData
+): Promise<{ success: boolean; registrationNumber: string; id: string }> {
+  const nowIso = new Date().toISOString();
+  const localId = `crs-${Date.now()}`;
+  const regNumber = `OCT-CRS-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+
+  const record: CourseRegistrationRecord = {
+    id: localId,
+    registrationNumber: regNumber,
+    fullName: (formData.fullName || '').trim() || 'Student Applicant',
+    email: (formData.email || '').trim(),
+    phone: (formData.phone || '').trim(),
+    course: formData.course || 'web_dev',
+    courseTitle: formData.courseTitle || 'Full-Stack Web Development',
+    classFormat: formData.classFormat || 'online',
+    schedule: formData.schedule || 'Flexible',
+    duration: formData.duration || '12 Weeks',
+    experienceLevel: formData.experienceLevel || 'Beginner',
+    cityState: formData.cityState ? formData.cityState.trim() : 'Enugu / Online',
+    notes: (formData.notes || '').trim(),
+    status: 'pending',
+    createdAt: nowIso,
+  };
+
+  // 1. Cache immediately in localStorage
+  saveLocalCourseRegistration(record);
+
+  let resultingId = localId;
+
+  // 2. Store in Cloud Firestore (course_registrations collection)
+  try {
+    const firestorePayload = {
+      registrationNumber: record.registrationNumber,
+      fullName: record.fullName,
+      email: record.email,
+      phone: record.phone,
+      course: record.course,
+      courseTitle: record.courseTitle,
+      classFormat: record.classFormat,
+      schedule: record.schedule,
+      duration: record.duration,
+      experienceLevel: record.experienceLevel,
+      cityState: record.cityState,
+      notes: record.notes,
+      status: 'pending',
+      createdAt: nowIso,
+      submittedAt: serverTimestamp(),
+    };
+
+    const docRef = await addDoc(collection(db, 'course_registrations'), firestorePayload);
+    resultingId = docRef.id;
+    record.id = docRef.id;
+    saveLocalCourseRegistration(record);
+    console.log('Saved course registration to Firestore:', docRef.id);
+  } catch (firestoreError) {
+    handleFirestoreError(firestoreError, OperationType.CREATE, 'course_registrations');
+  }
+
+  // 3. Store in PostgreSQL backend API
+  try {
+    const res = await fetch('/api/course-registrations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        registrationNumber: record.registrationNumber,
+        fullName: record.fullName,
+        email: record.email,
+        phone: record.phone,
+        course: record.course,
+        courseTitle: record.courseTitle,
+        classFormat: record.classFormat,
+        schedule: record.schedule,
+        duration: record.duration,
+        experienceLevel: record.experienceLevel,
+        cityState: record.cityState,
+        notes: record.notes,
+      }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data.registration?.id) {
+        console.log('Saved course registration to PostgreSQL:', data.registration.id);
+      }
+    }
+  } catch (pgError) {
+    console.warn('PostgreSQL course registration note:', pgError);
+  }
+
+  return {
+    success: true,
+    registrationNumber: regNumber,
+    id: resultingId,
+  };
+}
+
+/**
+ * Fetch course registrations from PostgreSQL
+ */
+export async function fetchCourseRegistrationsFromPostgres(): Promise<CourseRegistrationRecord[]> {
+  try {
+    const res = await fetch('/api/course-registrations');
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.registrations || []).map((row: any) => ({
+      id: `pg-${row.id}`,
+      registrationNumber: row.registrationNumber || row.registration_number,
+      fullName: row.fullName || row.full_name,
+      email: row.email,
+      phone: row.phone,
+      course: row.course,
+      courseTitle: row.courseTitle || row.course_title,
+      classFormat: row.classFormat || row.class_format,
+      schedule: row.schedule,
+      duration: row.duration,
+      experienceLevel: row.experienceLevel || row.experience_level,
+      cityState: row.cityState || row.city_state || '',
+      notes: row.notes || '',
+      status: row.status || 'pending',
+      adminNotes: row.adminNotes || row.admin_notes || '',
+      createdAt: row.createdAt || row.created_at || new Date().toISOString(),
+    }));
+  } catch (error) {
+    console.warn('Failed to fetch course registrations from PostgreSQL:', error);
+    return [];
+  }
+}
+
+/**
+ * Real-time subscription to course registrations
+ */
+export function subscribeToCourseRegistrations(
+  callback: (records: CourseRegistrationRecord[]) => void
+): () => void {
+  // Initial callback with local cache
+  const localCache = getLocalCourseRegistrations();
+  callback(localCache);
+
+  // Attempt to fetch from PostgreSQL
+  fetchCourseRegistrationsFromPostgres().then((pgRecords) => {
+    if (pgRecords.length > 0) {
+      const mergedMap = new Map<string, CourseRegistrationRecord>();
+      pgRecords.forEach((r) => mergedMap.set(r.registrationNumber, r));
+      localCache.forEach((r) => {
+        if (!mergedMap.has(r.registrationNumber)) {
+          mergedMap.set(r.registrationNumber, r);
+        }
+      });
+      const merged = Array.from(mergedMap.values()).sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      callback(merged);
+    }
+  });
+
+  // Subscribe to Cloud Firestore
+  try {
+    const q = query(collection(db, 'course_registrations'), orderBy('createdAt', 'desc'));
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const firestoreRecords: CourseRegistrationRecord[] = [];
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          firestoreRecords.push({
+            id: docSnap.id,
+            registrationNumber: data.registrationNumber || `OCT-CRS-${docSnap.id.slice(0, 6)}`,
+            fullName: data.fullName || 'Student',
+            email: data.email || '',
+            phone: data.phone || '',
+            course: data.course || 'web_dev',
+            courseTitle: data.courseTitle || 'Full-Stack Web Development',
+            classFormat: data.classFormat || 'online',
+            schedule: data.schedule || 'Flexible',
+            duration: data.duration || '12 Weeks',
+            experienceLevel: data.experienceLevel || 'Beginner',
+            cityState: data.cityState || '',
+            notes: data.notes || '',
+            status: data.status || 'pending',
+            adminNotes: data.adminNotes || '',
+            createdAt: data.createdAt || new Date().toISOString(),
+          });
+        });
+
+        // Merge with local and PG records
+        const currentLocal = getLocalCourseRegistrations();
+        const mergedMap = new Map<string, CourseRegistrationRecord>();
+        firestoreRecords.forEach((r) => mergedMap.set(r.registrationNumber, r));
+        currentLocal.forEach((r) => {
+          if (!mergedMap.has(r.registrationNumber)) {
+            mergedMap.set(r.registrationNumber, r);
+          }
+        });
+
+        const merged = Array.from(mergedMap.values()).sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        localStorage.setItem(LOCAL_STORAGE_COURSES_KEY, JSON.stringify(merged));
+        callback(merged);
+      },
+      (error) => {
+        handleFirestoreError(error, OperationType.LIST, 'course_registrations');
+      }
+    );
+
+    return unsubscribe;
+  } catch (error) {
+    handleFirestoreError(error, OperationType.LIST, 'course_registrations');
+    return () => {};
+  }
+}
+
+/**
+ * Update course registration status
+ */
+export async function updateCourseRegistrationStatus(
+  id: string,
+  status: CourseRegistrationRecord['status'],
+  adminNotes?: string
+): Promise<void> {
+  // Update in local cache
+  const current = getLocalCourseRegistrations();
+  const updatedList = current.map((item) => {
+    if (item.id === id) {
+      return { ...item, status, adminNotes: adminNotes ?? item.adminNotes };
+    }
+    return item;
+  });
+  localStorage.setItem(LOCAL_STORAGE_COURSES_KEY, JSON.stringify(updatedList));
+
+  // Update in Firestore
+  try {
+    if (!id.startsWith('pg-') && !id.startsWith('crs-')) {
+      const docRef = doc(db, 'course_registrations', id);
+      const updateData: Record<string, any> = { status, updatedAt: serverTimestamp() };
+      if (adminNotes !== undefined) {
+        updateData.adminNotes = adminNotes;
+      }
+      await updateDoc(docRef, updateData);
+    }
+  } catch (err) {
+    handleFirestoreError(err, OperationType.UPDATE, `course_registrations/${id}`);
+  }
+
+  // Update in PostgreSQL
+  try {
+    const numericId = parseInt(id.replace('pg-', ''), 10);
+    if (!isNaN(numericId)) {
+      await fetch(`/api/course-registrations/${numericId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status, adminNotes }),
+      });
+    }
+  } catch (error) {
+    console.error(`Failed to update course registration ${id} in PostgreSQL:`, error);
+  }
+}
+
+/**
+ * Delete a course registration
+ */
+export async function deleteCourseRegistration(id: string): Promise<void> {
+  // Delete from local cache
+  const current = getLocalCourseRegistrations();
+  const updated = current.filter((item) => item.id !== id);
+  localStorage.setItem(LOCAL_STORAGE_COURSES_KEY, JSON.stringify(updated));
+
+  // Delete from Firestore
+  try {
+    if (!id.startsWith('pg-') && !id.startsWith('crs-')) {
+      const docRef = doc(db, 'course_registrations', id);
+      await deleteDoc(docRef);
+    }
+  } catch (err) {
+    handleFirestoreError(err, OperationType.DELETE, `course_registrations/${id}`);
+  }
+
+  // Delete from PostgreSQL
+  try {
+    const numericId = parseInt(id.replace('pg-', ''), 10);
+    if (!isNaN(numericId)) {
+      await fetch(`/api/course-registrations/${numericId}`, {
+        method: 'DELETE',
+      });
+    }
+  } catch (error) {
+    console.error(`Failed to delete course registration ${id} from PostgreSQL:`, error);
   }
 }
 

@@ -6,8 +6,8 @@ import realLogoSvg from '../assets/images/ocean_tech_institute_logo.svg';
 export { officialLogoImg, realLogoImg, realLogoSvg };
 
 // Direct URL paths for logo image files (loaded directly via HTTP URL path)
-export const LOGO_PRIMARY_URL = '/file_000000000b0081f480d72e4e38e653e3.png';
-export const LOGO_SVG_URL = '/logo.svg';
+export const LOGO_PRIMARY_URL = '/ocean-tech-institute-logo.png';
+export const LOGO_PNG_URL = '/logo.png';
 export const LOGO_JPG_URL = '/logo.jpg';
 export const LOGO_IMAGE_URL = LOGO_PRIMARY_URL;
 
@@ -40,10 +40,10 @@ export const Logo: React.FC<LogoProps> = ({
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     const target = e.currentTarget;
     const currentSrc = target.src;
-    // Fallback chain: new logo -> /logo.svg -> /logo.jpg
-    if (currentSrc !== LOGO_SVG_URL && !currentSrc.includes('/logo.svg')) {
-      target.src = LOGO_SVG_URL;
-    } else if (currentSrc.includes('/logo.svg')) {
+    // Fallback to /logo.png or /logo.jpg (all real photos)
+    if (!currentSrc.includes('/logo.png')) {
+      target.src = LOGO_PNG_URL;
+    } else if (!currentSrc.includes('/logo.jpg')) {
       target.src = LOGO_JPG_URL;
     }
   };
@@ -53,10 +53,9 @@ export const Logo: React.FC<LogoProps> = ({
     const recentClicks = [...clickTimesRef.current.filter((t) => now - t < 1800), now];
     clickTimesRef.current = recentClicks;
 
-    // Check for triple click (native or 3 clicks in 1.8s)
+    // Check for triple click (native or 3 clicks in 1.8s) -> opens administration modal
     if (e.detail >= 3 || recentClicks.length >= 3) {
       clickTimesRef.current = [];
-      sessionStorage.setItem('ocean_tech_admin_auth', 'true');
       window.dispatchEvent(new CustomEvent('open-admin-portal'));
       if (onTripleClick) {
         onTripleClick();

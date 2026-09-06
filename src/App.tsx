@@ -13,6 +13,7 @@ import { AdminInboxView } from './views/AdminInboxView';
 import { QuoteModal } from './components/QuoteModal';
 import { IssueReportModal } from './components/IssueReportModal';
 import { InternshipModal } from './components/InternshipModal';
+import { CourseRegistrationModal } from './components/CourseRegistrationModal';
 import { SearchModal } from './components/SearchModal';
 import { AiAssistantWidget } from './components/AiAssistantWidget';
 import { LocationLocatorWidget } from './components/LocationLocatorWidget';
@@ -23,6 +24,7 @@ export default function App() {
   const [selectedServiceForQuote, setSelectedServiceForQuote] = useState<string | undefined>(undefined);
   const [issueReportModalOpen, setIssueReportModalOpen] = useState(false);
   const [internshipModalOpen, setInternshipModalOpen] = useState(false);
+  const [courseRegistrationModalOpen, setCourseRegistrationModalOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
 
   // Check URL hash / query param on mount or hash change for secret admin access
@@ -31,7 +33,6 @@ export default function App() {
       const hash = window.location.hash.toLowerCase();
       const params = new URLSearchParams(window.location.search);
       if (hash === '#admin' || hash === '#portal' || hash === '#db' || params.get('admin') === 'true' || params.get('portal') === '1') {
-        sessionStorage.setItem('ocean_tech_admin_auth', 'true');
         setCurrentView('admin-inbox');
       }
     };
@@ -41,10 +42,9 @@ export default function App() {
     return () => window.removeEventListener('hashchange', checkAdminHash);
   }, []);
 
-  // Listen for open-admin-portal event (triggered by triple-clicking any logo on the site)
+  // Listen for open-admin-portal event (triggered by triple-clicking any logo on the site or footer admin link)
   useEffect(() => {
     const handleOpenAdmin = () => {
-      sessionStorage.setItem('ocean_tech_admin_auth', 'true');
       setCurrentView('admin-inbox');
     };
     window.addEventListener('open-admin-portal', handleOpenAdmin);
@@ -86,17 +86,26 @@ export default function App() {
     setInternshipModalOpen(true);
   };
 
+  const handleOpenCourseRegistration = () => {
+    setCourseRegistrationModalOpen(true);
+  };
+
+  const isAdminView = currentView === 'admin-inbox';
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-sky-100 selection:text-sky-900">
-      {/* Top Navbar */}
-      <Header
-        currentView={currentView}
-        onNavigate={handleNavigate}
-        onOpenQuote={handleOpenQuote}
-        onOpenIssueReport={handleOpenIssueReport}
-        onOpenSearch={() => setSearchModalOpen(true)}
-        onOpenInternship={handleOpenInternship}
-      />
+      {/* Top Navbar - hidden in dedicated administration portal */}
+      {!isAdminView && (
+        <Header
+          currentView={currentView}
+          onNavigate={handleNavigate}
+          onOpenQuote={handleOpenQuote}
+          onOpenIssueReport={handleOpenIssueReport}
+          onOpenSearch={() => setSearchModalOpen(true)}
+          onOpenInternship={handleOpenInternship}
+          onOpenCourseRegistration={handleOpenCourseRegistration}
+        />
+      )}
 
       {/* Main Page Content */}
       <main className="flex-1">
@@ -106,6 +115,7 @@ export default function App() {
             onOpenQuote={handleOpenQuote}
             onOpenIssueReport={handleOpenIssueReport}
             onOpenInternship={handleOpenInternship}
+            onOpenCourseRegistration={handleOpenCourseRegistration}
           />
         )}
 
@@ -162,15 +172,23 @@ export default function App() {
         )}
       </main>
 
-      {/* Footer */}
-      <Footer
-        onNavigate={handleNavigate}
-        onOpenQuote={handleOpenQuote}
-        onOpenIssueReport={handleOpenIssueReport}
-        onOpenInternship={handleOpenInternship}
-      />
+      {/* Footer - hidden in administration portal as requested */}
+      {!isAdminView && (
+        <Footer
+          onNavigate={handleNavigate}
+          onOpenQuote={handleOpenQuote}
+          onOpenIssueReport={handleOpenIssueReport}
+          onOpenInternship={handleOpenInternship}
+          onOpenCourseRegistration={handleOpenCourseRegistration}
+        />
+      )}
 
       {/* Interactive Modals */}
+      <CourseRegistrationModal
+        isOpen={courseRegistrationModalOpen}
+        onClose={() => setCourseRegistrationModalOpen(false)}
+      />
+
       <QuoteModal
         isOpen={quoteModalOpen}
         onClose={() => setQuoteModalOpen(false)}
@@ -199,10 +217,14 @@ export default function App() {
           handleOpenQuote(sId);
         }}
       />
-      {/* AI Consultant Assistant Floating Widget */}
-      <AiAssistantWidget />
-      {/* Google Location & Office Locator Floating Widget */}
-      <LocationLocatorWidget />
+
+      {/* Floating widgets - hidden in administration portal */}
+      {!isAdminView && (
+        <>
+          <AiAssistantWidget />
+          <LocationLocatorWidget />
+        </>
+      )}
     </div>
   );
 }

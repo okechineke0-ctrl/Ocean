@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ViewMode } from '../types';
 import { Logo } from './Logo';
-import { RealBarcode } from './RealBarcode';
+import { SocialLinks } from './SocialLinks';
 import { 
   Monitor, 
   Smartphone, 
@@ -41,6 +41,7 @@ interface FlyerHeroSectionProps {
   onOpenQuote: (serviceId?: string) => void;
   onOpenIssueReport: () => void;
   onOpenInternship?: () => void;
+  onOpenCourseRegistration?: () => void;
 }
 
 export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
@@ -48,6 +49,7 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
   onOpenQuote,
   onOpenIssueReport,
   onOpenInternship,
+  onOpenCourseRegistration,
 }) => {
   const [activeShowcaseTab, setActiveShowcaseTab] = useState<'both' | 'engineering' | 'management'>('both');
 
@@ -191,6 +193,15 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                     <span>Explore Solutions</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
+                  {onOpenCourseRegistration && (
+                    <button
+                      onClick={onOpenCourseRegistration}
+                      className="px-3.5 py-2 rounded-lg bg-white/20 hover:bg-white/30 text-white font-bold text-xs tracking-wider uppercase transition-colors flex items-center gap-1.5 cursor-pointer backdrop-blur-sm border border-white/30"
+                    >
+                      <GraduationCap className="w-3.5 h-3.5 text-sky-300" />
+                      <span>Register for Course</span>
+                    </button>
+                  )}
                   <a 
                     href="tel:09129216768"
                     className="text-xs text-sky-300 hover:text-white font-mono font-bold flex items-center gap-1 transition-colors"
@@ -729,14 +740,27 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
 
             </div>
 
-            {/* Right: Authentic Original Flyer Barcode (SCAN ME / to visit our website) */}
-            <div className="md:col-span-3 flex items-center justify-start md:justify-end">
-              <RealBarcode 
-                label="SCAN ME"
-                subtitle="to visit our website"
-                targetUrl="https://ocean-f4gj.onrender.com"
-                className="shadow-2xl border-white/80"
-              />
+            {/* Right: Official Social Media Handles & Course Registration */}
+            <div className="md:col-span-3 flex flex-col items-start md:items-end justify-center gap-3">
+              <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 w-full max-w-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-sky-300">
+                    Social Media Handles
+                  </span>
+                  <span className="text-[10px] text-slate-300 font-medium">ocean technologies</span>
+                </div>
+                <SocialLinks variant="compact" showLabels={true} />
+              </div>
+
+              {onOpenCourseRegistration && (
+                <button
+                  onClick={onOpenCourseRegistration}
+                  className="w-full max-w-sm py-2 px-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
+                >
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  <span>Register for a Tech Course</span>
+                </button>
+              )}
             </div>
 
           </div>

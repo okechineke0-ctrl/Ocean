@@ -1,5 +1,5 @@
 import { db, createPool } from './index.ts';
-import { inquiries, emergencyTickets, internships, users } from './schema.ts';
+import { inquiries, emergencyTickets, internships, users, courseRegistrations } from './schema.ts';
 import { desc, eq } from 'drizzle-orm';
 
 export interface CreateInquiryInput {
@@ -280,6 +280,139 @@ export async function deleteInternshipRecord(id: number) {
   } catch (error) {
     console.error(`Failed to delete internship ${id} in PostgreSQL:`, error);
     throw new Error('Failed to delete internship.', { cause: error });
+  }
+}
+
+export interface CreateCourseRegistrationInput {
+  registrationNumber?: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  course: string;
+  courseTitle: string;
+  classFormat: string; // 'online' | 'offline'
+  schedule: string;
+  duration: string;
+  experienceLevel: string;
+  cityState?: string;
+  notes?: string;
+}
+
+/**
+ * Ensures course_registrations table exists in PostgreSQL
+ */
+export async function ensureCourseRegistrationsTable() {
+  try {
+    const pool = createPool();
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS course_registrations (
+        id SERIAL PRIMARY KEY,
+        registration_number VARCHAR(100) NOT NULL UNIQUE,
+        full_name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        phone VARCHAR(100) NOT NULL,
+        course VARCHAR(150) NOT NULL,
+        course_title VARCHAR(255) NOT NULL,
+        class_format VARCHAR(50) NOT NULL,
+        schedule VARCHAR(100) NOT NULL,
+        duration VARCHAR(100) NOT NULL,
+        experience_level VARCHAR(50) NOT NULL,
+        city_state VARCHAR(150),
+        notes TEXT,
+        status VARCHAR(50) DEFAULT 'pending' NOT NULL,
+        admin_notes TEXT,
+        created_at TIMESTAMP DEFAULT NOW() NOT NULL,
+        updated_at TIMESTAMP DEFAULT NOW() NOT NULL
+      );
+    `);
+  } catch (error) {
+    console.error('Error verifying course_registrations table in PostgreSQL:', error);
+  }
+}
+
+/**
+ * Creates a new course registration in PostgreSQL
+ */
+export async function createCourseRegistration(input: CreateCourseRegistrationInput) {
+  try {
+    await ensureCourseRegistrationsTable();
+    const regNumber = input.registrationNumber || `OCT-CRS-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const inserted = await db
+      .insert(courseRegistrations)
+      .values({
+        registrationNumber: regNumber,
+        fullName: input.fullName,
+        email: input.email,
+        phone: input.phone,
+        course: input.course,
+        courseTitle: input.courseTitle,
+        classFormat: input.classFormat,
+        schedule: input.schedule,
+        duration: input.duration,
+        experienceLevel: input.experienceLevel,
+        cityState: input.cityState || null,
+        notes: input.notes || null,
+        status: 'pending',
+      })
+      .returning();
+
+    return inserted[0];
+  } catch (error) {
+    console.error('Failed to create course registration in PostgreSQL:', error);
+    throw new Error('Failed to register for course in database.', { cause: error });
+  }
+}
+
+/**
+ * Fetches recent course registrations from PostgreSQL
+ */
+export async function getCourseRegistrations(limitCount = 100) {
+  try {
+    await ensureCourseRegistrationsTable();
+    return await db
+      .select()
+      .from(courseRegistrations)
+      .orderBy(desc(courseRegistrations.createdAt))
+      .limit(limitCount);
+  } catch (error) {
+    console.error('Failed to query course registrations from PostgreSQL:', error);
+    return [];
+  }
+}
+
+/**
+ * Updates status and admin notes of a course registration in PostgreSQL
+ */
+export async function updateCourseRegistrationRecord(id: number, status: string, adminNotes?: string) {
+  try {
+    await ensureCourseRegistrationsTable();
+    const updatePayload: Record<string, any> = { status, updatedAt: new Date() };
+    if (adminNotes !== undefined) {
+      updatePayload.adminNotes = adminNotes;
+    }
+    const updated = await db
+      .update(courseRegistrations)
+      .set(updatePayload)
+      .where(eq(courseRegistrations.id, id))
+      .returning();
+    return updated[0];
+  } catch (error) {
+    console.error(`Failed to update course registration ${id} in PostgreSQL:`, error);
+    throw new Error('Failed to update course registration.', { cause: error });
+  }
+}
+
+/**
+ * Deletes a course registration from PostgreSQL
+ */
+export async function deleteCourseRegistrationRecord(id: number) {
+  try {
+    await ensureCourseRegistrationsTable();
+    await db.delete(courseRegistrations).where(eq(courseRegistrations.id, id));
+    return true;
+  } catch (error) {
+    console.error(`Failed to delete course registration ${id} in PostgreSQL:`, error);
+    throw new Error('Failed to delete course registration.', { cause: error });
   }
 }
 

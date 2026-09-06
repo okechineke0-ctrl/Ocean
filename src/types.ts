@@ -161,4 +161,51 @@ export interface InternshipRecord {
   createdAt: string;
 }
 
+export type ClassFormat = 'online' | 'offline';
+
+export interface CourseOption {
+  id: string;
+  name: string;
+  category: string;
+  duration: string;
+  description: string;
+  technologies: string[];
+  onlineAvailable: boolean;
+  offlineAvailable: boolean;
+  highlight?: string;
+}
+
+export interface CourseRegistrationFormData {
+  fullName: string;
+  email: string;
+  phone: string;
+  course: string;
+  courseTitle: string;
+  classFormat: ClassFormat;
+  schedule: string;
+  duration: string;
+  experienceLevel: string;
+  cityState?: string;
+  notes?: string;
+}
+
+export interface CourseRegistrationRecord {
+  id: string;
+  registrationNumber: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  course: string;
+  courseTitle: string;
+  classFormat: ClassFormat;
+  schedule: string;
+  duration: string;
+  experienceLevel: string;
+  cityState?: string;
+  notes?: string;
+  status: 'pending' | 'admitted' | 'enrolled' | 'completed' | 'cancelled';
+  adminNotes?: string;
+  createdAt: string;
+}
+
 

@@ -68,3 +68,24 @@ export const internships = pgTable('internships', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
+// 5. Course Registrations Table (Online & Offline Classes)
+export const courseRegistrations = pgTable('course_registrations', {
+  id: serial('id').primaryKey(),
+  registrationNumber: varchar('registration_number', { length: 100 }).notNull().unique(),
+  fullName: varchar('full_name', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }).notNull(),
+  phone: varchar('phone', { length: 100 }).notNull(),
+  course: varchar('course', { length: 150 }).notNull(), // 'web_dev', 'app_dev', 'game_dev', 'version_control', etc.
+  courseTitle: varchar('course_title', { length: 255 }).notNull(),
+  classFormat: varchar('class_format', { length: 50 }).notNull(), // 'online' | 'offline'
+  schedule: varchar('schedule', { length: 100 }).notNull(),
+  duration: varchar('duration', { length: 100 }).notNull(),
+  experienceLevel: varchar('experience_level', { length: 50 }).notNull(),
+  cityState: varchar('city_state', { length: 150 }),
+  notes: text('notes'),
+  status: varchar('status', { length: 50 }).default('pending').notNull(),
+  adminNotes: text('admin_notes'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+

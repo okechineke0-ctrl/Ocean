@@ -30,13 +30,15 @@ interface HomeViewProps {
   onOpenQuote: (serviceId?: string) => void;
   onOpenIssueReport: () => void;
   onOpenInternship?: () => void;
+  onOpenCourseRegistration?: () => void;
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({
   onNavigate,
   onOpenQuote,
   onOpenIssueReport,
-  onOpenInternship
+  onOpenInternship,
+  onOpenCourseRegistration,
 }) => {
   const [activeTab, setActiveTab] = useState<'all' | 'web' | 'app' | 'engineering' | 'management' | 'maintenance'>('all');
 
@@ -71,6 +73,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         onOpenQuote={onOpenQuote}
         onOpenIssueReport={onOpenIssueReport}
         onOpenInternship={onOpenInternship}
+        onOpenCourseRegistration={onOpenCourseRegistration}
       />
 
       {/* 2. AI Assistant Feature Strip */}

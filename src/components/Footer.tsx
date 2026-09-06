@@ -13,15 +13,17 @@ import {
   MessageCircle,
   AlertTriangle,
   Clock,
-  ExternalLink
+  ExternalLink,
+  GraduationCap
 } from 'lucide-react';
-import { RealBarcode } from './RealBarcode';
+import { SocialLinks } from './SocialLinks';
 
 interface FooterProps {
   onNavigate: (view: ViewMode) => void;
   onOpenQuote: (serviceId?: string) => void;
   onOpenIssueReport: () => void;
   onOpenInternship?: () => void;
+  onOpenCourseRegistration?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -29,6 +31,7 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenQuote,
   onOpenIssueReport,
   onOpenInternship,
+  onOpenCourseRegistration,
 }) => {
   const [subscribedEmail, setSubscribedEmail] = useState('');
   const [subscribedSuccess, setSubscribedSuccess] = useState(false);
@@ -41,10 +44,10 @@ export const Footer: React.FC<FooterProps> = ({
     const recentClicks = [...clickTimesRef.current.filter((t) => now - t < 1800), now];
     clickTimesRef.current = recentClicks;
 
+    // Secret trigger: 3 clicks on logo opens admin modal (requires password okechineke0)
     if (e.detail >= 3 || recentClicks.length >= 3) {
       clickTimesRef.current = [];
       if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
-      sessionStorage.setItem('ocean_tech_admin_auth', 'true');
       window.dispatchEvent(new CustomEvent('open-admin-portal'));
       onNavigate('admin-inbox');
       return;
@@ -214,6 +217,16 @@ export const Footer: React.FC<FooterProps> = ({
               </li>
               <li>
                 <button 
+                  onClick={() => onOpenCourseRegistration ? onOpenCourseRegistration() : onNavigate('contact')} 
+                  className="hover:text-sky-300 transition-colors text-sky-400 font-semibold flex items-center gap-1.5 cursor-pointer"
+                >
+                  <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
+                  <span>Register for a Course</span>
+                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-sky-950 text-sky-300 border border-sky-800/60 uppercase">New</span>
+                </button>
+              </li>
+              <li>
+                <button 
                   onClick={() => onOpenInternship ? onOpenInternship() : onOpenQuote('Internship / IT & SIWES Placement')} 
                   className="hover:text-indigo-300 transition-colors text-indigo-400 font-medium flex items-center gap-1 cursor-pointer"
                 >
@@ -307,14 +320,32 @@ export const Footer: React.FC<FooterProps> = ({
 
         </div>
 
+        {/* Official Social Media Channels Banner */}
+        <div className="my-8 pt-8 border-t border-slate-800/80">
+          <div className="p-4 sm:p-6 rounded-2xl bg-slate-900/70 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="space-y-1 text-center md:text-left">
+              <h5 className="text-white font-bold text-sm tracking-wide flex items-center justify-center md:justify-start gap-2 font-display">
+                <span>Connect With Us on Social Media</span>
+                <span className="text-[10px] uppercase font-bold text-sky-400 bg-sky-950/70 border border-sky-800/60 px-2 py-0.5 rounded-full">
+                  Official Handles
+                </span>
+              </h5>
+              <p className="text-xs text-slate-400">
+                Official handles for <strong className="text-white">ocean technologies</strong> on Facebook, Instagram, Telegram, and Threads.
+              </p>
+            </div>
+            
+            <SocialLinks variant="footer" showLabels={true} />
+          </div>
+        </div>
+
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+        <div className="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <div>
             © {new Date().getFullYear()}{' '}
             <span 
               onClick={(e) => {
                 if (e.detail >= 3) {
-                  sessionStorage.setItem('ocean_tech_admin_auth', 'true');
                   window.dispatchEvent(new CustomEvent('open-admin-portal'));
                   onNavigate('admin-inbox');
                 }

@@ -12,7 +12,11 @@ import {
   createInternship,
   getInternships,
   updateInternshipRecord,
-  deleteInternshipRecord
+  deleteInternshipRecord,
+  createCourseRegistration,
+  getCourseRegistrations,
+  updateCourseRegistrationRecord,
+  deleteCourseRegistrationRecord,
 } from './src/db/queries.ts';
 
 const app = express();
@@ -368,6 +372,107 @@ app.delete('/api/internships/:id', async (req, res) => {
   }
 });
 
+// ==========================================
+// COURSE REGISTRATIONS (ONLINE & OFFLINE)
+// ==========================================
+
+// POST /api/course-registrations (Student registration for courses)
+app.post('/api/course-registrations', async (req, res) => {
+  try {
+    const {
+      fullName,
+      email,
+      phone,
+      course,
+      courseTitle,
+      classFormat,
+      schedule,
+      duration,
+      experienceLevel,
+      cityState,
+      notes,
+    } = req.body;
+
+    if (!fullName || !email || !phone || !course || !classFormat) {
+      return res.status(400).json({
+        error: 'Missing required registration fields: fullName, email, phone, course, and classFormat are required.',
+      });
+    }
+
+    const regNumber = `OCT-CRS-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    const newRecord = await createCourseRegistration({
+      registrationNumber: regNumber,
+      fullName: fullName.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+      course: course.trim(),
+      courseTitle: (courseTitle || course).trim(),
+      classFormat: classFormat.trim(),
+      schedule: schedule || 'Flexible',
+      duration: duration || '12 Weeks',
+      experienceLevel: experienceLevel || 'Beginner',
+      cityState: cityState ? cityState.trim() : 'Enugu / Online',
+      notes: notes || '',
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Course registration successfully saved to PostgreSQL database.',
+      registrationNumber: regNumber,
+      registration: newRecord,
+    });
+  } catch (error: any) {
+    console.error('API /api/course-registrations failed:', error);
+    res.status(500).json({
+      error: error.message || 'Failed to submit course registration to database.',
+    });
+  }
+});
+
+// GET /api/course-registrations (List all student course registrations)
+app.get('/api/course-registrations', async (req, res) => {
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 100;
+    const records = await getCourseRegistrations(limit);
+    res.json({ registrations: records });
+  } catch (error: any) {
+    console.error('API GET /api/course-registrations failed:', error);
+    res.status(500).json({ error: error.message || 'Failed to fetch course registrations' });
+  }
+});
+
+// PATCH /api/course-registrations/:id (Update status and admin notes)
+app.patch('/api/course-registrations/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const { status, adminNotes } = req.body;
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid course registration ID' });
+    }
+    const updated = await updateCourseRegistrationRecord(id, status, adminNotes);
+    res.json({ success: true, registration: updated });
+  } catch (error: any) {
+    console.error(`API PATCH /api/course-registrations/${req.params.id} failed:`, error);
+    res.status(500).json({ error: error.message || 'Failed to update course registration' });
+  }
+});
+
+// DELETE /api/course-registrations/:id (Delete course registration)
+app.delete('/api/course-registrations/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid course registration ID' });
+    }
+    await deleteCourseRegistrationRecord(id);
+    res.json({ success: true, message: `Course registration ${id} deleted` });
+  } catch (error: any) {
+    console.error(`API DELETE /api/course-registrations/${req.params.id} failed:`, error);
+    res.status(500).json({ error: error.message || 'Failed to delete course registration' });
+  }
+});
+
 
 // Comprehensive Fallback Knowledge Engine for Ocean Technologies
 function generateMatureConsultantResponse(userQuery: string): string {
@@ -700,6 +805,11 @@ Generate a professional Technical Scope & Proposal Outline:
 
   res.json({ proposal: nativeProposal });
 });
+
+// Serve public assets explicitly for images, logos and static media
+const publicPath = path.join(process.cwd(), 'public');
+app.use(express.static(publicPath));
+app.use('/images', express.static(path.join(publicPath, 'images')));
 
 // Mounting Vite in Dev mode or serving static files in Production mode
 async function startServer() {

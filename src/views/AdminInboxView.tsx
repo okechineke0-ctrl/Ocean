@@ -42,8 +42,12 @@ import {
   Check,
   Sparkles,
   X,
-  Printer
+  Printer,
+  Eye,
+  EyeOff,
+  LogOut
 } from 'lucide-react';
+import { Logo } from '../components/Logo';
 
 interface AdminInboxViewProps {
   onNavigate: (view: ViewMode) => void;
@@ -81,25 +85,19 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
     copied: false,
   });
 
-  // Authenticate admin access - automatically authenticated when entered via logo or admin link
+  // Authenticate admin access - requires master password: okechineke
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return (
-      sessionStorage.getItem('ocean_tech_admin_auth') === 'true' ||
-      window.location.hash.toLowerCase() === '#admin' ||
-      window.location.hash.toLowerCase() === '#db' ||
-      window.location.hash.toLowerCase() === '#portal' ||
-      new URLSearchParams(window.location.search).get('admin') === 'true' ||
-      true // Always show database information directly when navigating here as requested
-    );
+    return sessionStorage.getItem('ocean_tech_admin_auth') === 'okechineke';
   });
   const [passcode, setPasscode] = useState('');
   const [passcodeError, setPasscodeError] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleAdminLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const cleanPass = passcode.trim().toLowerCase();
-    if (cleanPass === 'okechineke' || cleanPass === 'admin' || cleanPass === 'oceantech') {
-      sessionStorage.setItem('ocean_tech_admin_auth', 'true');
+    if (cleanPass === 'okechineke') {
+      sessionStorage.setItem('ocean_tech_admin_auth', 'okechineke');
       setIsAuthenticated(true);
       setPasscodeError(false);
     } else {
@@ -110,6 +108,7 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
   const handleLogout = () => {
     sessionStorage.removeItem('ocean_tech_admin_auth');
     setIsAuthenticated(false);
+    setPasscode('');
   };
 
   // Real-time Firestore & PostgreSQL sync listeners
@@ -450,57 +449,68 @@ Phone / WhatsApp: +234 912 921 6768`;
     return (
       <div className="bg-slate-900 min-h-screen text-slate-100 flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-slate-950 border border-slate-800 rounded-2xl p-8 shadow-2xl">
-          <div className="w-12 h-12 rounded-xl bg-sky-500/20 text-sky-400 border border-sky-400/30 flex items-center justify-center mx-auto mb-4">
-            <Lock className="w-6 h-6" />
+          <div className="flex justify-center mb-4">
+            <Logo variant="icon" size="md" isDark />
           </div>
           
           <h2 className="text-xl font-bold text-center text-white font-display mb-1">
-            Admin Access Verification
+            Ocean Technologies Administration
           </h2>
           <p className="text-xs text-center text-slate-400 mb-6">
-            Inquiries, client quotes, and student internship registrations are restricted to authorized personnel.
+            Enter the master administrator password to access inquiries, quotes, and student internship records.
           </p>
 
           <form onSubmit={handleAdminLogin} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                Enter Administrative Passcode:
+                Administrator Password:
               </label>
-              <input
-                type="password"
-                value={passcode}
-                onChange={(e) => {
-                  setPasscode(e.target.value);
-                  setPasscodeError(false);
-                }}
-                placeholder="Enter password"
-                autoFocus
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-sky-500 font-mono text-center tracking-widest text-base"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={passcode}
+                  onChange={(e) => {
+                    setPasscode(e.target.value);
+                    setPasscodeError(false);
+                  }}
+                  placeholder="Enter admin password"
+                  autoFocus
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 pr-11 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-sky-500 font-mono text-center tracking-widest text-base"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors p-1"
+                  title={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
               {passcodeError && (
                 <p className="text-xs text-rose-400 mt-2 text-center font-medium">
-                  Incorrect password.
+                  Incorrect password. The authorized administrator password is required.
                 </p>
               )}
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-lg cursor-pointer"
+              className="w-full py-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-lg cursor-pointer flex items-center justify-center gap-2"
             >
-              Access Administrative Portal
+              <Lock className="w-4 h-4" />
+              <span>Unlock Administration</span>
             </button>
           </form>
 
           <div className="mt-6 pt-6 border-t border-slate-800 flex items-center justify-between text-xs text-slate-500">
             <button
               onClick={() => onNavigate('home')}
-              className="hover:text-slate-300 transition-colors"
+              className="hover:text-slate-300 transition-colors cursor-pointer"
             >
               ← Back to Main Website
             </button>
             <span className="flex items-center gap-1 text-slate-500">
-              <Lock className="w-3 h-3" /> Secure Access
+              <Lock className="w-3 h-3" /> Password Protected
             </span>
           </div>
         </div>
@@ -512,22 +522,20 @@ Phone / WhatsApp: +234 912 921 6768`;
     <div className="bg-slate-900 min-h-screen text-slate-100">
       
       {/* Top Header Bar */}
-      <div className="bg-slate-950 border-b border-slate-800 px-4 sm:px-8 py-5">
+      <div className="bg-slate-950 border-b border-slate-800 px-4 sm:px-8 py-4">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-400 border border-sky-400/30 flex items-center justify-center">
-              <Database className="w-5 h-5" />
-            </div>
+            <Logo variant="icon" size="sm" isDark />
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold font-display text-white">Ocean Technologies Administrative Portal</h1>
+                <h1 className="text-lg font-bold font-display text-white">Ocean Technologies Administration</h1>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span>System Active & Synchronized</span>
+                  <span>Synchronized</span>
                 </span>
               </div>
               <p className="text-xs text-slate-400">
-                Ocean Technologies HQ • Student Internships & SIWES, Client Quotes, and Emergency Fix Tickets
+                Student Internships & SIWES, Client Quotes, and Database Operations
               </p>
             </div>
           </div>
@@ -538,7 +546,15 @@ Phone / WhatsApp: +234 912 921 6768`;
               className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors border border-slate-700 cursor-pointer"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-sky-400' : ''}`} />
-              <span>Refresh Records</span>
+              <span>Refresh</span>
+            </button>
+            <button
+              onClick={handleLogout}
+              className="px-3 py-1.5 bg-slate-800 hover:bg-rose-950/60 hover:text-rose-300 text-slate-400 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors border border-slate-700 cursor-pointer"
+              title="Lock administration portal"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Log Out</span>
             </button>
             <button
               onClick={() => onNavigate('home')}
