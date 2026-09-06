@@ -16,7 +16,6 @@ import {
   Phone,
   Mail, 
   Globe, 
-  MapPin, 
   ArrowRight,
   Sparkles,
   ExternalLink,
@@ -73,7 +72,7 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                 </span>
                 <span className="text-slate-300">|</span>
                 <span className="text-xs font-semibold text-slate-600">
-                  Agbani, Enugu State
+                  Enterprise Solutions & Talent Hub
                 </span>
               </div>
 
@@ -727,14 +726,14 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                 </div>
               </a>
 
-              {/* Physical Location */}
+              {/* Client Support */}
               <div className="flex items-center gap-3 p-2 rounded-xl bg-white/5 border border-white/10 text-slate-200">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-rose-500 to-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm">
-                  <MapPin className="w-4 h-4 text-white" />
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <Clock className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className="text-[10px] text-rose-300 font-semibold uppercase tracking-wider">Physical Hub</span>
-                  <span className="font-medium text-[11px] text-slate-200 truncate">Agbani, Enugu State, Nigeria</span>
+                  <span className="text-[10px] text-emerald-300 font-semibold uppercase tracking-wider">Client Support</span>
+                  <span className="font-medium text-[11px] text-slate-200 truncate">24/7 Mon – Sat Active Triage</span>
                 </div>
               </div>
 

@@ -81,6 +81,8 @@ export const courseRegistrations = pgTable('course_registrations', {
   schedule: varchar('schedule', { length: 100 }).notNull(),
   duration: varchar('duration', { length: 100 }).notNull(),
   experienceLevel: varchar('experience_level', { length: 50 }).notNull(),
+  preferredStartDate: varchar('preferred_start_date', { length: 150 }),
+  registrationDate: varchar('registration_date', { length: 150 }),
   cityState: varchar('city_state', { length: 150 }),
   notes: text('notes'),
   status: varchar('status', { length: 50 }).default('pending').notNull(),

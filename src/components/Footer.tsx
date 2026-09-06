@@ -5,7 +5,6 @@ import { COMPANY_INFO } from '../data/companyData';
 import { 
   Mail, 
   Phone, 
-  MapPin, 
   Globe,
   ShieldCheck, 
   CheckCircle2, 
@@ -83,7 +82,7 @@ export const Footer: React.FC<FooterProps> = ({
               <Logo variant="horizontal" size="md" showTagline={true} isDark={true} />
             </div>
             <p className="text-slate-400 text-sm leading-relaxed max-w-sm mt-3">
-              Ocean Technologies is a premier software engineering firm based in Agbani, Enugu State, Nigeria (ESUT Corridor). We specialize in website maintenance, custom web development, mobile app development (iOS/Android), and 24/7 software troubleshooting.
+              Ocean Technologies is a premier software engineering firm and technology education institute. We specialize in website maintenance, custom web applications, mobile app development (iOS/Android), and proactive 24/7 technical support.
             </p>
             
             <div className="flex items-center gap-3 pt-2 text-xs text-slate-400">
@@ -212,7 +211,7 @@ export const Footer: React.FC<FooterProps> = ({
               </li>
               <li>
                 <button onClick={() => onNavigate('about')} className="hover:text-sky-300 transition-colors text-slate-400 hover:text-slate-200">
-                  About Ocean Tech Agbani
+                  About Ocean Technologies
                 </button>
               </li>
               <li>
@@ -246,18 +245,18 @@ export const Footer: React.FC<FooterProps> = ({
           {/* Column 4: Contact Coordinates */}
           <div>
             <h4 className="text-white font-bold text-sm tracking-wider uppercase mb-4 font-display">
-              Agbani Office & Contact
+              Direct Communication & Support
             </h4>
             <div className="space-y-3.5 text-xs">
               
-              {/* Location */}
+              {/* Operating Advisory */}
               <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-rose-500 to-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-                  <MapPin className="w-3.5 h-3.5 text-white" />
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-white" />
                 </div>
                 <span className="leading-relaxed text-slate-300">
-                  Agbani, Enugu State, Nigeria<br />
-                  <span className="text-[11px] text-slate-400">ESUT Corridor, Enugu State University</span>
+                  Engineering & Student Advisory<br />
+                  <span className="text-[11px] text-slate-400">Monday – Saturday: 8:00 AM – 7:00 PM</span>
                 </span>
               </div>
               

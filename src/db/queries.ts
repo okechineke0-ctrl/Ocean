@@ -294,6 +294,8 @@ export interface CreateCourseRegistrationInput {
   schedule: string;
   duration: string;
   experienceLevel: string;
+  preferredStartDate?: string;
+  registrationDate?: string;
   cityState?: string;
   notes?: string;
 }
@@ -317,6 +319,8 @@ export async function ensureCourseRegistrationsTable() {
         schedule VARCHAR(100) NOT NULL,
         duration VARCHAR(100) NOT NULL,
         experience_level VARCHAR(50) NOT NULL,
+        preferred_start_date VARCHAR(150),
+        registration_date VARCHAR(150),
         city_state VARCHAR(150),
         notes TEXT,
         status VARCHAR(50) DEFAULT 'pending' NOT NULL,
@@ -324,6 +328,8 @@ export async function ensureCourseRegistrationsTable() {
         created_at TIMESTAMP DEFAULT NOW() NOT NULL,
         updated_at TIMESTAMP DEFAULT NOW() NOT NULL
       );
+      ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS preferred_start_date VARCHAR(150);
+      ALTER TABLE course_registrations ADD COLUMN IF NOT EXISTS registration_date VARCHAR(150);
     `);
   } catch (error) {
     console.error('Error verifying course_registrations table in PostgreSQL:', error);
@@ -350,6 +356,8 @@ export async function createCourseRegistration(input: CreateCourseRegistrationIn
         schedule: input.schedule,
         duration: input.duration,
         experienceLevel: input.experienceLevel,
+        preferredStartDate: input.preferredStartDate || null,
+        registrationDate: input.registrationDate || null,
         cityState: input.cityState || null,
         notes: input.notes || null,
         status: 'pending',

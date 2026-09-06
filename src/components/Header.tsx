@@ -96,7 +96,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
-              Office: Agbani, Enugu State (Near ESUT)
+              Software Engineering & Professional Tech Academy
             </span>
             <span className="text-slate-600 hidden md:inline">•</span>
             <button

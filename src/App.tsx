@@ -16,7 +16,6 @@ import { InternshipModal } from './components/InternshipModal';
 import { CourseRegistrationModal } from './components/CourseRegistrationModal';
 import { SearchModal } from './components/SearchModal';
 import { AiAssistantWidget } from './components/AiAssistantWidget';
-import { LocationLocatorWidget } from './components/LocationLocatorWidget';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<ViewMode>('home');
@@ -220,10 +219,7 @@ export default function App() {
 
       {/* Floating widgets - hidden in administration portal */}
       {!isAdminView && (
-        <>
-          <AiAssistantWidget />
-          <LocationLocatorWidget />
-        </>
+        <AiAssistantWidget />
       )}
     </div>
   );

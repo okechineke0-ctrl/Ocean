@@ -13,7 +13,6 @@ import {
   Phone, 
   Mail, 
   User, 
-  MapPin, 
   BookOpen, 
   ChevronRight,
   MessageCircle,
@@ -47,12 +46,12 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [cityState, setCityState] = useState('');
+  const [preferredStartDate, setPreferredStartDate] = useState('');
   const [notes, setNotes] = useState('');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [successData, setSuccessData] = useState<{ registrationNumber: string } | null>(null);
+  const [successData, setSuccessData] = useState<{ registrationNumber: string; storedDate: string } | null>(null);
 
   if (!isOpen) return null;
 
@@ -77,6 +76,12 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
 
     setIsSubmitting(true);
     try {
+      const todayFormatted = new Date().toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      });
+
       const payload: CourseRegistrationFormData = {
         fullName: fullName.trim(),
         email: email.trim(),
@@ -87,13 +92,16 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
         schedule,
         duration,
         experienceLevel,
-        cityState: cityState.trim() || (classFormat === 'offline' ? 'Enugu State' : 'Online Student'),
+        preferredStartDate: preferredStartDate || 'Immediate Cohort (Starting Monday)',
         notes: notes.trim(),
       };
 
       const result = await submitCourseRegistration(payload);
       if (result.success) {
-        setSuccessData({ registrationNumber: result.registrationNumber });
+        setSuccessData({ 
+          registrationNumber: result.registrationNumber,
+          storedDate: todayFormatted
+        });
       } else {
         setSubmitError('Registration could not be recorded. Please try again or reach out on WhatsApp.');
       }
@@ -110,7 +118,7 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
     setFullName('');
     setEmail('');
     setPhone('');
-    setCityState('');
+    setPreferredStartDate('');
     setNotes('');
   };
 
@@ -134,7 +142,7 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                   <GraduationCap className="w-3.5 h-3.5" />
                   Ocean Tech Academy • 2026 Admissions
                 </span>
-                <span className="text-xs text-slate-400 hidden sm:inline">• Agbani, Enugu & Online</span>
+                <span className="text-xs text-slate-400 hidden sm:inline">• Online & In-Person Programs</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-bold tracking-tight font-display text-white">
                 Register for a Course
@@ -188,7 +196,7 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                 <div className="flex justify-between py-1 border-b border-slate-200">
                   <span className="text-slate-500 font-medium">Class Format:</span>
                   <span className="font-bold uppercase text-sky-700 bg-sky-50 px-2 py-0.5 rounded">
-                    {classFormat === 'online' ? '🌐 Online Virtual Class' : '🏫 In-Person Class (Agbani Hub)'}
+                    {classFormat === 'online' ? '🌐 Online Virtual Class' : '🏫 In-Person Physical Class'}
                   </span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-200">
@@ -199,9 +207,15 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                   <span className="text-slate-500 font-medium">Student Name:</span>
                   <span className="font-semibold text-slate-800">{fullName}</span>
                 </div>
+                <div className="flex justify-between py-1 border-b border-slate-200">
+                  <span className="text-slate-500 font-medium">Preferred Start Date:</span>
+                  <span className="font-semibold text-slate-800">{preferredStartDate || 'Immediate Cohort (Monday)'}</span>
+                </div>
                 <div className="flex justify-between py-1">
-                  <span className="text-slate-500 font-medium">Physical Location:</span>
-                  <span className="text-slate-700">Agbani Hub, Near ESUT Gate / Global Online</span>
+                  <span className="text-slate-500 font-medium">Registration Date Stored:</span>
+                  <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                    {successData.storedDate}
+                  </span>
                 </div>
               </div>
 
@@ -306,7 +320,7 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                         </div>
                         <div>
                           <h4 className="text-xs sm:text-sm font-bold text-slate-900">Physical In-Person Class</h4>
-                          <span className="text-[10px] text-emerald-700 font-semibold">Agbani Hub (Near ESUT Gate)</span>
+                          <span className="text-[10px] text-emerald-700 font-semibold">In-Person Campus Hub</span>
                         </div>
                       </div>
                       <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${classFormat === 'offline' ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-slate-300'}`}>
@@ -500,18 +514,27 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                   </div>
 
                   <div>
-                    <label className="block text-slate-600 font-medium mb-1">Current City / State</label>
+                    <label className="block text-slate-600 font-medium mb-1">Preferred Start Date / Intake Batch</label>
                     <div className="relative">
-                      <MapPin className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-3" />
+                      <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-3" />
                       <input
-                        type="text"
-                        placeholder="e.g. Agbani, Enugu / Lagos / Abuja"
-                        value={cityState}
-                        onChange={(e) => setCityState(e.target.value)}
+                        type="date"
+                        value={preferredStartDate}
+                        onChange={(e) => setPreferredStartDate(e.target.value)}
                         className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-300 text-slate-800 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-hidden"
                       />
                     </div>
                   </div>
+                </div>
+
+                <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs text-slate-600 flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <Clock className="w-3.5 h-3.5 text-sky-600 shrink-0" />
+                    <span><strong>Registration Date Store:</strong> Stored and timestamped automatically: <em>{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</em></span>
+                  </span>
+                  <span className="font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded text-[11px] border border-emerald-200 shrink-0">
+                    Live Cloud Sync
+                  </span>
                 </div>
 
                 <div>

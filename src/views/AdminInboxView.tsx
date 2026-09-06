@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { InquiryRecord, InternshipRecord, ViewMode } from '../types';
+import { InquiryRecord, InternshipRecord, CourseRegistrationRecord, ViewMode } from '../types';
 import { 
   subscribeToInquiries, 
   fetchInquiriesFromPostgres,
@@ -8,7 +8,11 @@ import {
   subscribeToInternships,
   fetchInternshipsFromPostgres,
   updateInternshipStatus,
-  deleteInternship
+  deleteInternship,
+  subscribeToCourseRegistrations,
+  fetchCourseRegistrationsFromPostgres,
+  updateCourseRegistrationStatus,
+  deleteCourseRegistration
 } from '../lib/inquiriesService';
 import { 
   Inbox, 
@@ -56,14 +60,16 @@ interface AdminInboxViewProps {
 export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) => {
   const [inquiries, setInquiries] = useState<InquiryRecord[]>([]);
   const [internships, setInternships] = useState<InternshipRecord[]>([]);
+  const [courseRegistrations, setCourseRegistrations] = useState<CourseRegistrationRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<'all' | 'internships' | 'quotes' | 'emergency' | 'contact'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'courses' | 'internships' | 'quotes' | 'emergency' | 'contact'>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   
   // Selected items for detail pane
   const [selectedInquiry, setSelectedInquiry] = useState<InquiryRecord | null>(null);
   const [selectedInternship, setSelectedInternship] = useState<InternshipRecord | null>(null);
+  const [selectedCourseReg, setSelectedCourseReg] = useState<CourseRegistrationRecord | null>(null);
 
   const [notesInput, setNotesInput] = useState('');
   const [savingNote, setSavingNote] = useState(false);
@@ -141,18 +147,33 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
       }
     });
 
+    // Subscribe to course registrations & date store
+    const unsubCourses = subscribeToCourseRegistrations((items) => {
+      setCourseRegistrations(items);
+      setLoading(false);
+      if (selectedCourseReg) {
+        const updated = items.find((c) => c.id === selectedCourseReg.id);
+        if (updated) {
+          setSelectedCourseReg(updated);
+          setNotesInput(updated.adminNotes || '');
+        }
+      }
+    });
+
     return () => {
       unsubInquiries();
       unsubInternships();
+      unsubCourses();
     };
   }, []);
 
   const handleRefreshAll = async () => {
     setLoading(true);
     try {
-      const [pgInquiries, pgInternships] = await Promise.all([
+      const [pgInquiries, pgInternships, pgCourses] = await Promise.all([
         fetchInquiriesFromPostgres(),
         fetchInternshipsFromPostgres(),
+        fetchCourseRegistrationsFromPostgres(),
       ]);
 
       if (pgInquiries && pgInquiries.length > 0) {
@@ -176,6 +197,17 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
           return next.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         });
       }
+
+      if (pgCourses && pgCourses.length > 0) {
+        setCourseRegistrations((prev) => {
+          const ids = new Set(prev.map((c) => c.id));
+          const next = [...prev];
+          for (const item of pgCourses) {
+            if (!ids.has(item.id)) next.push(item);
+          }
+          return next.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        });
+      }
     } catch (e) {
       console.warn('Refresh error:', e);
     } finally {
@@ -186,13 +218,22 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
   const handleSelectInquiry = (inquiry: InquiryRecord) => {
     setSelectedInquiry(inquiry);
     setSelectedInternship(null);
+    setSelectedCourseReg(null);
     setNotesInput(inquiry.adminNotes || '');
   };
 
   const handleSelectInternship = (internship: InternshipRecord) => {
     setSelectedInternship(internship);
     setSelectedInquiry(null);
+    setSelectedCourseReg(null);
     setNotesInput(internship.adminNotes || '');
+  };
+
+  const handleSelectCourseRegistration = (reg: CourseRegistrationRecord) => {
+    setSelectedCourseReg(reg);
+    setSelectedInternship(null);
+    setSelectedInquiry(null);
+    setNotesInput(reg.adminNotes || '');
   };
 
   const handleStatusChangeInquiry = async (id: string, newStatus: InquiryRecord['status']) => {
@@ -203,9 +244,32 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
     await updateInternshipStatus(id, newStatus);
   };
 
+  const handleStatusChangeCourseReg = async (id: string, newStatus: CourseRegistrationRecord['status']) => {
+    await updateCourseRegistrationStatus(id, newStatus);
+    setCourseRegistrations((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, status: newStatus } : c))
+    );
+    if (selectedCourseReg?.id === id) {
+      setSelectedCourseReg((prev) => (prev ? { ...prev, status: newStatus } : null));
+    }
+  };
+
+  const handleDeleteCourseRegItem = async (id: string) => {
+    if (window.confirm('Are you sure you want to permanently remove this course registration record?')) {
+      await deleteCourseRegistration(id);
+      setCourseRegistrations((prev) => prev.filter((c) => c.id !== id));
+      if (selectedCourseReg?.id === id) {
+        setSelectedCourseReg(null);
+      }
+    }
+  };
+
   const handleSaveNotes = async () => {
     setSavingNote(true);
-    if (selectedInquiry) {
+    if (selectedCourseReg) {
+      await updateCourseRegistrationStatus(selectedCourseReg.id, selectedCourseReg.status, notesInput);
+      setSelectedCourseReg((prev) => (prev ? { ...prev, adminNotes: notesInput } : null));
+    } else if (selectedInquiry) {
       await updateInquiryStatus(selectedInquiry.id, selectedInquiry.status, notesInput);
     } else if (selectedInternship) {
       await updateInternshipStatus(selectedInternship.id, selectedInternship.status, notesInput);
@@ -376,11 +440,28 @@ Phone / WhatsApp: +234 912 921 6768`;
 
   const getWhatsAppInquiryLink = (inquiry: InquiryRecord) => {
     const text = encodeURIComponent(
-      `Hello ${inquiry.fullName},\nThis is Ocean Technologies (Agbani, Enugu State).\nWe received your inquiry regarding "${inquiry.serviceType || inquiry.type}".\nWe would love to discuss your project requirements.`
+      `Hello ${inquiry.fullName},\nThis is Ocean Technologies.\nWe received your inquiry regarding "${inquiry.serviceType || inquiry.type}".\nWe would love to discuss your project requirements.`
     );
     const cleanPhone = inquiry.phone.replace(/[^0-9]/g, '');
     const intlPhone = cleanPhone.startsWith('0') ? `234${cleanPhone.slice(1)}` : cleanPhone;
     return `https://wa.me/${intlPhone}?text=${text}`;
+  };
+
+  const getWhatsAppCourseRegLink = (reg: CourseRegistrationRecord) => {
+    const text = encodeURIComponent(
+      `Hello ${reg.fullName}!\nThis is Ocean Technologies Institute Course Admissions Coordinator.\nWe received your course registration for "${reg.courseTitle}" (Ref: ${reg.registrationNumber}).\nYour registered cohort starts: ${reg.preferredStartDate || 'Immediate'}.\nWe would love to welcome you and assist with your syllabus and onboarding.`
+    );
+    const cleanPhone = reg.phone.replace(/[^0-9]/g, '');
+    const intlPhone = cleanPhone.startsWith('0') ? `234${cleanPhone.slice(1)}` : cleanPhone;
+    return `https://wa.me/${intlPhone}?text=${text}`;
+  };
+
+  const getEmailCourseRegLink = (reg: CourseRegistrationRecord) => {
+    const subject = encodeURIComponent(`Ocean Technologies Course Registration: ${reg.courseTitle} (Ref: ${reg.registrationNumber})`);
+    const body = encodeURIComponent(
+      `Dear ${reg.fullName},\n\nThank you for registering for "${reg.courseTitle}" at Ocean Technologies Institute.\n\nRegistration Number: ${reg.registrationNumber}\nClass Format: ${reg.classFormat === 'online' ? 'Online Virtual Classroom' : 'In-Person Campus Hub'}\nSchedule: ${reg.schedule}\nDuration: ${reg.duration}\nOfficial Registration Date Stored: ${reg.registrationDate || formatTimestamp(reg.createdAt)}\nPreferred Start Date: ${reg.preferredStartDate || 'Immediate'}\n\nOur academic advisor will guide you through the syllabus, orientation, and initial setup.\n\nBest regards,\nAcademic Admissions Team\nOcean Technologies Institute`
+    );
+    return `mailto:${reg.email}?subject=${subject}&body=${body}`;
   };
 
   const formatTimestamp = (isoString?: string) => {
@@ -435,8 +516,26 @@ Phone / WhatsApp: +234 912 921 6768`;
     return matchesSearch && matchesStatus && matchesTab;
   });
 
+  const filteredCourseRegistrations = courseRegistrations.filter((crs) => {
+    const matchesSearch =
+      crs.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      crs.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      crs.phone.includes(searchQuery) ||
+      crs.courseTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      crs.registrationNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (crs.preferredStartDate && crs.preferredStartDate.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (crs.registrationDate && crs.registrationDate.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    const matchesStatus = statusFilter === 'all' || crs.status === statusFilter;
+    const matchesTab = activeTab === 'all' || activeTab === 'courses';
+
+    return matchesSearch && matchesStatus && matchesTab;
+  });
+
   const counts = {
-    totalRecords: inquiries.length + internships.length,
+    totalRecords: inquiries.length + internships.length + courseRegistrations.length,
+    courses: courseRegistrations.length,
+    pendingCourses: courseRegistrations.filter((c) => c.status === 'pending').length,
     internships: internships.length,
     quotes: inquiries.filter((i) => i.type === 'quote').length,
     emergency: inquiries.filter((i) => i.type === 'emergency_issue').length,
@@ -568,7 +667,7 @@ Phone / WhatsApp: +234 912 921 6768`;
 
       {/* Metrics Summary Strip */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 mb-6">
           {/* Card 1: Total Records */}
           <div 
             onClick={() => setActiveTab('all')}
@@ -578,12 +677,36 @@ Phone / WhatsApp: +234 912 921 6768`;
                 : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
             }`}
           >
-            <p className="text-xs text-slate-400 font-medium">All Recorded Submissions</p>
+            <p className="text-xs text-slate-400 font-medium">All Submissions</p>
             <p className="text-2xl font-bold font-display text-white mt-1">{counts.totalRecords}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Verified Sync</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Database Synced</p>
           </div>
 
-          {/* Card 2: Internships & SIWES */}
+          {/* Card 2: Course Registrations & Date Store */}
+          <div 
+            onClick={() => setActiveTab('courses')}
+            className={`cursor-pointer rounded-xl p-4 transition-all border ${
+              activeTab === 'courses' 
+                ? 'bg-emerald-950/70 border-emerald-500/60 shadow-lg ring-1 ring-emerald-500/30' 
+                : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-emerald-400 font-medium flex items-center gap-1">
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>Course Store</span>
+              </p>
+              {counts.pendingCourses > 0 && (
+                <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                  {counts.pendingCourses} new
+                </span>
+              )}
+            </div>
+            <p className="text-2xl font-bold font-display text-emerald-300 mt-1">{counts.courses}</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Registration Date Store</p>
+          </div>
+
+          {/* Card 3: Internships & SIWES */}
           <div 
             onClick={() => setActiveTab('internships')}
             className={`cursor-pointer rounded-xl p-4 transition-all border ${
@@ -595,7 +718,7 @@ Phone / WhatsApp: +234 912 921 6768`;
             <div className="flex items-center justify-between">
               <p className="text-xs text-indigo-400 font-medium flex items-center gap-1">
                 <GraduationCap className="w-3.5 h-3.5" />
-                <span>Internships & SIWES</span>
+                <span>IT & SIWES</span>
               </p>
               {counts.pendingInternships > 0 && (
                 <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
@@ -604,10 +727,10 @@ Phone / WhatsApp: +234 912 921 6768`;
               )}
             </div>
             <p className="text-2xl font-bold font-display text-indigo-300 mt-1">{counts.internships}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">ESUT & Regional Students</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Students & Placements</p>
           </div>
 
-          {/* Card 3: Project Quotes */}
+          {/* Card 4: Project Quotes */}
           <div 
             onClick={() => setActiveTab('quotes')}
             className={`cursor-pointer rounded-xl p-4 transition-all border ${
@@ -618,10 +741,10 @@ Phone / WhatsApp: +234 912 921 6768`;
           >
             <p className="text-xs text-sky-400 font-medium">Project Quotes</p>
             <p className="text-2xl font-bold font-display text-sky-300 mt-1">{counts.quotes}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Web & Mobile App Leads</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Web & Mobile Apps</p>
           </div>
 
-          {/* Card 4: Emergency Fixes */}
+          {/* Card 5: Emergency Fixes */}
           <div 
             onClick={() => setActiveTab('emergency')}
             className={`cursor-pointer rounded-xl p-4 transition-all border ${
@@ -632,7 +755,7 @@ Phone / WhatsApp: +234 912 921 6768`;
           >
             <p className="text-xs text-rose-400 font-medium">Emergency Bugs</p>
             <p className="text-2xl font-bold font-display text-rose-300 mt-1">{counts.emergency}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Urgent triage tickets</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Urgent Triage</p>
           </div>
         </div>
 
@@ -644,7 +767,7 @@ Phone / WhatsApp: +234 912 921 6768`;
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search by student or client name, school, email, phone, matric ID, ref..."
+              placeholder="Search by student name, course, registration date, start date, email, phone, ref..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-sky-500"
@@ -662,6 +785,17 @@ Phone / WhatsApp: +234 912 921 6768`;
               }`}
             >
               All Records ({counts.totalRecords})
+            </button>
+            <button
+              onClick={() => setActiveTab('courses')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 ${
+                activeTab === 'courses'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-slate-900 text-emerald-400 hover:text-white border border-slate-800'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Course Store ({counts.courses})</span>
             </button>
             <button
               onClick={() => setActiveTab('internships')}
@@ -706,17 +840,99 @@ Phone / WhatsApp: +234 912 921 6768`;
               <h2 className="text-sm font-bold text-white flex items-center gap-2">
                 <Inbox className="w-4 h-4 text-sky-400" />
                 <span>
-                  {activeTab === 'internships'
+                  {activeTab === 'courses'
+                    ? `Course Registration Date Store (${filteredCourseRegistrations.length})`
+                    : activeTab === 'internships'
                     ? `Student Internship Registrations (${filteredInternships.length})`
                     : activeTab === 'quotes'
                     ? `Project Quotes (${filteredInquiries.length})`
-                    : `All Submissions (${filteredInternships.length + filteredInquiries.length})`}
+                    : activeTab === 'emergency'
+                    ? `Emergency Tickets (${filteredInquiries.length})`
+                    : `All Submissions (${filteredCourseRegistrations.length + filteredInternships.length + filteredInquiries.length})`}
                 </span>
               </h2>
               {loading && <RefreshCw className="w-4 h-4 text-sky-400 animate-spin" />}
             </div>
 
             <div className="max-h-[680px] overflow-y-auto divide-y divide-slate-800/60">
+              {/* Show Course Registrations & Date Store if matching tab */}
+              {(activeTab === 'all' || activeTab === 'courses') &&
+                filteredCourseRegistrations.map((reg) => {
+                  const isSelected = selectedCourseReg?.id === reg.id;
+                  return (
+                    <div
+                      key={reg.id}
+                      onClick={() => handleSelectCourseRegistration(reg)}
+                      className={`p-4 cursor-pointer transition-colors ${
+                        isSelected 
+                          ? 'bg-emerald-950/50 border-l-4 border-emerald-500' 
+                          : 'hover:bg-slate-900/60'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                          <BookOpen className="w-3 h-3" />
+                          <span>Course Registration</span>
+                        </span>
+                        
+                        <span className="text-[10px] text-slate-500 font-mono">
+                          {formatTimestamp(reg.createdAt)}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-2">
+                        <h3 className="text-xs font-bold text-white truncate mb-0.5">
+                          {reg.fullName}
+                        </h3>
+                        <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/80 px-1.5 py-0.2 rounded border border-emerald-800/60 shrink-0">
+                          {reg.registrationNumber}
+                        </span>
+                      </div>
+
+                      <p className="text-[11px] text-emerald-300 font-semibold truncate mb-1">
+                        📚 {reg.courseTitle}
+                      </p>
+
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-300 mb-1">
+                        <span className="flex items-center gap-1 text-slate-400">
+                          {reg.classFormat === 'online' ? '🌐 Virtual Class' : '🏫 In-Person Hub'}
+                        </span>
+                        <span className="text-slate-600">•</span>
+                        <span className="text-slate-400">{reg.schedule}</span>
+                      </div>
+
+                      {/* Stored Registration Date & Preferred Start Date */}
+                      <div className="bg-slate-900/90 rounded-lg p-2 my-1.5 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-[10px]">
+                        <div className="flex items-center gap-1 text-emerald-400 font-mono">
+                          <Calendar className="w-3 h-3 text-emerald-400 shrink-0" />
+                          <span>Date Stored: <strong>{reg.registrationDate || formatTimestamp(reg.createdAt)}</strong></span>
+                        </div>
+                        <div className="flex items-center gap-1 text-sky-300 font-medium">
+                          <Clock className="w-3 h-3 text-sky-400 shrink-0" />
+                          <span>Starts: <strong>{reg.preferredStartDate || 'Immediate'}</strong></span>
+                        </div>
+                      </div>
+
+                      <div className="mt-2 flex items-center justify-between gap-2">
+                        <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 ${
+                          reg.status === 'pending' 
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' 
+                            : reg.status === 'confirmed' || reg.status === 'admitted' || reg.status === 'enrolled'
+                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                            : 'bg-slate-800 text-slate-300'
+                        }`}>
+                          {(reg.status === 'confirmed' || reg.status === 'admitted' || reg.status === 'enrolled') && (
+                            <BadgeCheck className="w-3 h-3 text-emerald-400" />
+                          )}
+                          Status: {reg.status}
+                        </span>
+
+                        <span className="text-[10px] text-slate-400 font-mono">{reg.phone}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+
               {/* Show Internships if matching tab */}
               {(activeTab === 'all' || activeTab === 'internships') &&
                 filteredInternships.map((intern) => {
@@ -862,12 +1078,12 @@ Phone / WhatsApp: +234 912 921 6768`;
                   );
                 })}
 
-              {filteredInternships.length === 0 && filteredInquiries.length === 0 && (
+              {filteredCourseRegistrations.length === 0 && filteredInternships.length === 0 && filteredInquiries.length === 0 && (
                 <div className="p-12 text-center text-slate-500 text-xs">
                   <Inbox className="w-8 h-8 text-slate-600 mx-auto mb-2 opacity-50" />
                   <p>No submission records match your filter.</p>
                   <p className="text-[10px] text-slate-600 mt-1">
-                    Student registrations submitted via the Internship form and quotes will appear here in real-time.
+                    Course registrations with registration date store, student internships, and quotes will appear here in real-time.
                   </p>
                 </div>
               )}
@@ -1108,6 +1324,223 @@ Phone / WhatsApp: +234 912 921 6768`;
                 </div>
 
               </div>
+            ) : selectedCourseReg ? (
+              /* Student Course Registration & Date Store Detail View */
+              <div className="space-y-6">
+                
+                {/* Header Info */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-800">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                        <BookOpen className="w-3 h-3" />
+                        <span>{selectedCourseReg.courseTitle}</span>
+                      </span>
+                      <span className="text-xs text-emerald-300 font-mono font-bold bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800/80">
+                        {selectedCourseReg.registrationNumber}
+                      </span>
+                    </div>
+                    <h2 className="text-xl font-bold text-white font-display">
+                      {selectedCourseReg.fullName}
+                    </h2>
+                    <p className="text-xs text-slate-400">
+                      Enrolled on {formatTimestamp(selectedCourseReg.createdAt)}
+                    </p>
+                  </div>
+
+                  {/* Status Dropdown */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-400">Status:</span>
+                    <select
+                      value={selectedCourseReg.status}
+                      onChange={(e) => {
+                        const newStatus = e.target.value as CourseRegistrationRecord['status'];
+                        handleStatusChangeCourseReg(selectedCourseReg.id, newStatus);
+                      }}
+                      className="bg-slate-900 border border-slate-700 text-xs text-white rounded-lg px-3 py-1.5 focus:outline-none"
+                    >
+                      <option value="pending">Pending Review</option>
+                      <option value="admitted">Admitted / Approved</option>
+                      <option value="enrolled">Enrolled / Active</option>
+                      <option value="completed">Completed Course</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* DEDICATED: Course Registration Date Store Card */}
+                <div className="bg-gradient-to-br from-emerald-950/70 via-slate-900 to-sky-950/70 border-2 border-emerald-500/40 rounded-2xl p-5 shadow-xl relative overflow-hidden">
+                  <div className="flex items-center justify-between pb-3 border-b border-emerald-500/20 mb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                        <Database className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
+                          <span>Course Registration Date Store</span>
+                          <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                            Persistent Cloud Store
+                          </span>
+                        </h3>
+                        <p className="text-[11px] text-slate-400">Stored and synchronized across Firestore & PostgreSQL database</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 text-xs">
+                    <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+                      <p className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <Calendar className="w-3 h-3" /> Official Date Stored
+                      </p>
+                      <p className="text-white font-mono font-bold text-sm">
+                        {selectedCourseReg.registrationDate || formatTimestamp(selectedCourseReg.createdAt)}
+                      </p>
+                      <p className="text-[10px] text-slate-500 mt-0.5">Database Registration Store</p>
+                    </div>
+
+                    <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+                      <p className="text-[10px] text-sky-400 font-bold uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <Clock className="w-3 h-3" /> Preferred Start Date
+                      </p>
+                      <p className="text-white font-mono font-bold text-sm">
+                        {selectedCourseReg.preferredStartDate || 'Immediate Cohort'}
+                      </p>
+                      <p className="text-[10px] text-slate-500 mt-0.5">Cohort Commencement</p>
+                    </div>
+
+                    <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+                      <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <Calendar className="w-3 h-3" /> System Timestamp
+                      </p>
+                      <p className="text-white font-mono text-xs truncate">
+                        {formatTimestamp(selectedCourseReg.createdAt)}
+                      </p>
+                      <p className="text-[10px] text-slate-500 mt-0.5">Server Ingestion Clock</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Instant Student Communication Bar */}
+                <div className="bg-emerald-950/40 border border-emerald-900/60 rounded-xl p-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-bold text-emerald-300">Direct Student Communication</p>
+                    <p className="text-[11px] text-slate-400">Reach the enrolled student immediately via WhatsApp or Email:</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={getWhatsAppCourseRegLink(selectedCourseReg)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-md"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      <span>WhatsApp Student</span>
+                    </a>
+                    <a
+                      href={getEmailCourseRegLink(selectedCourseReg)}
+                      className="px-3.5 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-md"
+                    >
+                      <Mail className="w-4 h-4" />
+                      <span>Send Email</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Course & Schedule Coordinates */}
+                <div className="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-3">
+                  <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <BookOpen className="w-3.5 h-3.5 text-sky-400" />
+                    <span>Enrolled Course & Schedule Specifications</span>
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div>
+                      <p className="text-[10px] text-slate-500 uppercase font-semibold">Course Title</p>
+                      <p className="text-white font-semibold text-sm">{selectedCourseReg.courseTitle}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-slate-500 uppercase font-semibold">Learning Format</p>
+                      <p className="text-emerald-400 font-semibold text-sm">
+                        {selectedCourseReg.classFormat === 'online' ? '🌐 Online Virtual Classroom' : '🏫 In-Person Campus Hub'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-slate-500 uppercase font-semibold">Cohort Schedule</p>
+                      <p className="text-white font-medium">{selectedCourseReg.schedule}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-slate-500 uppercase font-semibold">Standard Duration</p>
+                      <p className="text-white font-medium">{selectedCourseReg.duration}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-slate-500 uppercase font-semibold">Experience Level</p>
+                      <p className="text-amber-300 font-medium">{selectedCourseReg.experienceLevel}</p>
+                    </div>
+                  </div>
+
+                  {selectedCourseReg.notes && (
+                    <div className="pt-2 border-t border-slate-800">
+                      <p className="text-[10px] text-slate-500 uppercase font-semibold mb-1">
+                        Student Learning Goals / Notes:
+                      </p>
+                      <div className="bg-slate-950 p-3 rounded-lg border border-slate-800/80 text-xs text-slate-300 leading-relaxed italic">
+                        "{selectedCourseReg.notes}"
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Student Contact Coordinates */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                  <div className="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
+                    <p className="text-slate-400 text-[10px] uppercase font-bold mb-1">Phone / WhatsApp</p>
+                    <p className="text-white font-mono font-bold text-sm">{selectedCourseReg.phone}</p>
+                    <a href={`tel:${selectedCourseReg.phone}`} className="text-sky-400 text-[11px] hover:underline mt-1 inline-block">
+                      Call Direct
+                    </a>
+                  </div>
+
+                  <div className="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
+                    <p className="text-slate-400 text-[10px] uppercase font-bold mb-1">Email Address</p>
+                    <p className="text-white font-mono font-bold text-sm break-all">{selectedCourseReg.email}</p>
+                    <a href={`mailto:${selectedCourseReg.email}`} className="text-sky-400 text-[11px] hover:underline mt-1 inline-block">
+                      Send Email
+                    </a>
+                  </div>
+                </div>
+
+                {/* Admin Internal Notes Box */}
+                <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+                    Internal Course Administration & Tutor Notes:
+                  </label>
+                  <textarea
+                    rows={3}
+                    placeholder="Add batch assignment, tuition status, instructor notes, or certificate records..."
+                    value={notesInput}
+                    onChange={(e) => setNotesInput(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500"
+                  />
+                  <div className="mt-2.5 flex items-center justify-between">
+                    <button
+                      onClick={handleSaveNotes}
+                      disabled={savingNote}
+                      className="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    >
+                      {savingNote ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                      <span>Save Notes</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleDeleteCourseRegItem(selectedCourseReg.id)}
+                      className="text-rose-400 hover:text-rose-300 text-xs flex items-center gap-1 transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Delete Record</span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
             ) : selectedInquiry ? (
               /* Client Inquiry / Quote Detail View */
               <div className="space-y-6">
@@ -1297,7 +1730,7 @@ Phone / WhatsApp: +234 912 921 6768`;
                 <Inbox className="w-12 h-12 text-slate-700 mx-auto mb-3 opacity-50" />
                 <h3 className="text-sm font-bold text-slate-300">Select a Record</h3>
                 <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-                  Click on any student internship application or client quote from the list to view complete details, copy coordinates, or reply on WhatsApp.
+                  Click on any course registration (with stored registration date), student internship application, or client quote from the list to inspect full details, update statuses, or reply directly.
                 </p>
               </div>
             )}

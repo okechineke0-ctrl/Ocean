@@ -389,6 +389,8 @@ app.post('/api/course-registrations', async (req, res) => {
       schedule,
       duration,
       experienceLevel,
+      preferredStartDate,
+      registrationDate,
       cityState,
       notes,
     } = req.body;
@@ -400,6 +402,11 @@ app.post('/api/course-registrations', async (req, res) => {
     }
 
     const regNumber = `OCT-CRS-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const formattedDate = registrationDate || new Date().toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
 
     const newRecord = await createCourseRegistration({
       registrationNumber: regNumber,
@@ -412,7 +419,9 @@ app.post('/api/course-registrations', async (req, res) => {
       schedule: schedule || 'Flexible',
       duration: duration || '12 Weeks',
       experienceLevel: experienceLevel || 'Beginner',
-      cityState: cityState ? cityState.trim() : 'Enugu / Online',
+      preferredStartDate: preferredStartDate || 'Immediate Cohort (Monday)',
+      registrationDate: formattedDate,
+      cityState: cityState ? cityState.trim() : 'Candidate',
       notes: notes || '',
     });
 

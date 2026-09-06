@@ -839,6 +839,12 @@ export async function submitCourseRegistration(
   const localId = `crs-${Date.now()}`;
   const regNumber = `OCT-CRS-2026-${Math.floor(1000 + Math.random() * 9000)}`;
 
+  const formattedDate = new Date().toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
   const record: CourseRegistrationRecord = {
     id: localId,
     registrationNumber: regNumber,
@@ -851,7 +857,9 @@ export async function submitCourseRegistration(
     schedule: formData.schedule || 'Flexible',
     duration: formData.duration || '12 Weeks',
     experienceLevel: formData.experienceLevel || 'Beginner',
-    cityState: formData.cityState ? formData.cityState.trim() : 'Enugu / Online',
+    preferredStartDate: formData.preferredStartDate || 'Immediate Cohort (Monday)',
+    registrationDate: formattedDate,
+    cityState: formData.cityState ? formData.cityState.trim() : 'Candidate',
     notes: (formData.notes || '').trim(),
     status: 'pending',
     createdAt: nowIso,
@@ -875,6 +883,8 @@ export async function submitCourseRegistration(
       schedule: record.schedule,
       duration: record.duration,
       experienceLevel: record.experienceLevel,
+      preferredStartDate: record.preferredStartDate,
+      registrationDate: record.registrationDate,
       cityState: record.cityState,
       notes: record.notes,
       status: 'pending',
@@ -907,6 +917,8 @@ export async function submitCourseRegistration(
         schedule: record.schedule,
         duration: record.duration,
         experienceLevel: record.experienceLevel,
+        preferredStartDate: record.preferredStartDate,
+        registrationDate: record.registrationDate,
         cityState: record.cityState,
         notes: record.notes,
       }),
@@ -949,6 +961,8 @@ export async function fetchCourseRegistrationsFromPostgres(): Promise<CourseRegi
       schedule: row.schedule,
       duration: row.duration,
       experienceLevel: row.experienceLevel || row.experience_level,
+      preferredStartDate: row.preferredStartDate || row.preferred_start_date || '',
+      registrationDate: row.registrationDate || row.registration_date || '',
       cityState: row.cityState || row.city_state || '',
       notes: row.notes || '',
       status: row.status || 'pending',
@@ -1009,6 +1023,8 @@ export function subscribeToCourseRegistrations(
             schedule: data.schedule || 'Flexible',
             duration: data.duration || '12 Weeks',
             experienceLevel: data.experienceLevel || 'Beginner',
+            preferredStartDate: data.preferredStartDate || '',
+            registrationDate: data.registrationDate || '',
             cityState: data.cityState || '',
             notes: data.notes || '',
             status: data.status || 'pending',

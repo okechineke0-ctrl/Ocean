@@ -84,39 +84,43 @@ export const Logo: React.FC<LogoProps> = ({
         onClick={handleContainerClick}
         className={`inline-flex items-center justify-center select-none ${className}`}
       >
-        <div className="rounded-full overflow-hidden p-1 bg-white shadow-sm border border-slate-200 ring-2 ring-sky-500/20 transition-transform duration-300 hover:scale-105">
+        <div 
+          style={{ width: dim.fullWidth, height: dim.fullWidth }}
+          className="rounded-full overflow-hidden p-0.5 bg-white shadow-sm border border-slate-200 ring-2 ring-sky-500/20 transition-transform duration-300 hover:scale-105 shrink-0 aspect-square flex items-center justify-center"
+        >
           <img
             src={activeLogoUrl}
             onError={handleImageError}
             alt="Ocean Tech Institute Official Logo"
             referrerPolicy="no-referrer"
-            className="rounded-full object-contain"
-            style={{ width: dim.fullWidth, height: dim.fullWidth }}
+            className="w-full h-full rounded-full object-cover aspect-square block"
           />
         </div>
       </div>
     );
   }
 
-  // Icon only (Circular Badge)
+  // Icon only (Guaranteed Circular Emblem Badge)
   if (variant === 'icon') {
     return (
       <div 
         onClick={handleContainerClick}
         className={`inline-flex items-center justify-center select-none ${className}`}
       >
-        <div className={`rounded-full overflow-hidden shadow-sm border transition-transform duration-300 hover:scale-105 ${
-          isDark 
-            ? 'bg-white p-1 border-slate-700 ring-2 ring-sky-400/30' 
-            : 'bg-white p-1 border-slate-200 ring-2 ring-sky-500/20'
-        }`}>
+        <div 
+          style={{ width: dim.img, height: dim.img }}
+          className={`rounded-full overflow-hidden shadow-md border shrink-0 aspect-square flex items-center justify-center transition-transform duration-300 hover:scale-105 ${
+            isDark 
+              ? 'bg-white p-0.5 border-sky-400/40 ring-2 ring-sky-400/30' 
+              : 'bg-white p-0.5 border-slate-200 ring-2 ring-sky-500/20'
+          }`}
+        >
           <img
             src={activeLogoUrl}
             onError={handleImageError}
             alt="Ocean Tech Institute Emblem"
             referrerPolicy="no-referrer"
-            className="object-contain rounded-full"
-            style={{ width: dim.img, height: dim.img }}
+            className="w-full h-full object-cover rounded-full aspect-square block"
           />
         </div>
       </div>
@@ -130,18 +134,20 @@ export const Logo: React.FC<LogoProps> = ({
         onClick={handleContainerClick}
         className={`flex flex-col items-center text-center group select-none cursor-pointer ${className}`}
       >
-        <div className={`overflow-hidden rounded-full shadow-md border transition-all duration-300 group-hover:scale-105 ${
-          isDark 
-            ? 'bg-white p-3 border-slate-700 ring-4 ring-sky-400/20' 
-            : 'bg-white p-2.5 border-slate-200 ring-4 ring-sky-500/15'
-        }`}>
+        <div 
+          style={{ width: dim.fullWidth, height: dim.fullWidth }}
+          className={`overflow-hidden rounded-full shadow-md border shrink-0 aspect-square flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
+            isDark 
+              ? 'bg-white p-1 border-slate-700 ring-4 ring-sky-400/20' 
+              : 'bg-white p-1 border-slate-200 ring-4 ring-sky-500/15'
+          }`}
+        >
           <img
             src={activeLogoUrl}
             onError={handleImageError}
             alt="Ocean Tech Institute Official Insignia"
             referrerPolicy="no-referrer"
-            className="object-contain rounded-full"
-            style={{ width: dim.fullWidth, height: dim.fullWidth }}
+            className="w-full h-full object-cover rounded-full aspect-square block"
           />
         </div>
       </div>
@@ -161,18 +167,20 @@ export const Logo: React.FC<LogoProps> = ({
       className={`flex items-center gap-3.5 group select-none cursor-pointer ${className}`}
     >
       {/* Circular Emblem Frame using direct URL path */}
-      <div className={`shrink-0 overflow-hidden rounded-full shadow-sm border transition-all duration-300 group-hover:scale-105 ${
-        isDark 
-          ? 'bg-white p-1 border-slate-700 ring-2 ring-sky-400/30' 
-          : 'bg-white p-0.5 border-slate-200 ring-2 ring-sky-500/20'
-      }`}>
+      <div 
+        style={{ width: dim.img, height: dim.img }}
+        className={`shrink-0 overflow-hidden rounded-full shadow-sm border aspect-square flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
+          isDark 
+            ? 'bg-white p-0.5 border-sky-400/40 ring-2 ring-sky-400/30' 
+            : 'bg-white p-0.5 border-slate-200 ring-2 ring-sky-500/20'
+        }`}
+      >
         <img
           src={activeLogoUrl}
           onError={handleImageError}
           alt="Ocean Tech Institute"
           referrerPolicy="no-referrer"
-          className="object-contain rounded-full"
-          style={{ width: dim.img, height: dim.img }}
+          className="w-full h-full object-cover rounded-full aspect-square block"
         />
       </div>
 

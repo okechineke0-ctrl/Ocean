@@ -16,13 +16,13 @@ import {
   Clock, 
   AlertTriangle, 
   Zap, 
-  MapPin, 
   Sparkles,
   ExternalLink,
   ChevronRight,
   Code2,
   GraduationCap,
-  Award
+  Award,
+  Building2
 } from 'lucide-react';
 
 interface HomeViewProps {
@@ -384,10 +384,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
                 <div>
                   <h3 className="font-bold text-base font-display">Ocean Technologies Development Hub</h3>
-                  <p className="text-xs text-sky-300">Agbani, Enugu State, Nigeria</p>
+                  <p className="text-xs text-sky-300">Software Engineering & Technical Academy</p>
                 </div>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-400/30">
-                  ESUT Area
+                  Enterprise Solutions
                 </span>
               </div>
             </div>
@@ -395,10 +395,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
             <div className="p-6">
               <div className="space-y-3.5 text-xs text-slate-700 mb-6">
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
+                  <Building2 className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
                   <span>
-                    <strong>Physical Address:</strong><br />
-                    Agbani, Enugu State, Nigeria (ESUT Corridor, Enugu State University of Science and Technology)
+                    <strong>Corporate Engineering Office:</strong><br />
+                    Ocean Technologies Software Development & Innovation Hub
                   </span>
                 </div>
 
@@ -705,7 +705,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       <section className="bg-gradient-to-r from-sky-900 via-slate-900 to-sky-950 text-white py-16 px-4">
         <div className="max-w-4xl mx-auto text-center space-y-6">
           <span className="inline-block px-3 py-1 bg-sky-800/80 text-sky-300 text-xs font-bold rounded-full border border-sky-600/30">
-            Agbani • Enugu State • Nigeria
+            Enterprise Software • Modern Web & Mobile Systems • Technical Academy
           </span>
           <h2 className="text-2xl sm:text-4xl font-bold font-display text-white">
             Ready to Build Your Website or Fix Your Software?

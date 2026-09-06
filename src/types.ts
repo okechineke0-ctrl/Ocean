@@ -185,6 +185,7 @@ export interface CourseRegistrationFormData {
   schedule: string;
   duration: string;
   experienceLevel: string;
+  preferredStartDate?: string;
   cityState?: string;
   notes?: string;
 }
@@ -201,6 +202,8 @@ export interface CourseRegistrationRecord {
   schedule: string;
   duration: string;
   experienceLevel: string;
+  preferredStartDate?: string;
+  registrationDate?: string;
   cityState?: string;
   notes?: string;
   status: 'pending' | 'admitted' | 'enrolled' | 'completed' | 'cancelled';

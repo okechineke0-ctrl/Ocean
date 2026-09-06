@@ -5,7 +5,6 @@ import { Logo } from '../components/Logo';
 import softwareEngineerImg from '../assets/images/software_engineer_team_1788530472353.jpg';
 import { 
   Building2, 
-  MapPin, 
   Phone, 
   Mail, 
   ShieldCheck, 
@@ -40,13 +39,13 @@ export const AboutView: React.FC<AboutViewProps> = ({
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="max-w-3xl">
               <span className="text-[#0284C7] font-bold text-xs uppercase tracking-wider bg-sky-50 px-3 py-1 rounded-full border border-sky-200 inline-block mb-3">
-                Official Institutional Profile • Agbani, Enugu State, Nigeria
+                Official Institutional Profile • Software Engineering & Technical Innovation
               </span>
               <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 font-display mt-1 mb-4">
                 Engineering Scalable Software & Reliable Website Maintenance
               </h1>
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                Based in Agbani, Enugu State (within the ESUT university corridor), Ocean Technologies Institute is a premier software engineering institution built on one core mission: delivering dependable, high-speed software solutions that empower businesses to grow without technical interruptions.
+                Ocean Technologies Institute is a premier software engineering institution built on one core mission: delivering dependable, high-speed software solutions that empower businesses and students to thrive without technical interruptions.
               </p>
             </div>
             <div className="shrink-0 p-2 bg-white rounded-full border border-slate-200/90 self-start md:self-center shadow-md ring-4 ring-sky-500/10">
@@ -64,10 +63,10 @@ export const AboutView: React.FC<AboutViewProps> = ({
               Who We Are & What Drives Us
             </h2>
             <p>
-              Ocean Technologies was founded with a clear objective: to bridge the gap between complex software engineering and practical business success. Too many Nigerian businesses and institutions struggle with slow, vulnerable websites, crashing apps, or uncooperative developers who disappear after launching.
+              Ocean Technologies was founded with a clear objective: to bridge the gap between complex software engineering and practical business success. Too many organizations struggle with slow, vulnerable websites, crashing apps, or uncooperative developers who disappear after launching.
             </p>
             <p>
-              We established our development center in <strong>Agbani, Enugu State, Nigeria (ESUT Corridor)</strong>, bringing together experienced software engineers, UI/UX designers, and systems architects. Whether we are engineering a new corporate web application, developing an iOS/Android mobile app, or providing 24/7 monthly website maintenance, we treat every line of code with craftsmanship and security rigor.
+              We established our engineering labs to bring together experienced software engineers, UI/UX designers, and systems architects. Whether we are engineering a new corporate web application, developing an iOS/Android mobile app, or providing proactive monthly website maintenance, we treat every line of code with craftsmanship and security rigor.
             </p>
             
             <div className="pt-4 grid grid-cols-2 sm:grid-cols-3 gap-4 border-t border-slate-200">
@@ -86,12 +85,12 @@ export const AboutView: React.FC<AboutViewProps> = ({
             </div>
           </div>
 
-          {/* Agbani Headquarters Card */}
+          {/* Headquarters Card */}
           <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
             <div className="relative h-48 w-full bg-slate-900">
               <img 
                 src={softwareEngineerImg} 
-                alt="Ocean Technologies Software Engineering Team in Agbani, Enugu State"
+                alt="Ocean Technologies Software Engineering Team"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover filter brightness-90 contrast-105"
               />
@@ -99,10 +98,10 @@ export const AboutView: React.FC<AboutViewProps> = ({
               <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
                 <div>
                   <h3 className="font-bold text-base font-display">Ocean Technologies Engineering Lab</h3>
-                  <p className="text-xs text-sky-300">Agbani, Enugu State, Nigeria</p>
+                  <p className="text-xs text-sky-300">Software Engineering & Tech Academy</p>
                 </div>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-400/30">
-                  ESUT Area
+                  Enterprise Verified
                 </span>
               </div>
             </div>
@@ -110,10 +109,10 @@ export const AboutView: React.FC<AboutViewProps> = ({
             <div className="p-6 space-y-4">
               <div className="space-y-3.5 text-xs text-slate-700">
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
+                  <Building2 className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
                   <span>
-                    <strong>Location:</strong> Agbani, Enugu State, Nigeria<br />
-                    <span className="text-slate-500 text-[11px]">(Near Enugu State University of Science and Technology - ESUT)</span>
+                    <strong>Organization:</strong> Ocean Technologies Institute<br />
+                    <span className="text-slate-500 text-[11px]">Engineering Systems, Web, Mobile & Professional Tech Training</span>
                   </span>
                 </div>
 

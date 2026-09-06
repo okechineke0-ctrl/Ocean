@@ -5,7 +5,7 @@ import {
   FolderGit2, 
   CheckCircle2, 
   ArrowRight, 
-  MapPin, 
+  Briefcase, 
   ExternalLink, 
   Code, 
   Star,
@@ -93,8 +93,8 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                       {project.category}
                     </span>
                     <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-900/80 text-slate-200 border border-slate-700/60 backdrop-blur-md flex items-center gap-1">
-                      <MapPin className="w-3 h-3 text-sky-400" />
-                      <span>{project.location}</span>
+                      <Briefcase className="w-3 h-3 text-sky-400" />
+                      <span>{project.clientType}</span>
                     </span>
                   </div>
 
@@ -113,8 +113,8 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                       {project.category}
                     </span>
                     <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-                      <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{project.location}</span>
+                      <Briefcase className="w-3.5 h-3.5 text-slate-400" />
+                      <span>{project.clientType}</span>
                     </div>
                   </div>
                 )}

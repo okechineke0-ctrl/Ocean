@@ -3,7 +3,6 @@ import { ViewMode } from '../types';
 import { COMPANY_INFO, FAQS } from '../data/companyData';
 import { saveInquiry } from '../lib/inquiriesService';
 import { 
-  MapPin, 
   Phone, 
   Mail, 
   Globe,
@@ -15,7 +14,8 @@ import {
   AlertTriangle, 
   ShieldCheck, 
   HelpCircle,
-  ExternalLink
+  ExternalLink,
+  Building2
 } from 'lucide-react';
 
 interface ContactViewProps {
@@ -86,7 +86,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <span className="text-sky-600 font-bold text-xs uppercase tracking-wider">
-              Get in Touch • Agbani, Enugu State, Nigeria
+              Get in Touch • Software Engineering & Technical Advisory
             </span>
             <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 font-display mt-2 mb-4">
               Contact Ocean Technologies
@@ -105,22 +105,22 @@ export const ContactView: React.FC<ContactViewProps> = ({
           {/* Contact Cards (5 Cols) */}
           <div className="lg:col-span-5 space-y-4">
             
-            {/* Agbani Address Card */}
+            {/* Corporate Hub Card */}
             <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-slate-300 transition-all">
               <div className="flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500 to-amber-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-rose-500/20">
-                  <MapPin className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-600 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-sky-500/20">
+                  <Building2 className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-rose-600">Physical Hub</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-sky-600">Corporate Center</span>
                   <h3 className="font-bold text-sm text-slate-900 font-display mb-1">
-                    Physical Office & Location
+                    Engineering & Development Hub
                   </h3>
                   <p className="text-xs text-slate-700 leading-relaxed font-medium">
-                    {COMPANY_INFO.address}
+                    Ocean Technologies Software Development, Cloud Architecture & Student Academy Hub
                   </p>
                   <p className="text-[11px] text-slate-500 mt-1">
-                    Enugu State University of Science and Technology (ESUT) Corridor
+                    Active client support, live software maintenance, and project engineering
                   </p>
                 </div>
               </div>
@@ -228,7 +228,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
                     Internships, IT & SIWES Placements
                   </h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-3">
-                    We accept computer science, engineering, and tech undergraduates for 3-month, 6-month, and 1-year Industrial Training (IT) & SIWES. Build production web and mobile apps with mentorship in Agbani (Near ESUT).
+                    We accept computer science, engineering, and tech undergraduates for 3-month, 6-month, and 1-year Industrial Training (IT) & SIWES. Build production web and mobile apps with senior engineering mentorship.
                   </p>
                   <div className="flex flex-wrap items-center gap-2">
                     <button
@@ -238,7 +238,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
                       <span>Fill Registration Form</span>
                     </button>
                     <a
-                      href="https://wa.me/2349129216768?text=Hello%20Ocean%20Technologies,%20I%20am%20interested%20in%20applying%20for%20Industrial%20Training%20(IT)%20/%20SIWES%20internship%20placement%20at%20your%20Agbani%20office."
+                      href="https://wa.me/2349129216768?text=Hello%20Ocean%20Technologies,%20I%20am%20interested%20in%20applying%20for%20Industrial%20Training%20(IT)%20/%20SIWES%20internship%20placement."
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-colors inline-flex items-center gap-1.5"
