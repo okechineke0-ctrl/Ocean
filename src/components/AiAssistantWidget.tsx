@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bot, Sparkles, Send, X, MessageSquare, Wrench, Calculator, Copy, Check, ExternalLink, RefreshCw, ChevronRight } from 'lucide-react';
+import { Sparkles, Send, X, MessageSquare, Wrench, Calculator, Copy, Check, ExternalLink, RefreshCw } from 'lucide-react';
 
 interface ChatMessage {
   id: string;
@@ -96,7 +96,7 @@ export const AiAssistantWidget: React.FC = () => {
       const errorMsg: ChatMessage = {
         id: `err-${Date.now()}`,
         role: 'model',
-        text: `### **Ocean Technologies Engineering Support**\n\nOur engineering team is actively available to review your custom requirements, website issues, or quote request.\n\n- **Direct WhatsApp Line**: [**09129216768**](https://wa.me/2349129216768)\n- **Official Email**: **oceantechnologies62@gmail.com**\n- **Location**: Agbani, Enugu State (ESUT Corridor)\n\nYou can also click the **WhatsApp** button below to forward your message directly.`,
+        text: `### **Ocean Technologies Engineering Support**\n\nOur engineering team is actively available to review your custom requirements, website issues, or quote request.\n\n- **Direct WhatsApp**: +234 912 921 6768\n- **Email**: oceantechnologies62@gmail.com`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, errorMsg]);
@@ -127,7 +127,7 @@ export const AiAssistantWidget: React.FC = () => {
       const data = await response.json();
       setEstimatorResult(data.proposal || 'Scope generated successfully.');
     } catch {
-      setEstimatorResult(`### **Ocean Technologies Project Estimate**\n\n- **Category**: ${estimatorType}\n- **Estimated Budget Range**: ₦450,000 – ₦1,250,000 (depending on custom features)\n- **Timeline**: ${estimatorTimeline}\n\nTo receive a detailed line-item invoice, please message Engr. Kechineke on WhatsApp at **09129216768**.`);
+      setEstimatorResult(`### **Ocean Technologies Project Estimate**\n\n- **Category**: ${estimatorType}\n- **Estimated Budget Range**: ₦450,000 – ₦1,250,000 (depending on custom features)\n- **Timeline**: ${estimatorTimeline}`);
     } finally {
       setIsEstimating(false);
     }
@@ -154,7 +154,7 @@ export const AiAssistantWidget: React.FC = () => {
       const data = await response.json();
       setTriageResult(data.triageReport || 'Diagnostic analysis completed.');
     } catch {
-      setTriageResult(`### **Ocean Technologies Emergency Recovery**\n\n- **Issue Reported**: ${triageIssueType}\n- **Status**: Ready for immediate engineer dispatch\n- **Turnaround**: Same-day recovery (1–4 hours)\n- **Cost Estimate**: ₦35,000 – ₦120,000\n\nPlease call or message **09129216768** immediately on WhatsApp for priority intervention.`);
+      setTriageResult(`### **Ocean Technologies Emergency Recovery**\n\n- **Issue Reported**: ${triageIssueType}\n- **Status**: Ready for immediate engineer dispatch\n- **Turnaround**: Same-day resolution (1-4 hours)`);
     } finally {
       setIsTriaging(false);
     }
@@ -185,20 +185,20 @@ export const AiAssistantWidget: React.FC = () => {
           id="ocean-ai-assistant-toggle"
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Open Ocean AI Assistant"
-          className="w-14 h-14 rounded-full bg-gradient-to-r from-sky-600 to-blue-700 text-white shadow-xl shadow-sky-600/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-sky-300 cursor-pointer"
+          className="w-14 h-14 rounded-full bg-gradient-to-r from-sky-600 to-blue-700 text-white shadow-xl shadow-sky-600/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform duration-200"
         >
-          {isOpen ? <X className="w-6 h-6" /> : <Bot className="w-7 h-7" />}
+          {isOpen ? <X className="w-6 h-6" /> : <Sparkles className="w-7 h-7" />}
         </button>
       </div>
 
       {/* Main AI Assistant Dialog */}
       {isOpen && (
-        <div className="fixed bottom-22 sm:bottom-24 right-3 sm:right-6 z-50 w-[calc(100vw-1.5rem)] sm:w-[460px] max-h-[80vh] h-[580px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200">
+        <div className="fixed bottom-22 sm:bottom-24 right-3 sm:right-6 z-50 w-[calc(100vw-1.5rem)] sm:w-[460px] max-h-[80vh] h-[580px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col">
           {/* Header */}
-          <div className="bg-gradient-to-r from-slate-900 via-sky-950 to-blue-950 text-white px-5 py-4 flex items-center justify-between border-b border-slate-800">
+          <div className="bg-gradient-to-r from-slate-900 via-sky-950 to-blue-950 text-white px-5 py-4 flex items-center justify-between border-b border-slate-800 rounded-t-2xl">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-sky-500/20 border border-sky-400/30 flex items-center justify-center text-sky-300">
-                <Bot className="w-5 h-5" />
+                <Sparkles className="w-5 h-5" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
@@ -553,7 +553,7 @@ export const AiAssistantWidget: React.FC = () => {
           )}
 
           {/* Footer note */}
-          <div className="bg-slate-100 px-4 py-2 text-[10px] text-slate-500 border-t border-slate-200 flex items-center justify-between">
+          <div className="bg-slate-100 px-4 py-2 text-[10px] text-slate-500 border-t border-slate-200 flex items-center justify-between rounded-b-2xl">
             <span>Ocean Technologies • Agbani, Enugu State</span>
             <span className="font-mono text-slate-600">WhatsApp: 09129216768</span>
           </div>
