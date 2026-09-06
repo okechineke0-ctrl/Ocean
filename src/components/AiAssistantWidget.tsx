@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, X, MessageSquare, Wrench, Calculator, Copy, Check, ExternalLink, RefreshCw, Code2 } from 'lucide-react';
+import { Send, X, MessageSquare, Wrench, Calculator, Copy, Check, ExternalLink, RefreshCw, Zap } from 'lucide-react';
 
 interface ChatMessage {
   id: string;
@@ -14,34 +14,6 @@ const QUICK_PROMPTS = [
   'My website is down with a 500 server error, can you help?',
   'What are your monthly website maintenance plans?',
 ];
-
-// GitHub Copilot-style Bot Icon Component
-const GitHubBotIcon: React.FC<{ className?: string }> = ({ className = 'w-7 h-7' }) => (
-  <svg 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    className={className}
-  >
-    {/* Head */}
-    <circle cx="12" cy="8" r="4" />
-    {/* Body */}
-    <path d="M12 12v8" />
-    {/* Left arm */}
-    <path d="M8 14l-2 3" />
-    {/* Right arm */}
-    <path d="M16 14l2 3" />
-    {/* Left leg */}
-    <path d="M9 20v2" />
-    {/* Right leg */}
-    <path d="M15 20v2" />
-    {/* AI indicator - stylized dot */}
-    <circle cx="12" cy="8" r="6" fill="none" strokeDasharray="2 2" opacity="0.6" />
-  </svg>
-);
 
 export const AiAssistantWidget: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -205,7 +177,7 @@ export const AiAssistantWidget: React.FC = () => {
       <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
         {!isOpen && (
           <div className="hidden sm:flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-lg border border-slate-200 text-xs font-semibold text-slate-800 animate-pulse">
-            <Code2 className="w-4 h-4 text-blue-600" />
+            <Zap className="w-4 h-4 text-blue-600" />
             <span>Ask AI Assistant</span>
           </div>
         )}
@@ -218,7 +190,7 @@ export const AiAssistantWidget: React.FC = () => {
           {isOpen ? (
             <X className="w-6 h-6" />
           ) : (
-            <GitHubBotIcon className="w-7 h-7" />
+            <Zap className="w-7 h-7" />
           )}
         </button>
       </div>
@@ -230,7 +202,7 @@ export const AiAssistantWidget: React.FC = () => {
           <div className="bg-gradient-to-r from-slate-800 via-blue-900 to-slate-900 text-white px-5 py-4 flex items-center justify-between border-b border-slate-700 rounded-t-2xl">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-blue-500/20 border border-blue-400/40 flex items-center justify-center">
-                <Code2 className="w-5 h-5 text-blue-300" />
+                <Zap className="w-5 h-5 text-blue-300" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
