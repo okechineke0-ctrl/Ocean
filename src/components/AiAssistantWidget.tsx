@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, X, MessageSquare, Wrench, Calculator, Copy, Check, ExternalLink, RefreshCw, Zap } from 'lucide-react';
+import { Send, X, MessageSquare, Wrench, Calculator, Copy, Check, ExternalLink, RefreshCw } from 'lucide-react';
 
 interface ChatMessage {
   id: string;
@@ -177,7 +177,7 @@ export const AiAssistantWidget: React.FC = () => {
       <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
         {!isOpen && (
           <div className="hidden sm:flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-lg border border-slate-200 text-xs font-semibold text-slate-800 animate-pulse">
-            <Zap className="w-4 h-4 text-blue-600" />
+            <img src="/file_00000000abf48210ae6c297d8dab17ba.png" alt="AI" className="w-4 h-4" />
             <span>Ask AI Assistant</span>
           </div>
         )}
@@ -185,12 +185,12 @@ export const AiAssistantWidget: React.FC = () => {
           id="ocean-ai-assistant-toggle"
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Open Ocean AI Assistant"
-          className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 text-white shadow-xl shadow-blue-600/40 flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-200"
+          className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 text-white shadow-xl shadow-blue-600/40 flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-200 p-2"
         >
           {isOpen ? (
             <X className="w-6 h-6" />
           ) : (
-            <Zap className="w-7 h-7" />
+            <img src="/file_00000000abf48210ae6c297d8dab17ba.png" alt="AI Assistant" className="w-8 h-8" />
           )}
         </button>
       </div>
@@ -202,7 +202,7 @@ export const AiAssistantWidget: React.FC = () => {
           <div className="bg-gradient-to-r from-slate-800 via-blue-900 to-slate-900 text-white px-5 py-4 flex items-center justify-between border-b border-slate-700 rounded-t-2xl">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-blue-500/20 border border-blue-400/40 flex items-center justify-center">
-                <Zap className="w-5 h-5 text-blue-300" />
+                <img src="/file_00000000abf48210ae6c297d8dab17ba.png" alt="AI" className="w-6 h-6" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
