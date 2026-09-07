@@ -216,10 +216,10 @@ export const AboutView: React.FC<AboutViewProps> = ({
               <span>Community Impact & Talent Incubation</span>
             </div>
             <h3 className="text-2xl font-bold font-display text-white mb-3">
-              Open for Internships, Industrial Training (IT) & SIWES in Agbani
+              Open for Internships, Industrial Training (IT) & SIWES Placements
             </h3>
             <p className="text-slate-300 text-sm leading-relaxed mb-6">
-              Located right along the university corridor in Agbani (near Enugu State University of Science and Technology - ESUT), Ocean Technologies is deeply committed to closing the gap between academic theory and industry engineering. We welcome undergraduates across Nigeria for intensive 3-month, 6-month, and 1-year Industrial Training (IT) and SIWES placements, providing hands-on coding, live cloud deployments, and professional software craft.
+              Ocean Technologies is deeply committed to closing the gap between academic theory and industry engineering. We welcome undergraduates for intensive 3-month, 6-month, and 1-year Industrial Training (IT) and SIWES placements, providing hands-on coding, live cloud deployments, mentor oversight, and professional software craft.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <button
@@ -229,7 +229,7 @@ export const AboutView: React.FC<AboutViewProps> = ({
                 Register for Student Placement
               </button>
               <a
-                href="https://wa.me/2349129216768?text=Hello%20Ocean%20Technologies,%20I%20am%20interested%20in%20applying%20for%20an%20IT%20/%20SIWES%20internship%20at%20your%20Agbani%20office."
+                href="https://wa.me/2349129216768?text=Hello%20Ocean%20Technologies,%20I%20am%20interested%20in%20applying%20for%20an%20IT%20/%20SIWES%20internship."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors flex items-center gap-2"

@@ -6,8 +6,8 @@ export const COMPANY_INFO = {
   motto: 'INNOVATE • EDUCATE • EMPOWER',
   tagline: 'Reliable Website Maintenance, App Development & Software Solutions',
   subtagline: 'Empowering businesses with custom websites, high-performance mobile apps, and 24/7 software troubleshooting.',
-  address: 'Agbani, Enugu State, Nigeria (ESUT Corridor, Enugu State University of Science and Technology)',
-  city: 'Agbani, Enugu State',
+  address: 'Ocean Technologies Headquarters & Engineering Innovation Hub',
+  city: 'Nigeria',
   country: 'Nigeria',
   phone: '09129216768',
   phoneFormatted: '+234 912 921 6768',
@@ -431,8 +431,8 @@ export const FAQS: FAQItem[] = [
   {
     id: '1',
     category: 'General',
-    question: 'Where is Ocean Technologies located?',
-    answer: 'Our main office is located in Agbani, Enugu State, Nigeria, within the Enugu State University of Science and Technology (ESUT) corridor. We serve clients locally in Agbani, across Enugu State, and remotely throughout Nigeria and internationally.'
+    question: 'What services does Ocean Technologies provide?',
+    answer: 'Ocean Technologies is a premier software engineering firm offering full-stack web and mobile application development, enterprise software maintenance, 24/7 emergency troubleshooting, and technical student training.'
   },
   {
     id: '2',
@@ -460,9 +460,9 @@ export const FAQS: FAQItem[] = [
   },
   {
     id: '6',
-    category: 'Payments & Agbani Office',
+    category: 'Consultation & Quotes',
     question: 'How do I get started or request a price quote?',
-    answer: 'You can request a quote directly through our website, send us an email at oceantechnologies62@gmail.com, or reach us on phone/WhatsApp at 09129216768. You are also welcome to visit our physical office in Agbani, Enugu State (near ESUT).'
+    answer: 'You can request a quote directly through our website, send us an email at oceantechnologies62@gmail.com, or reach us on phone/WhatsApp at 09129216768. Our technical leads respond with clear scoping and line-item estimates.'
   }
 ];
 

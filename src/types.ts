@@ -80,7 +80,7 @@ export interface Testimonial {
 
 export interface FAQItem {
   id: string;
-  category: 'General' | 'Website Development' | 'Mobile Apps' | 'Maintenance & Retainers' | 'Urgent Software Fixes' | 'Payments & Agbani Office';
+  category: 'General' | 'Website Development' | 'Mobile Apps' | 'Maintenance & Retainers' | 'Urgent Software Fixes' | 'Consultation & Quotes' | 'Payments & Billing';
   question: string;
   answer: string;
 }
