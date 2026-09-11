@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import { GoogleGenAI } from '@google/genai';
 import { 
   createInquiry, 
@@ -23,6 +24,125 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json({ limit: '10mb' }));
+
+// ==========================================
+// SITE ANNOUNCEMENT PERSISTENCE & API (OPay Ticker)
+// ==========================================
+interface SiteAnnouncement {
+  id: string;
+  message: string;
+  badge: string;
+  isActive: boolean;
+  expiresAt: string | null;
+  theme?: 'opay' | 'navy' | 'emerald' | 'amber' | 'crimson';
+  speed?: 'slow' | 'normal' | 'fast';
+  createdAt: string;
+  updatedAt: string;
+}
+
+const DATA_DIR = path.join(process.cwd(), 'data');
+const ANNOUNCEMENT_FILE = path.join(DATA_DIR, 'site_announcement.json');
+
+if (!fs.existsSync(DATA_DIR)) {
+  try {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  } catch (e) {
+    console.warn('Could not create data dir:', e);
+  }
+}
+
+function loadAnnouncement(): SiteAnnouncement {
+  try {
+    if (fs.existsSync(ANNOUNCEMENT_FILE)) {
+      const content = fs.readFileSync(ANNOUNCEMENT_FILE, 'utf8');
+      return JSON.parse(content);
+    }
+  } catch (err) {
+    console.warn('Failed to read site announcement from file:', err);
+  }
+
+  return {
+    id: 'ann-default',
+    message: '⚡ UPCOMING CRASH COURSE ALERT: Ocean Technologies is launching an intensive fast-track Crash Course soon! Tuition prices will drop significantly. Chat 09129216768 on WhatsApp to join waiting list.',
+    badge: 'SPECIAL UPDATE',
+    isActive: true,
+    expiresAt: null,
+    theme: 'opay',
+    speed: 'normal',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+let currentAnnouncement: SiteAnnouncement = loadAnnouncement();
+
+function persistAnnouncement(ann: SiteAnnouncement) {
+  currentAnnouncement = ann;
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    fs.writeFileSync(ANNOUNCEMENT_FILE, JSON.stringify(ann, null, 2), 'utf8');
+  } catch (err) {
+    console.error('Failed to write site announcement file:', err);
+  }
+}
+
+// GET /api/announcement
+app.get('/api/announcement', (req, res) => {
+  let isExpired = false;
+  if (currentAnnouncement.expiresAt) {
+    const exp = new Date(currentAnnouncement.expiresAt).getTime();
+    if (!isNaN(exp) && Date.now() > exp) {
+      isExpired = true;
+    }
+  }
+
+  res.json({
+    announcement: currentAnnouncement,
+    isExpired,
+    effectiveActive: currentAnnouncement.isActive && !isExpired,
+  });
+});
+
+// POST /api/announcement
+app.post('/api/announcement', (req, res) => {
+  try {
+    const { message, badge, isActive, expiresAt, theme, speed } = req.body;
+
+    const updated: SiteAnnouncement = {
+      id: currentAnnouncement.id || `ann-${Date.now()}`,
+      message: typeof message === 'string' ? message.trim() : currentAnnouncement.message,
+      badge: typeof badge === 'string' ? badge.trim().toUpperCase() : currentAnnouncement.badge,
+      isActive: isActive !== undefined ? Boolean(isActive) : currentAnnouncement.isActive,
+      expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null,
+      theme: theme || currentAnnouncement.theme || 'opay',
+      speed: speed || currentAnnouncement.speed || 'normal',
+      createdAt: currentAnnouncement.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    persistAnnouncement(updated);
+
+    let isExpired = false;
+    if (updated.expiresAt) {
+      const exp = new Date(updated.expiresAt).getTime();
+      if (!isNaN(exp) && Date.now() > exp) {
+        isExpired = true;
+      }
+    }
+
+    res.json({
+      success: true,
+      announcement: updated,
+      isExpired,
+      effectiveActive: updated.isActive && !isExpired,
+    });
+  } catch (err: any) {
+    console.error('Failed to save announcement:', err);
+    res.status(500).json({ error: err.message || 'Failed to save announcement' });
+  }
+});
 
 // Lazy Google GenAI initialization helper
 function getGenAI(): GoogleGenAI | null {
@@ -487,8 +607,54 @@ app.delete('/api/course-registrations/:id', async (req, res) => {
 function generateMatureConsultantResponse(userQuery: string): string {
   const query = (userQuery || '').toLowerCase();
 
-  // 1. Emergency 500 error / Downtime / Broken website
-  if (query.includes('500') || query.includes('down') || query.includes('crash') || query.includes('error') || query.includes('broken') || query.includes('fix') || query.includes('bug') || query.includes('urgent')) {
+  // 1. Crash Course / Training / Curriculum Inquiry
+  if (query.includes('crash course') || query.includes('training') || query.includes('course') || query.includes('learn') || query.includes('class') || query.includes('student') || query.includes('curriculum')) {
+    return `### **Ocean Technologies Institute — Technical Courses & Upcoming Crash Course**
+
+**Accelerate your tech career with intensive, practical hands-on mentorship from senior software engineers.**
+
+#### **Active Cohort Programs:**
+1. **Graphics Design, Product Design & Prototyping** (Photoshop, Illustrator, Figma, User Experience, Interactive Prototypes, Brand Identity Systems)
+2. **Full-Stack Web Development** (React, TypeScript, Tailwind CSS, Node.js, Express, PostgreSQL / Supabase)
+3. **Python Software Engineering & Data Automation**
+4. **Mobile App Engineering** (Flutter & React Native cross-platform apps)
+
+---
+
+### **SPECIAL ANNOUNCEMENT: UPCOMING CRASH COURSE**
+> **Get Prepared!** Ocean Technologies is launching an intensive, fast-track **CRASH COURSE** very soon. 
+> - **Major Price Drop**: Tuition prices will drop significantly to make cutting-edge design, prototyping, and coding skills accessible to everyone.
+> - **Hands-on Production Portfolio**: Build real-world client-ready deliverables from day one.
+> - **Stay Tuned & Secure Priority Access**: Seats will be strictly capped.
+> 
+> **To reserve your early-bird spot before public release or ask questions, chat directly with our Admissions Coordinator on WhatsApp: [09129216768](https://wa.me/2349129216768)**.`;
+  }
+
+  // 2. Graphics Design, Product Design & Prototyping
+  if (query.includes('graphic') || query.includes('graphics') || query.includes('design') || query.includes('prototype') || query.includes('prototyping') || query.includes('figma') || query.includes('logo') || query.includes('brand') || query.includes('flyer') || query.includes('ui') || query.includes('ux')) {
+    return `### **Graphics Design, Product Design & Prototyping Services**
+
+**At Ocean Technologies, our design team transforms product visions into memorable brand assets and interactive, high-fidelity prototypes.**
+
+#### **How Nigeria Billing Works (Workload-Dependent):**
+In Nigeria's professional design market, billing is strictly calculated based on **scope of workload**, asset complexity, timeline, and revision rounds:
+- **Standard Milestone Structure**: 60% mobilization deposit upon project kickoff, and 40% final balance upon file handover (Figma source file, SVG/PNG vectors, print-ready PDFs).
+
+#### **Transparent Pricing Estimates (Nigerian Naira ₦):**
+| Deliverable Category | Scope & Inclusions | Timeline | Estimated Cost (₦) |
+| :--- | :--- | :--- | :--- |
+| **Single Promotional Flyer / Social Post** | High-res marketing flyer, Instagram/LinkedIn sizes | 24–48 hours | **₦15,000 – ₦35,000** |
+| **Brand Identity Package** | Primary logo, secondary mark, typography scale, color system, business cards, letterhead | 4–7 days | **₦50,000 – ₦120,000** |
+| **UI/UX & Interactive Product Prototype** | Figma user flow, component system, interactive clickable wireframes & prototypes (5–12 screens) | 1–2 weeks | **₦100,000 – ₦250,000** |
+| **Comprehensive Brand + Product Design Suite** | Full corporate branding guide + multi-screen web/mobile prototype + marketing kit | 2–3 weeks | **₦250,000 – ₦500,000** |
+
+---
+
+> **UPCOMING CRASH COURSE ALERT**: If you are looking to *learn* Graphics Design, Product Design & Prototyping, get prepared! We are launching an intensive crash course soon with a **significant price drop**. Chat with us on WhatsApp at **[09129216768](https://wa.me/2349129216768)** to join the priority waiting list!`;
+  }
+
+  // 3. Emergency 500 error / Downtime / Broken website
+  if (query.includes('500') || query.includes('down') || (query.includes('crash') && !query.includes('course')) || query.includes('error') || query.includes('broken') || query.includes('fix') || query.includes('bug') || query.includes('urgent')) {
     return `### **Emergency Technical Diagnosis & Recovery**
 
 **Yes, Ocean Technologies specializes in rapid server recovery and emergency bug remediation.**
@@ -506,7 +672,7 @@ function generateMatureConsultantResponse(userQuery: string): string {
 > **Next Step**: Forward your website URL and error logs directly to our lead engineer on WhatsApp at **[09129216768](https://wa.me/2349129216768)** or email **oceantechnologies62@gmail.com** for immediate intervention.`;
   }
 
-  // 2. E-Commerce / Online Store Pricing
+  // 4. E-Commerce / Online Store Pricing
   if (query.includes('e-commerce') || query.includes('store') || query.includes('shop') || query.includes('sell') || query.includes('paystack') || query.includes('flutterwave')) {
     return `### **E-Commerce & Online Store Development**
 
@@ -525,7 +691,7 @@ function generateMatureConsultantResponse(userQuery: string): string {
 > Contact our team at **[09129216768](https://wa.me/2349129216768)** to receive a customized technical specification.`;
   }
 
-  // 3. Mobile App Development
+  // 5. Mobile App Development
   if (query.includes('app') || query.includes('mobile') || query.includes('ios') || query.includes('android') || query.includes('play store') || query.includes('app store') || query.includes('flutter')) {
     return `### **Cross-Platform Mobile App Engineering (iOS & Android)**
 
@@ -544,7 +710,7 @@ function generateMatureConsultantResponse(userQuery: string): string {
 > Schedule a technical consultation with Engr. Kechineke on WhatsApp: **[09129216768](https://wa.me/2349129216768)**.`;
   }
 
-  // 4. Maintenance / Retainer Plans
+  // 6. Maintenance / Retainer Plans
   if (query.includes('maintenance') || query.includes('retainer') || query.includes('support') || query.includes('security') || query.includes('backup') || query.includes('update')) {
     return `### **Software Maintenance & Infrastructure Retainers**
 
@@ -567,73 +733,103 @@ function generateMatureConsultantResponse(userQuery: string): string {
 > Get started today by contacting **oceantechnologies62@gmail.com** or **09129216768**.`;
   }
 
-  // 5. Pricing / Cost / Budget General
-  if (query.includes('cost') || query.includes('price') || query.includes('pricing') || query.includes('how much') || query.includes('quote') || query.includes('rate') || query.includes('naira')) {
-    return `### **Ocean Technologies — Standard Project Pricing**
+  // 7. Pricing / Cost / Budget General (Websites, Graphics, Billing Details)
+  if (query.includes('cost') || query.includes('price') || query.includes('pricing') || query.includes('how much') || query.includes('quote') || query.includes('rate') || query.includes('naira') || query.includes('website')) {
+    return `### **Ocean Technologies — Standard Pricing & Billing Structure**
 
-**All projects include responsive UI/UX design, modern coding standards, SSL security, and 30 days of post-launch warranty.**
+**All projects feature modern engineering standards, responsive design, SSL security, and 30 days of complimentary post-launch technical support.**
 
-| Service Type | Scope & Deliverables | Timeline | Estimated Cost (₦) |
+#### **How Nigeria Billing Works (Workload-Dependent):**
+In Nigeria, realistic technology and design billing is directly calibrated to the **workload**, number of custom page templates, backend database complexity, third-party integrations, and turnaround speed.
+- **Milestone Structure**: 60% initial mobilization deposit, 40% balance upon staging sign-off, live testing, and handover.
+
+| Service Category | Scope & Inclusions | Timeline | Realistic Cost (₦) |
 | :--- | :--- | :--- | :--- |
-| **Starter Business Website** | 5-7 pages, mobile-first, contact forms, SEO ready | 7–14 days | **₦120,000 – ₦250,000** |
-| **Corporate Brand Portal** | Custom UI, blog, career portal, CMS, speed optimization | 2–3 weeks | **₦300,000 – ₦650,000** |
-| **Custom E-Commerce Store** | Payment gateways (Paystack/Flutterwave), cart, order dashboard | 3–5 weeks | **₦450,000 – ₦1,200,000** |
-| **Full-Stack SaaS / Web App** | Authentication, database architecture, APIs, dashboards | 4–8 weeks | **₦800,000 – ₦2,500,000+** |
-| **Mobile App (iOS & Android)** | Cross-platform build, API sync, push notifications | 6–10 weeks | **₦950,000 – ₦3,000,000+** |
-| **Emergency Bug Fix** | Codebase diagnosis, server crash fix, malware cleanup | 24 hours | **₦35,000 – ₦120,000** |
+| **Standard Business Website** | 5–8 pages, custom responsive design, contact forms, WhatsApp integration, basic SEO | 7–14 days | **₦120,000 – ₦280,000** |
+| **Corporate Brand Portal** | Advanced CMS, blog, career board, lead capture funnels, performance optimization | 2–4 weeks | **₦300,000 – ₦650,000** |
+| **Custom E-Commerce Store** | Payment gateways (Paystack/Flutterwave), product catalog, cart, customer accounts | 3–5 weeks | **₦450,000 – ₦1,200,000** |
+| **Graphics Design & Branding** | Logo pack, brand identity typography, stationery, social media promo kits | 3–7 days | **₦50,000 – ₦120,000** |
+| **UI/UX & Interactive Prototyping** | Figma wireframes, clickable high-fidelity prototypes, user journey mapping | 1–2 weeks | **₦100,000 – ₦250,000** |
+| **Full-Stack SaaS / Web App** | Authentication, database schema, APIs, role-based dashboards, cloud deploy | 4–8 weeks | **₦800,000 – ₦2,500,000+** |
+| **Emergency Bug Fix / Recovery** | Root cause diagnosis, server crash fix, malware cleanup, checkout repair | 24 hours | **₦35,000 – ₦120,000** |
 
-> For a tailored quote, message us on WhatsApp at **[09129216768](https://wa.me/2349129216768)** or use our interactive **AI Estimator** tab.`;
+---
+
+### **ANNOUNCEMENT: UPCOMING CRASH COURSE**
+> **Prepare yourself!** Ocean Technologies is launching an intensive, practical **CRASH COURSE** very soon. 
+> Pricing will **drop significantly** for upcoming student cohorts in **Graphics Design, Product Design & Prototyping**, and **Web Development**.
+> **Stay tuned** or chat with our admissions coordinator on WhatsApp at **[09129216768](https://wa.me/2349129216768)** to secure your priority spot!`;
   }
 
-  // 6. Default General Inquiry
+  // 8. Default General Inquiry
   return `### **Welcome to Ocean Technologies**
 
-**We are a premier software engineering firm located in Agbani, Enugu State, Nigeria (ESUT Corridor).**
+**We are a premier software engineering, product design, and technology training firm.**
 
 #### **Our Core Capabilities:**
-- **Custom Web Engineering**: High-speed corporate websites, web applications, and customer portals.
+- **Custom Web Engineering**: High-speed standard corporate websites, web applications, and customer portals.
+- **Graphics Design, Product Design & Prototyping**: Brand identity systems, logos, marketing assets, and interactive Figma UI/UX prototypes.
 - **Mobile Development**: Native-grade iOS & Android applications.
 - **Enterprise Software**: Database architecture, API integrations, and cloud infrastructure.
 - **Maintenance & Emergency Support**: 24/7 monitoring, security patches, and rapid bug resolution.
 
-#### **How We Can Help You Today:**
+#### **Upcoming Crash Course Alert:**
+> **Prepare yourself!** We are launching an intensive **CRASH COURSE** soon where tuition pricing will **drop significantly**. Stay tuned and contact our coordinator to get on the priority list.
+
+#### **Connect With Us:**
 - Use the **AI Estimator** tab to calculate custom project milestones and pricing.
-- Use the **Bug Triage** tab for instant diagnostics on server downtime or technical issues.
-- Connect directly with our engineering lead via **WhatsApp: [09129216768](https://wa.me/2349129216768)** or **Email: oceantechnologies62@gmail.com**.`;
+- Chat directly with our team via **WhatsApp: [09129216768](https://wa.me/2349129216768)** or **Email: oceantechnologies62@gmail.com**.`;
 }
 
 // System instruction for Ocean Technologies Assistant
 const OCEAN_SYSTEM_PROMPT = `
-You are the official Senior AI Technical Consultant for "Ocean Technologies", a premier software engineering and development company headquartered in Agbani, Enugu State, Nigeria (ESUT Corridor).
+You are the official Senior AI Technical Consultant for "Ocean Technologies", a premier software engineering, product design, and technical institute.
 
 Company Details:
 - Brand Name: Ocean Technologies
-- Headquarters: Agbani, Enugu State, Nigeria (Near ESUT Corridor)
 - Managing Director / Founder: Engr. Kechineke
 - Official WhatsApp & Phone Line: +234 912 921 6768 (09129216768)
 - Official Email: oceantechnologies62@gmail.com
 - Services Offered:
-  1. Custom Website Design & Development (Landing pages, Corporate sites, Portals)
-  2. Mobile App Development (Cross-platform iOS & Android using Flutter / React Native)
-  3. Custom Web Applications & Enterprise SaaS (Node.js, Python, PostgreSQL, Next.js, React)
-  4. Software Maintenance, Server Uptime Monitoring, Security Patches & Cloud Backups
-  5. Emergency 24/7 Bug Fixes & Website Repair (500 errors, broken checkouts, malware cleanup, database recovery)
+  1. Custom Website Design & Development (Standard business sites, landing pages, corporate portals, e-commerce stores)
+  2. Graphics Design, Product Design & Prototyping (Brand identity systems, logos, social media marketing kits, interactive Figma UI/UX prototypes, product design specifications)
+  3. Mobile App Development (Cross-platform iOS & Android using Flutter / React Native)
+  4. Custom Web Applications & Enterprise SaaS (Node.js, Python, PostgreSQL, Next.js, React)
+  5. Software Maintenance, Server Uptime Monitoring, Security Patches & Cloud Backups
+  6. Emergency 24/7 Bug Fixes & Website Repair (500 errors, broken checkouts, malware cleanup, database recovery)
 
-Pricing Benchmarks (Nigerian Naira ₦):
-- Basic / Starter Business Website: ₦120,000 – ₦250,000 (1-2 weeks)
-- Corporate / Brand Portal: ₦300,000 – ₦650,000 (2-4 weeks)
-- E-Commerce / Multi-Vendor Store: ₦500,000 – ₦1,200,000+ (3-6 weeks)
-- Full-Stack Web App / SaaS: ₦800,000 – ₦2,500,000+ (4-10 weeks)
-- Native / Hybrid Mobile App (iOS & Android): ₦950,000 – ₦3,000,000+ (6-12 weeks)
-- Emergency Bug Fix: ₦35,000 – ₦120,000 (Same day / 24 hours turnaround)
-- Monthly Maintenance Retainer: ₦45,000 – ₦180,000/month
+Pricing Benchmarks & Nigerian Billing Principles (Nigerian Naira ₦):
+You know how the Nigerian tech billing system works:
+1. Pricing is strictly dependent on the WORKLOAD, page count, custom feature complexity, and revision rounds.
+2. Standard payment model is milestone-based: 60% mobilization deposit upfront, 40% balance upon staging review, live testing, and delivery.
+3. Realistic pricing benchmarks:
+   - Standard Business Website: ₦120,000 – ₦280,000 (workload dependent: 5-8 pages, mobile-first, contact forms, WhatsApp integration)
+   - Corporate / Brand Portal: ₦300,000 – ₦650,000 (2-4 weeks)
+   - E-Commerce / Online Store: ₦450,000 – ₦1,200,000+ (Paystack/Flutterwave gateway, cart, inventory, order notifications)
+   - Graphics Design & Single Deliverables: ₦15,000 – ₦35,000 (Flyers, banners, single logo concepts)
+   - Complete Brand Identity Pack: ₦50,000 – ₦120,000 (Logo suite, typography scale, color palette, business cards, letterheads, social media kit)
+   - Product Design & Interactive Prototyping: ₦100,000 – ₦350,000 (Figma clickable high-fidelity wireframes, interactive user flows, design system components)
+   - Comprehensive Brand + Product Prototype Suite: ₦250,000 – ₦500,000
+   - Full-Stack Web App / SaaS: ₦800,000 – ₦2,500,000+ (4-10 weeks)
+   - Native / Hybrid Mobile App (iOS & Android): ₦950,000 – ₦3,000,000+ (6-12 weeks)
+   - Emergency Bug Fix: ₦35,000 – ₦120,000 (Same day / 24 hours turnaround)
+   - Monthly Maintenance Retainer: ₦45,000 – ₦180,000/month
+
+CRITICAL UPCOMING CRASH COURSE ANNOUNCEMENT:
+- Always inform clients, students, and prospects: Ocean Technologies is about to launch an intensive, hands-on CRASH COURSE very soon!
+- Explicitly tell them: "You should prepare, because we are about to do a crash course soon and the price will drop significantly! Stay tuned!"
+- Advise them to contact our Student Admissions Coordinator directly on WhatsApp at 09129216768 to join the priority reservation list and receive early-bird cohort notifications.
 
 Guidelines for your responses:
-1. Always maintain a professional, articulate, and reassuring tone.
-2. Provide realistic pricing ranges in Naira (₦) along with clear milestones.
-3. If the user reports technical downtime or errors, provide structured root causes and immediate action steps.
-4. Format your output using clear markdown with headings, bullet points, and bold text.
+1. Always maintain a professional, articulate, authoritative, and encouraging tone.
+2. Clearly explain how Nigerian billing works based on workload, deliverables, and milestone deposits.
+3. If asked about prices, provide clear Naira (₦) ranges with timeline and workload breakdown.
+4. Promote the upcoming crash course and price drop whenever relevant.
+5. Provide the official WhatsApp number (09129216768) and email (oceantechnologies62@gmail.com) for direct follow-up.
+6. Format your output using clear markdown with headings, bullet points, and bold text.
 `;
+
+const DEFAULT_GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
 
 // AI Chat Endpoint
 app.post('/api/ai/chat', async (req, res) => {
@@ -660,7 +856,7 @@ app.post('/api/ai/chat', async (req, res) => {
       }
 
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: DEFAULT_GEMINI_MODEL,
         contents,
         config: {
           systemInstruction: OCEAN_SYSTEM_PROMPT,
@@ -704,7 +900,7 @@ Please provide:
 `;
 
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: DEFAULT_GEMINI_MODEL,
         contents: prompt,
         config: {
           systemInstruction: OCEAN_SYSTEM_PROMPT,
@@ -735,6 +931,7 @@ Please provide:
 - **Step 1**: Review server error logs and stack traces to isolate the faulty module.
 - **Step 2**: Deploy isolated hotfix or roll back recent breaking changes.
 - **Step 3**: Re-verify database transactions and health check endpoints.
+- **Step 4**: Perform end-to-end user journey verification.
 
 #### **3. Cost & Turnaround**
 - **Turnaround Time**: Same-day recovery (typically 1–4 hours).
@@ -769,7 +966,7 @@ Generate a professional Technical Scope & Proposal Outline:
 `;
 
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: DEFAULT_GEMINI_MODEL,
         contents: prompt,
         config: {
           systemInstruction: OCEAN_SYSTEM_PROMPT,
@@ -785,6 +982,13 @@ Generate a professional Technical Scope & Proposal Outline:
     console.warn('Estimate AI call failed, generating native proposal:', error);
   }
 
+  let estimatedBudget = '₦450,000 – ₦1,250,000';
+  if (projectType && (projectType.toLowerCase().includes('graphic') || projectType.toLowerCase().includes('brand') || projectType.toLowerCase().includes('prototype'))) {
+    estimatedBudget = '₦50,000 – ₦250,000 (depending on asset count and interactive prototype screens)';
+  } else if (projectType && (projectType.toLowerCase().includes('standard') || projectType.toLowerCase().includes('starter'))) {
+    estimatedBudget = '₦120,000 – ₦280,000 (depending on workload, pages, and integrations)';
+  }
+
   // Mature, reliable native estimate
   const nativeProposal = `### **Ocean Technologies — Technical Scope & Estimate**
 
@@ -796,20 +1000,24 @@ Generate a professional Technical Scope & Proposal Outline:
 ---
 
 #### **1. Recommended Architecture & Tech Stack**
-- **Frontend**: React / Next.js with Tailwind CSS (Ultra-fast, SEO-optimized, mobile responsive).
+- **Frontend / Design**: Figma clickable prototypes, React / Next.js with Tailwind CSS (Ultra-fast, SEO-optimized, mobile responsive).
 - **Backend & APIs**: Node.js / Express with modular REST or GraphQL architecture.
 - **Database**: PostgreSQL / Cloud Firestore with automated encrypted backups.
 - **Security & Payments**: Paystack / Flutterwave API integration with webhook authentication and SSL encryption.
 
-#### **2. Milestones & Delivery Schedule**
-- **Phase 1 (Week 1)**: UI/UX wireframes, architecture specification & database schema.
-- **Phase 2 (Weeks 2–3)**: Core engineering, payment gateway integration, user authentication.
-- **Phase 3 (Week 4)**: Quality assurance testing, security auditing & live deployment.
+#### **2. Milestones & Delivery Schedule (Nigerian Billing Model)**
+- **Phase 1**: Discovery, Figma wireframes & interactive prototypes (60% mobilization deposit).
+- **Phase 2**: Core engineering, design asset production, and integration.
+- **Phase 3**: Quality assurance testing, staging review, live handover (40% completion balance).
 
 #### **3. Investment Estimate**
-- **Estimated Budget Range**: **₦450,000 – ₦1,250,000** (depending on custom feature depth).
-- **Includes**: 30 days of post-launch engineering support and deployment handover.
+- **Estimated Budget Range**: **${estimatedBudget}**
+- **Includes**: Source files / Figma assets and 30 days of post-launch engineering support.
 
+---
+
+> **UPCOMING CRASH COURSE ANNOUNCEMENT**: Prepare yourself! Ocean Technologies is launching an intensive crash course very soon where course prices will drop significantly. Stay tuned or message coordinator on WhatsApp!
+> 
 > **Next Steps**: Send this summary to Engr. Kechineke on WhatsApp at **[09129216768](https://wa.me/2349129216768)** to finalize milestones and schedule your project kickoff.`;
 
   res.json({ proposal: nativeProposal });

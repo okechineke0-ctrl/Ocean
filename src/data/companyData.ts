@@ -38,7 +38,7 @@ export const SERVICES: ServiceItem[] = [
       'Bank-grade SSL security and protection against malware'
     ],
     deliverables: [
-      'Custom UI/UX Wireframes and Visual Prototypes',
+      'Custom Graphics, Brand Identity Assets, Wireframes and Prototypes',
       'Full Responsive Frontend & Backend Architecture',
       'Content Management System (CMS) / Custom Portal',
       'Domain Setup, SSL Certificate & Hosting Configuration',
@@ -211,6 +211,33 @@ export const SERVICES: ServiceItem[] = [
     startingPriceNGN: 50000,
     startingPriceUSD: 40,
     iconName: 'Settings',
+    isPopular: true,
+  },
+  {
+    id: 'graphics-design-prototyping',
+    title: 'Graphics Design, Product Design & Prototyping',
+    category: 'Graphics Design & Prototyping',
+    tagline: 'Professional brand identities, graphics design, interactive Figma prototypes, and product UI systems.',
+    description: 'Elevate your business presence with world-class graphic design, corporate brand identity, marketing creative materials, and clickable product prototypes. We design before code to accelerate your go-to-market timeline.',
+    keyBenefits: [
+      'High-impact vector brand logos and corporate identity guidelines',
+      'Interactive, high-fidelity clickable Figma prototypes ready for user testing',
+      'Marketing banners, flyers, social media kits, and pitch deck visuals',
+      'Consistent design system tokens, typography scales, and UI palettes',
+      'Smooth developer handoff with full commercial asset source files'
+    ],
+    deliverables: [
+      'Master Brand Identity Kit (SVG, PNG, PDF, Vector AI)',
+      'Clickable High-Fidelity Figma Product Prototype',
+      'Social Media & Marketing Creative Assets',
+      'Comprehensive Design Tokens & Component Library',
+      '100% Commercial Usage License & Source Archives'
+    ],
+    technologies: ['Figma', 'Adobe Photoshop', 'Adobe Illustrator', 'CorelDraw', 'FigJam', 'Vector Systems'],
+    deliveryTime: '3 to 7 Days',
+    startingPriceNGN: 45000,
+    startingPriceUSD: 35,
+    iconName: 'Palette',
     isPopular: true,
   }
 ];
@@ -400,7 +427,7 @@ export const TESTIMONIALS: Testimonial[] = [
     clientName: 'Chiamaka Nnaji',
     role: 'Founder & CEO',
     company: 'Zuri Essentials Boutique',
-    location: 'Agbani / ESUT Campus Area',
+    location: 'Enugu & Lagos, Nigeria',
     comment: 'When our e-commerce checkout crashed during a major sales weekend, Ocean Technologies answered my call immediately at 09129216768 and resolved the system issue within 2 hours. They saved my business from huge embarrassment.',
     serviceReceived: 'Emergency Bug Troubleshooting & Speed Optimization',
     rating: 5
@@ -411,7 +438,7 @@ export const TESTIMONIALS: Testimonial[] = [
     role: 'Director of ICT',
     company: 'Apex Health Systems',
     location: 'Enugu State, Nigeria',
-    comment: 'Ocean Technologies built our patient management mobile and web application. Their technical depth in Flutter and React is remarkable. The team is right here in Agbani, always accessible, professional, and reliable.',
+    comment: 'Ocean Technologies built our patient management mobile and web application. Their technical depth in Flutter and React is remarkable. The team is always accessible, professional, and reliable.',
     serviceReceived: 'Mobile App & Custom Web Portal Development',
     rating: 5
   },
@@ -463,6 +490,24 @@ export const FAQS: FAQItem[] = [
     category: 'Consultation & Quotes',
     question: 'How do I get started or request a price quote?',
     answer: 'You can request a quote directly through our website, send us an email at oceantechnologies62@gmail.com, or reach us on phone/WhatsApp at 09129216768. Our technical leads respond with clear scoping and line-item estimates.'
+  },
+  {
+    id: '7',
+    category: 'Website Development',
+    question: 'How much does a standard website cost in Nigeria, and how does your billing work?',
+    answer: 'In Nigeria, website pricing is determined by the workload, page volume, and custom functionality. A Starter Business Website (4–6 pages, responsive, contact forms) typically ranges from ₦80,000 to ₦150,000. A Standard Corporate Portal with custom branding and CMS is ₦150,000 to ₦280,000. Full-scale e-commerce stores and custom web apps range from ₦350,000 to ₦850,000+. Every quote reflects exact development hours with zero hidden fees.'
+  },
+  {
+    id: '8',
+    category: 'Payments & Billing',
+    question: 'What are your rates for Graphics Design, Brand Identity & Figma Prototyping?',
+    answer: 'Our Graphics Design and Product Prototyping rates are tailored for value: Single marketing flyers and social banners (₦8,000 – ₦20,000), comprehensive Brand Identity & Vector Logo Packs (₦35,000 – ₦85,000), and complete Interactive Figma Product Prototypes (₦80,000 – ₦250,000 depending on user flows and screen count).'
+  },
+  {
+    id: '9',
+    category: 'General',
+    question: 'When is the upcoming Tech & Graphics Crash Course starting?',
+    answer: 'We are preparing to launch an intensive Tech & Graphics Crash Course very soon! Tuition fees will drop significantly for this upcoming batch, making hands-on engineering, graphics design, and prototyping accessible to all. Please prepare your systems, stay tuned, and contact our Student Coordinator at 09129216768 to secure your early seat!'
   }
 ];
 

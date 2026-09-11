@@ -22,7 +22,8 @@ import {
   Code2,
   GraduationCap,
   Award,
-  Building2
+  Building2,
+  Palette
 } from 'lucide-react';
 
 interface HomeViewProps {
@@ -60,6 +61,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       case 'Bug': return <Bug className="w-6 h-6 text-amber-600" />;
       case 'Server': return <Server className="w-6 h-6 text-cyan-600" />;
       case 'Settings': return <Wrench className="w-6 h-6 text-indigo-600" />;
+      case 'Palette': return <Palette className="w-6 h-6 text-pink-600" />;
       default: return <Code2 className="w-6 h-6 text-sky-600" />;
     }
   };
@@ -346,13 +348,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <span className="text-sky-600 font-bold text-xs uppercase tracking-wider">
-              Local Presence • Global Quality
+              Engineering Excellence • Global Quality
             </span>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 font-display mt-2 mb-6">
-              Why Businesses in Enugu & Nigeria Choose Ocean Technologies
+              Why Businesses & Students Choose Ocean Technologies
             </h2>
             <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-6">
-              We combine deep technical software expertise with responsive customer communication. Located in Agbani, Enugu State (ESUT Corridor), we are accessible for in-person consultations, emergency software hotlines, and long-term tech partnerships.
+              We combine deep technical software expertise with responsive customer communication, rapid emergency turnarounds, modern graphics design, and 100% online mentorship cohorts across Nigeria and beyond.
             </p>
 
             <div className="space-y-4">

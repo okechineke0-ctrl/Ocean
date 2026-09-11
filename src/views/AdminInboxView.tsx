@@ -49,9 +49,12 @@ import {
   Printer,
   Eye,
   EyeOff,
-  LogOut
+  LogOut,
+  Megaphone
 } from 'lucide-react';
 import { Logo } from '../components/Logo';
+import { AdminAnnouncementManager } from '../components/AdminAnnouncementManager';
+import { getSiteAnnouncement, isAnnouncementActive } from '../lib/announcementService';
 
 interface AdminInboxViewProps {
   onNavigate: (view: ViewMode) => void;
@@ -63,8 +66,29 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
   const [courseRegistrations, setCourseRegistrations] = useState<CourseRegistrationRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<'all' | 'courses' | 'internships' | 'quotes' | 'emergency' | 'contact'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'courses' | 'internships' | 'quotes' | 'emergency' | 'contact' | 'announcement'>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [tickerStatus, setTickerStatus] = useState<{ active: boolean; text: string }>({ active: false, text: 'Checking...' });
+
+  // Monitor site announcement status for admin badges
+  const checkTickerStatus = async () => {
+    try {
+      const ann = await getSiteAnnouncement();
+      if (ann && isAnnouncementActive(ann)) {
+        setTickerStatus({ active: true, text: 'Ticker Live on Website' });
+      } else {
+        setTickerStatus({ active: false, text: 'Ticker Paused / Expired' });
+      }
+    } catch {
+      setTickerStatus({ active: false, text: 'Ticker Inactive' });
+    }
+  };
+
+  useEffect(() => {
+    checkTickerStatus();
+    window.addEventListener('ocean-announcement-changed', checkTickerStatus);
+    return () => window.removeEventListener('ocean-announcement-changed', checkTickerStatus);
+  }, []);
   
   // Selected items for detail pane
   const [selectedInquiry, setSelectedInquiry] = useState<InquiryRecord | null>(null);
@@ -85,6 +109,23 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
   }>({
     isOpen: false,
     internship: null,
+    emailSubject: '',
+    emailBody: '',
+    mailtoUrl: '',
+    copied: false,
+  });
+
+  // Course Registration Official Admission Email Modal State
+  const [courseAcceptanceModal, setCourseAcceptanceModal] = useState<{
+    isOpen: boolean;
+    courseReg: CourseRegistrationRecord | null;
+    emailSubject: string;
+    emailBody: string;
+    mailtoUrl: string;
+    copied: boolean;
+  }>({
+    isOpen: false,
+    courseReg: null,
     emailSubject: '',
     emailBody: '',
     mailtoUrl: '',
@@ -245,6 +286,13 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
   };
 
   const handleStatusChangeCourseReg = async (id: string, newStatus: CourseRegistrationRecord['status']) => {
+    if (newStatus === 'admitted') {
+      const target = courseRegistrations.find(c => c.id === id) || selectedCourseReg;
+      if (target) {
+        await handleAcceptCourseRegistration(target);
+        return;
+      }
+    }
     await updateCourseRegistrationStatus(id, newStatus);
     setCourseRegistrations((prev) =>
       prev.map((c) => (c.id === id ? { ...c, status: newStatus } : c))
@@ -423,7 +471,7 @@ Phone / WhatsApp: +234 912 921 6768`;
 
   const getWhatsAppStudentLink = (internship: InternshipRecord) => {
     const text = encodeURIComponent(
-      `Hello ${internship.fullName},\nThis is Ocean Technologies Student Placement Coordinator in Agbani (Near ESUT).\nWe received your ${internship.programType} registration (Ref: ${internship.registrationNumber}) for ${internship.techTrack}.\nWe would like to invite you for your onboarding and logbook clearance.`
+      `Hello ${internship.fullName},\nThis is Ocean Technologies Student Placement Coordinator.\nWe received your ${internship.programType} registration (Ref: ${internship.registrationNumber}) for ${internship.techTrack}.\nWe would like to invite you for your onboarding and logbook clearance. Contact: 09129216768.`
     );
     const cleanPhone = internship.phone.replace(/[^0-9]/g, '');
     const intlPhone = cleanPhone.startsWith('0') ? `234${cleanPhone.slice(1)}` : cleanPhone;
@@ -433,7 +481,7 @@ Phone / WhatsApp: +234 912 921 6768`;
   const getEmailStudentLink = (internship: InternshipRecord) => {
     const subject = encodeURIComponent(`Ocean Technologies Internship / SIWES Placement (Ref: ${internship.registrationNumber})`);
     const body = encodeURIComponent(
-      `Dear ${internship.fullName},\n\nThank you for registering for the ${internship.programType} (${internship.techTrack}) at Ocean Technologies Hub in Agbani, Enugu State.\n\nYour Registration Reference Number is: ${internship.registrationNumber}\nSchool: ${internship.school}\nMatric ID: ${internship.studentId}\n\nPlease come with your university IT letter / logbook to our office along Agbani Main Road (Near ESUT Gate).\n\nBest regards,\nStudent Placement Team\nOcean Technologies Agbani`
+      `Dear ${internship.fullName},\n\nThank you for registering for the ${internship.programType} (${internship.techTrack}) at Ocean Technologies.\n\nYour Registration Reference Number is: ${internship.registrationNumber}\nSchool: ${internship.school}\nMatric ID: ${internship.studentId}\n\nFor future enquiry and placement details, please call or WhatsApp our coordinator at 09129216768.\n\nBest regards,\nStudent Placement Team\nOcean Technologies`
     );
     return `mailto:${internship.email}?subject=${subject}&body=${body}`;
   };
@@ -447,9 +495,87 @@ Phone / WhatsApp: +234 912 921 6768`;
     return `https://wa.me/${intlPhone}?text=${text}`;
   };
 
+  const generateOfficialCourseAcceptanceEmail = (reg: CourseRegistrationRecord) => {
+    const subject = `Admission Acceptance: ${reg.courseTitle} - Ocean Technologies (Ref: ${reg.registrationNumber})`;
+    const body = `Dear ${reg.fullName},
+
+Congratulations! Your application and registration for "${reg.courseTitle}" has been officially ACCEPTED and APPROVED by Ocean Technologies Institute.
+
+REGISTRATION & ENROLLMENT PARTICULARS:
+--------------------------------------------------
+• Student Full Name: ${reg.fullName}
+• Enrolled Course: ${reg.courseTitle}
+• Phone Number: ${reg.phone}
+• Email Address: ${reg.email}
+• Registration Reference Number: ${reg.registrationNumber}
+• Learning Format: 100% Online Virtual Classroom
+• Class Schedule: ${reg.schedule}
+• Course Duration: ${reg.duration}
+• Preferred Start Date: ${reg.preferredStartDate || 'Immediate Cohort'}
+• Official Store Date: ${reg.registrationDate || formatTimestamp(reg.createdAt)}
+
+NEXT STEPS FOR FUTURE ENQUIRY & TUITION PAYMENT:
+--------------------------------------------------
+Please chat or call our Student Admissions Coordinator directly on WhatsApp or Call at 09129216768 for future enquiry, cohort orientation briefing, prerequisite preparation, and tuition fee payment instructions.
+
+• Admissions Coordinator WhatsApp: 09129216768
+• Direct WhatsApp Link: https://wa.me/2349129216768
+• Coordinator Direct Line: +234 912 921 6768
+• Official Email: oceantechnologies62@gmail.com
+
+*Note: Please quote your Registration Reference Number (${reg.registrationNumber}) during all conversations and payment verifications.*
+
+We look forward to guiding you through this cohort to industry-grade proficiency.
+
+Warm regards,
+
+Academic Admissions Committee
+Ocean Technologies Institute
+Phone / WhatsApp: 09129216768
+Email: oceantechnologies62@gmail.com`;
+
+    const mailtoUrl = `mailto:${reg.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    return { subject, body, mailtoUrl };
+  };
+
+  const handleAcceptCourseRegistration = async (reg: CourseRegistrationRecord) => {
+    const { subject, body, mailtoUrl } = generateOfficialCourseAcceptanceEmail(reg);
+    const timeStamp = new Date().toLocaleString('en-GB');
+    const adminStamp = `ACCEPTED by Admin on ${timeStamp}. Official admission email generated to ${reg.email} with payment/enquiry contact: 09129216768.`;
+
+    // 1. Update Firestore
+    await updateCourseRegistrationStatus(reg.id, 'admitted', adminStamp);
+
+    // 2. Update local state
+    setCourseRegistrations((prev) =>
+      prev.map((item) => (item.id === reg.id ? { ...item, status: 'admitted', adminNotes: adminStamp } : item))
+    );
+    if (selectedCourseReg?.id === reg.id) {
+      setSelectedCourseReg((prev) => (prev ? { ...prev, status: 'admitted', adminNotes: adminStamp } : null));
+      setNotesInput(adminStamp);
+    }
+
+    // 3. Open modal
+    setCourseAcceptanceModal({
+      isOpen: true,
+      courseReg: reg,
+      emailSubject: subject,
+      emailBody: body,
+      mailtoUrl,
+      copied: false,
+    });
+
+    // 4. Trigger default mail app
+    try {
+      window.location.href = mailtoUrl;
+    } catch (e) {
+      console.warn('Mail client launch:', e);
+    }
+  };
+
   const getWhatsAppCourseRegLink = (reg: CourseRegistrationRecord) => {
     const text = encodeURIComponent(
-      `Hello ${reg.fullName}!\nThis is Ocean Technologies Institute Course Admissions Coordinator.\nWe received your course registration for "${reg.courseTitle}" (Ref: ${reg.registrationNumber}).\nYour registered cohort starts: ${reg.preferredStartDate || 'Immediate'}.\nWe would love to welcome you and assist with your syllabus and onboarding.`
+      `Hello ${reg.fullName}!\nThis is Ocean Technologies Institute Admissions Coordinator.\n\n• Student Name: ${reg.fullName}\n• Course Registered: ${reg.courseTitle}\n• Phone Number: ${reg.phone}\n• Registration Ref: ${reg.registrationNumber}\n• Learning Format: 100% Online Virtual Classroom\n\nWe have reviewed your registration. For future enquiry, orientation details, and tuition payment, please chat or call us directly on this WhatsApp line: 09129216768.`
     );
     const cleanPhone = reg.phone.replace(/[^0-9]/g, '');
     const intlPhone = cleanPhone.startsWith('0') ? `234${cleanPhone.slice(1)}` : cleanPhone;
@@ -457,9 +583,9 @@ Phone / WhatsApp: +234 912 921 6768`;
   };
 
   const getEmailCourseRegLink = (reg: CourseRegistrationRecord) => {
-    const subject = encodeURIComponent(`Ocean Technologies Course Registration: ${reg.courseTitle} (Ref: ${reg.registrationNumber})`);
+    const subject = encodeURIComponent(`Admission & Course Registration: ${reg.courseTitle} (Ref: ${reg.registrationNumber})`);
     const body = encodeURIComponent(
-      `Dear ${reg.fullName},\n\nThank you for registering for "${reg.courseTitle}" at Ocean Technologies Institute.\n\nRegistration Number: ${reg.registrationNumber}\nClass Format: ${reg.classFormat === 'online' ? 'Online Virtual Classroom' : 'In-Person Campus Hub'}\nSchedule: ${reg.schedule}\nDuration: ${reg.duration}\nOfficial Registration Date Stored: ${reg.registrationDate || formatTimestamp(reg.createdAt)}\nPreferred Start Date: ${reg.preferredStartDate || 'Immediate'}\n\nOur academic advisor will guide you through the syllabus, orientation, and initial setup.\n\nBest regards,\nAcademic Admissions Team\nOcean Technologies Institute`
+      `Dear ${reg.fullName},\n\nThank you for registering for "${reg.courseTitle}" at Ocean Technologies Institute.\n\n• Student Name: ${reg.fullName}\n• Course Registered: ${reg.courseTitle}\n• Phone Number: ${reg.phone}\n• Registration Reference Number: ${reg.registrationNumber}\n• Class Format: 100% Online Virtual Classroom\n• Schedule: ${reg.schedule}\n• Duration: ${reg.duration}\n• Preferred Start Date: ${reg.preferredStartDate || 'Immediate Cohort'}\n\nFUTURE ENQUIRY & PAYMENT:\nPlease chat or call our Student Admissions Coordinator directly on WhatsApp or Call at 09129216768 for future enquiry, cohort orientation, and tuition payment processing.\n\nBest regards,\nAcademic Admissions Team\nOcean Technologies Institute`
     );
     return `mailto:${reg.email}?subject=${subject}&body=${body}`;
   };
@@ -639,7 +765,23 @@ Phone / WhatsApp: +234 912 921 6768`;
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+            <button
+              onClick={() => setActiveTab('announcement')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all border cursor-pointer ${
+                activeTab === 'announcement'
+                  ? 'bg-amber-500 text-slate-950 border-amber-400 font-bold shadow-md'
+                  : 'bg-slate-800 hover:bg-slate-700 text-amber-300 border-slate-700'
+              }`}
+            >
+              <Megaphone className="w-3.5 h-3.5" />
+              <span>Site Ticker</span>
+              {tickerStatus.active ? (
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              ) : (
+                <span className="w-2 h-2 rounded-full bg-slate-500"></span>
+              )}
+            </button>
             <button
               onClick={handleRefreshAll}
               className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors border border-slate-700 cursor-pointer"
@@ -667,7 +809,7 @@ Phone / WhatsApp: +234 912 921 6768`;
 
       {/* Metrics Summary Strip */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 mb-6">
           {/* Card 1: Total Records */}
           <div 
             onClick={() => setActiveTab('all')}
@@ -703,7 +845,7 @@ Phone / WhatsApp: +234 912 921 6768`;
               )}
             </div>
             <p className="text-2xl font-bold font-display text-emerald-300 mt-1">{counts.courses}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Registration Date Store</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Online Cohort Store</p>
           </div>
 
           {/* Card 3: Internships & SIWES */}
@@ -756,6 +898,32 @@ Phone / WhatsApp: +234 912 921 6768`;
             <p className="text-xs text-rose-400 font-medium">Emergency Bugs</p>
             <p className="text-2xl font-bold font-display text-rose-300 mt-1">{counts.emergency}</p>
             <p className="text-[11px] text-slate-500 mt-0.5">Urgent Triage</p>
+          </div>
+
+          {/* Card 6: Site Announcement (OPay Marquee Ticker) */}
+          <div 
+            onClick={() => setActiveTab('announcement')}
+            className={`cursor-pointer rounded-xl p-4 transition-all border ${
+              activeTab === 'announcement' 
+                ? 'bg-amber-950/70 border-amber-500/60 shadow-lg ring-1 ring-amber-500/30' 
+                : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-amber-400 font-medium flex items-center gap-1">
+                <Megaphone className="w-3.5 h-3.5" />
+                <span>Site Ticker</span>
+              </p>
+              <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full border ${
+                tickerStatus.active
+                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                  : 'bg-slate-800 text-slate-400 border-slate-700'
+              }`}>
+                {tickerStatus.active ? 'LIVE' : 'OFF'}
+              </span>
+            </div>
+            <p className="text-2xl font-bold font-display text-amber-300 mt-1">OPay Bar</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Auto-Expiry Timer</p>
           </div>
         </div>
 
@@ -828,11 +996,29 @@ Phone / WhatsApp: +234 912 921 6768`;
             >
               Emergency ({counts.emergency})
             </button>
+            <button
+              onClick={() => setActiveTab('announcement')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 ${
+                activeTab === 'announcement'
+                  ? 'bg-amber-500 text-slate-950 font-bold shadow-xs'
+                  : 'bg-slate-900 text-amber-300 hover:text-white border border-slate-800'
+              }`}
+            >
+              <Megaphone className="w-3.5 h-3.5" />
+              <span>Site Ticker (OPay)</span>
+              {tickerStatus.active && (
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              )}
+            </button>
           </div>
         </div>
 
-        {/* Master-Detail Split Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Conditional View: Site Announcement Ticker Manager OR Master-Detail Submissions */}
+        {activeTab === 'announcement' ? (
+          <AdminAnnouncementManager onAnnouncementSaved={checkTickerStatus} />
+        ) : (
+          /* Master-Detail Split Grid */
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
           {/* Left: Records List (5 Cols) */}
           <div className="lg:col-span-5 bg-slate-950/80 border border-slate-800 rounded-2xl overflow-hidden">
@@ -894,8 +1080,8 @@ Phone / WhatsApp: +234 912 921 6768`;
                       </p>
 
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-300 mb-1">
-                        <span className="flex items-center gap-1 text-slate-400">
-                          {reg.classFormat === 'online' ? '🌐 Virtual Class' : '🏫 In-Person Hub'}
+                        <span className="flex items-center gap-1 text-sky-400 font-medium">
+                          🌐 100% Online Virtual Class
                         </span>
                         <span className="text-slate-600">•</span>
                         <span className="text-slate-400">{reg.schedule}</span>
@@ -1420,28 +1606,57 @@ Phone / WhatsApp: +234 912 921 6768`;
                   </div>
                 </div>
 
-                {/* Instant Student Communication Bar */}
+                {/* Instant Student Communication & Official Admission Dispatch Bar */}
                 <div className="bg-emerald-950/40 border border-emerald-900/60 rounded-xl p-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                   <div>
-                    <p className="text-xs font-bold text-emerald-300">Direct Student Communication</p>
-                    <p className="text-[11px] text-slate-400">Reach the enrolled student immediately via WhatsApp or Email:</p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-xs font-bold text-emerald-300">Direct Student Admissions & Payment Gateway</p>
+                      {selectedCourseReg.status === 'admitted' && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                          Admitted & Notice Sent
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-slate-400">Accept student and automatically dispatch email instructing them to chat 09129216768 for future enquiry & payment:</p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      onClick={() => handleAcceptCourseRegistration(selectedCourseReg)}
+                      className="px-3.5 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md cursor-pointer hover:scale-102"
+                    >
+                      <CheckCircle2 className="w-4 h-4 text-emerald-200" />
+                      <Mail className="w-4 h-4" />
+                      <span>{selectedCourseReg.status === 'admitted' ? 'Re-send Admission Email (09129216768)' : 'Accept & Send Admission Email'}</span>
+                    </button>
+
+                    {selectedCourseReg.status === 'admitted' && (
+                      <button
+                        onClick={() => {
+                          const { subject, body, mailtoUrl } = generateOfficialCourseAcceptanceEmail(selectedCourseReg);
+                          setCourseAcceptanceModal({
+                            isOpen: true,
+                            courseReg: selectedCourseReg,
+                            emailSubject: subject,
+                            emailBody: body,
+                            mailtoUrl,
+                            copied: false,
+                          });
+                        }}
+                        className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs border border-slate-700 flex items-center gap-1.5 cursor-pointer transition-colors"
+                      >
+                        <FileText className="w-3.5 h-3.5 text-sky-400" />
+                        <span>View Letter</span>
+                      </button>
+                    )}
+
                     <a
                       href={getWhatsAppCourseRegLink(selectedCourseReg)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-md"
+                      className="px-3 py-2 rounded-lg bg-emerald-700/80 hover:bg-emerald-600 text-white font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-md cursor-pointer"
                     >
                       <MessageCircle className="w-4 h-4" />
                       <span>WhatsApp Student</span>
-                    </a>
-                    <a
-                      href={getEmailCourseRegLink(selectedCourseReg)}
-                      className="px-3.5 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-md"
-                    >
-                      <Mail className="w-4 h-4" />
-                      <span>Send Email</span>
                     </a>
                   </div>
                 </div>
@@ -1460,7 +1675,7 @@ Phone / WhatsApp: +234 912 921 6768`;
                     <div>
                       <p className="text-[10px] text-slate-500 uppercase font-semibold">Learning Format</p>
                       <p className="text-emerald-400 font-semibold text-sm">
-                        {selectedCourseReg.classFormat === 'online' ? '🌐 Online Virtual Classroom' : '🏫 In-Person Campus Hub'}
+                        🌐 100% Online Virtual Classroom
                       </p>
                     </div>
                     <div>
@@ -1737,6 +1952,7 @@ Phone / WhatsApp: +234 912 921 6768`;
           </div>
 
         </div>
+        )}
       </div>
 
       {/* Official IT / SIWES Admission & Commencement Letter Modal */}
@@ -1857,6 +2073,134 @@ Phone / WhatsApp: +234 912 921 6768`;
 
               <button
                 onClick={() => setAcceptanceModal(prev => ({ ...prev, isOpen: false }))}
+                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold cursor-pointer"
+              >
+                Close Window
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* Official Course Registration Admission & Payment Notice Modal */}
+      {courseAcceptanceModal.isOpen && courseAcceptanceModal.courseReg && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/85 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl max-w-3xl w-full p-6 sm:p-7 relative max-h-[90vh] flex flex-col">
+            
+            {/* Header */}
+            <div className="flex items-start justify-between pb-4 border-b border-slate-800 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center">
+                  <BadgeCheck className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white font-display flex items-center gap-2">
+                    <span>Course Admission Approved & Notice Dispatched</span>
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Status set to <span className="text-emerald-400 font-semibold">ADMITTED</span>. Student instructed to chat <span className="text-sky-300 font-mono font-bold">09129216768</span> for payment & enquiry.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setCourseAcceptanceModal(prev => ({ ...prev, isOpen: false }))}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Content Body - Scrollable */}
+            <div className="overflow-y-auto py-4 space-y-4 pr-1">
+              
+              {/* Summary Pill Bar */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-950/80 p-3 rounded-xl border border-slate-800 text-xs">
+                <div>
+                  <span className="text-[10px] text-slate-500 block uppercase font-bold">Student</span>
+                  <span className="text-white font-semibold truncate block">{courseAcceptanceModal.courseReg.fullName}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-500 block uppercase font-bold">Course</span>
+                  <span className="text-emerald-400 font-semibold truncate block">{courseAcceptanceModal.courseReg.courseTitle}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-500 block uppercase font-bold">Registration Ref</span>
+                  <span className="text-sky-400 font-mono font-bold block">{courseAcceptanceModal.courseReg.registrationNumber}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-500 block uppercase font-bold">Payment Line</span>
+                  <span className="text-amber-300 font-mono font-bold truncate block">09129216768</span>
+                </div>
+              </div>
+
+              {/* Subject line box */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">Email Subject Line:</label>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(courseAcceptanceModal.emailSubject);
+                    }}
+                    className="text-[11px] text-sky-400 hover:text-sky-300 flex items-center gap-1 cursor-pointer"
+                  >
+                    <Copy className="w-3 h-3" />
+                    <span>Copy Subject</span>
+                  </button>
+                </div>
+                <div className="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-xs font-mono text-slate-200">
+                  {courseAcceptanceModal.emailSubject}
+                </div>
+              </div>
+
+              {/* Email Body box */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">Official Admission Notice Content:</label>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(courseAcceptanceModal.emailBody);
+                      setCourseAcceptanceModal(prev => ({ ...prev, copied: true }));
+                      setTimeout(() => setCourseAcceptanceModal(prev => ({ ...prev, copied: false })), 3000);
+                    }}
+                    className="text-[11px] text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1 cursor-pointer bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/60"
+                  >
+                    {courseAcceptanceModal.copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                    <span>{courseAcceptanceModal.copied ? 'Copied to Clipboard!' : 'Copy Email Body'}</span>
+                  </button>
+                </div>
+                <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs text-slate-300 font-mono leading-relaxed whitespace-pre-wrap max-h-64 overflow-y-auto select-all">
+                  {courseAcceptanceModal.emailBody}
+                </div>
+              </div>
+
+            </div>
+
+            {/* Footer Action Bar */}
+            <div className="pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 shrink-0">
+              <div className="flex items-center gap-2">
+                <a
+                  href={courseAcceptanceModal.mailtoUrl}
+                  className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-emerald-900/30 transition-all cursor-pointer"
+                >
+                  <MailCheck className="w-4 h-4" />
+                  <span>Launch in Email App (Direct Mailto)</span>
+                </a>
+
+                <a
+                  href={getWhatsAppCourseRegLink(courseAcceptanceModal.courseReg)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-2.5 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/80 text-emerald-300 border border-emerald-700/60 font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>Send on WhatsApp</span>
+                </a>
+              </div>
+
+              <button
+                onClick={() => setCourseAcceptanceModal(prev => ({ ...prev, isOpen: false }))}
                 className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold cursor-pointer"
               >
                 Close Window

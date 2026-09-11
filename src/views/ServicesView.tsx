@@ -15,7 +15,8 @@ import {
   Zap, 
   ShieldCheck,
   Phone,
-  MessageCircle
+  MessageCircle,
+  Palette
 } from 'lucide-react';
 
 interface ServicesViewProps {
@@ -36,6 +37,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
     'All',
     'Website Development',
     'Mobile App Development',
+    'Graphics Design & Prototyping',
     'Software Engineering',
     'Software Management',
     'Website Maintenance',
@@ -58,6 +60,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
       case 'Bug': return <Bug className="w-5 h-5 text-amber-600" />;
       case 'Server': return <Server className="w-5 h-5 text-cyan-600" />;
       case 'Settings': return <Layers className="w-5 h-5 text-indigo-600" />;
+      case 'Palette': return <Palette className="w-5 h-5 text-pink-600" />;
       default: return <Code className="w-5 h-5 text-sky-600" />;
     }
   };

@@ -61,3 +61,40 @@
   background: #0284c7;
 }
 
+/* OPay-Style Smooth Moving Write-up / Ticker Marquee */
+@keyframes oceanTickerMarquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-ticker-normal {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: oceanTickerMarquee 26s linear infinite;
+  will-change: transform;
+}
+
+.animate-ticker-slow {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: oceanTickerMarquee 38s linear infinite;
+  will-change: transform;
+}
+
+.animate-ticker-fast {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: oceanTickerMarquee 16s linear infinite;
+  will-change: transform;
+}
+
+.animate-ticker-normal:hover,
+.animate-ticker-slow:hover,
+.animate-ticker-fast:hover {
+  animation-play-state: paused;
+}
+

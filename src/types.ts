@@ -12,6 +12,7 @@ export type ServiceCategory =
   | 'All'
   | 'Website Development'
   | 'Mobile App Development'
+  | 'Graphics Design & Prototyping'
   | 'Software Engineering'
   | 'Software Management'
   | 'IT Consulting & Support'
@@ -31,7 +32,7 @@ export interface ServiceItem {
   deliveryTime: string;
   startingPriceNGN: number;
   startingPriceUSD: number;
-  iconName: 'Globe' | 'Smartphone' | 'Wrench' | 'Bug' | 'Server' | 'ShieldCheck' | 'Cpu' | 'Code' | 'Settings';
+  iconName: 'Globe' | 'Smartphone' | 'Wrench' | 'Bug' | 'Server' | 'ShieldCheck' | 'Cpu' | 'Code' | 'Settings' | 'Palette';
   isPopular?: boolean;
 }
 
@@ -209,6 +210,18 @@ export interface CourseRegistrationRecord {
   status: 'pending' | 'admitted' | 'enrolled' | 'completed' | 'cancelled';
   adminNotes?: string;
   createdAt: string;
+}
+
+export interface SiteAnnouncement {
+  id: string;
+  message: string;
+  badge: string;
+  isActive: boolean;
+  expiresAt: string | null; // ISO string or null for no expiry
+  theme?: 'opay' | 'navy' | 'emerald' | 'amber' | 'crimson';
+  speed?: 'slow' | 'normal' | 'fast';
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 

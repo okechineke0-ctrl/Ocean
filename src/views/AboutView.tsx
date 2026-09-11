@@ -66,7 +66,7 @@ export const AboutView: React.FC<AboutViewProps> = ({
               Ocean Technologies was founded with a clear objective: to bridge the gap between complex software engineering and practical business success. Too many organizations struggle with slow, vulnerable websites, crashing apps, or uncooperative developers who disappear after launching.
             </p>
             <p>
-              We established our engineering labs to bring together experienced software engineers, UI/UX designers, and systems architects. Whether we are engineering a new corporate web application, developing an iOS/Android mobile app, or providing proactive monthly website maintenance, we treat every line of code with craftsmanship and security rigor.
+              We established our engineering labs to bring together experienced software engineers, graphics & product designers, and systems architects. Whether we are engineering a new corporate web application, developing an iOS/Android mobile app, or providing proactive monthly website maintenance, we treat every line of code with craftsmanship and security rigor.
             </p>
             
             <div className="pt-4 grid grid-cols-2 sm:grid-cols-3 gap-4 border-t border-slate-200">

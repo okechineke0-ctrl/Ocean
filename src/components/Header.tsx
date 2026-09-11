@@ -104,7 +104,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30 hover:bg-sky-500/30 transition-colors font-medium text-[11px] cursor-pointer"
             >
               <GraduationCap className="w-3.5 h-3.5 text-sky-300" />
-              <span>Register for Course (Online & In-Person)</span>
+              <span>Register for Online Course</span>
             </button>
             <span className="text-slate-600 hidden lg:inline">•</span>
             <button
@@ -286,7 +286,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className="w-full py-2.5 px-4 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs tracking-wide text-center flex items-center justify-center gap-2 cursor-pointer shadow-xs"
               >
                 <GraduationCap className="w-4 h-4" />
-                <span>Register for a Course (Online & In-Person)</span>
+                <span>Register for an Online Course</span>
               </button>
 
               <button

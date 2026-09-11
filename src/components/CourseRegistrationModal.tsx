@@ -3,7 +3,6 @@ import {
   X, 
   GraduationCap, 
   Laptop, 
-  Building2, 
   CheckCircle2, 
   Clock, 
   Calendar, 
@@ -55,7 +54,7 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
 
   if (!isOpen) return null;
 
-  const currentCourse = COURSES_OFFERED.find((c) => c.id === selectedCourseId) || COURSES_OFFERED[0];
+  const currentCourse = COURSES_OFFERED.find((c) => c.id === selectedCourseId || (selectedCourseId === 'ui_ux' && c.id === 'graphic_design')) || COURSES_OFFERED[0];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,7 +122,7 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
   };
 
   const selectedCourseWhatsAppMessage = encodeURIComponent(
-    `Hello Ocean Technologies, I just registered for the ${currentCourse.name} (${classFormat.toUpperCase()} class) with Registration Ref: ${successData?.registrationNumber || 'OCT-CRS-2026'}. Please let me know the orientation schedule.`
+    `Hello Ocean Technologies Student Coordinator,\n\nI have registered for an online course on your portal:\n• Student Name: ${fullName}\n• Course Registered: ${currentCourse.name}\n• Learning Format: 100% Online Virtual Classroom\n• Phone Number: ${phone}\n• Registration Ref: ${successData?.registrationNumber || 'OCT-CRS-2026'}\n\nI am contacting you to confirm my admission, get orientation details, and proceed with payment.`
   );
 
   return (
@@ -142,13 +141,13 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                   <GraduationCap className="w-3.5 h-3.5" />
                   Ocean Tech Academy • 2026 Admissions
                 </span>
-                <span className="text-xs text-slate-400 hidden sm:inline">• Online & In-Person Programs</span>
+                <span className="text-xs text-sky-400 font-medium hidden sm:inline">• 100% Online Intensive Programs</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-bold tracking-tight font-display text-white">
-                Register for a Course
+                Register for an Online Course
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 mt-1">
-                Choose Online or In-Person classes across Web, Mobile, Game Development, Git/DevOps, and more.
+                Live interactive classes across Graphics Design, Web, Mobile, and Software Engineering.
               </p>
             </div>
             <button
@@ -196,7 +195,7 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                 <div className="flex justify-between py-1 border-b border-slate-200">
                   <span className="text-slate-500 font-medium">Class Format:</span>
                   <span className="font-bold uppercase text-sky-700 bg-sky-50 px-2 py-0.5 rounded">
-                    {classFormat === 'online' ? '🌐 Online Virtual Class' : '🏫 In-Person Physical Class'}
+                    🌐 100% Online Virtual Classroom
                   </span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-200">
@@ -222,13 +221,13 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
               {/* Action Buttons */}
               <div className="space-y-3 pt-2">
                 <a
-                  href={`https://wa.me/2349033321516?text=${selectedCourseWhatsAppMessage}`}
+                  href={`https://wa.me/2349129216768?text=${selectedCourseWhatsAppMessage}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all duration-200"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span>Connect With Student Coordinator on WhatsApp</span>
+                  <span>Connect With Student Coordinator on WhatsApp (09129216768)</span>
                 </a>
 
                 <div className="flex gap-3">
@@ -257,98 +256,26 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                 </div>
               )}
 
-              {/* STEP 1: CLASS FORMAT SELECTION (ONLINE VS OFFLINE) */}
-              <div className="space-y-2.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                  <span className="w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[10px] font-bold">1</span>
-                  <span>Select Class Format</span>
-                </label>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {/* Option 1: Online Class */}
-                  <div
-                    onClick={() => setClassFormat('online')}
-                    className={`cursor-pointer rounded-xl p-3.5 border-2 transition-all duration-200 ${
-                      classFormat === 'online'
-                        ? 'border-sky-600 bg-sky-50/50 shadow-sm'
-                        : 'border-slate-200 hover:border-slate-300 bg-white'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${classFormat === 'online' ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
-                          <Laptop className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <h4 className="text-xs sm:text-sm font-bold text-slate-900">Online Virtual Class</h4>
-                          <span className="text-[10px] text-sky-700 font-semibold">Live Interactive Video Sessions</span>
-                        </div>
-                      </div>
-                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${classFormat === 'online' ? 'border-sky-600 bg-sky-600 text-white' : 'border-slate-300'}`}>
-                        {classFormat === 'online' && <Check className="w-2.5 h-2.5 stroke-[3]" />}
-                      </div>
-                    </div>
-                    <ul className="mt-2.5 space-y-1 text-[11px] text-slate-600">
-                      <li className="flex items-center gap-1.5">
-                        <Check className="w-3 h-3 text-sky-600" />
-                        <span>Live Zoom / Meet sessions with screenshare</span>
-                      </li>
-                      <li className="flex items-center gap-1.5">
-                        <Check className="w-3 h-3 text-sky-600" />
-                        <span>HD class recordings + resource repository</span>
-                      </li>
-                      <li className="flex items-center gap-1.5">
-                        <Check className="w-3 h-3 text-sky-600" />
-                        <span>Learn from anywhere in Nigeria or abroad</span>
-                      </li>
-                    </ul>
+              {/* LEARNING FORMAT NOTICE */}
+              <div className="bg-sky-50/80 border border-sky-200 rounded-xl p-3.5 flex items-start gap-3 text-xs text-sky-950 shadow-xs">
+                <div className="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                  <Laptop className="w-4 h-4" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-bold text-sky-950 text-xs sm:text-sm">100% Online Virtual Classroom</h4>
+                    <span className="bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Active Enrollment</span>
                   </div>
-
-                  {/* Option 2: Physical In-Person Class */}
-                  <div
-                    onClick={() => setClassFormat('offline')}
-                    className={`cursor-pointer rounded-xl p-3.5 border-2 transition-all duration-200 ${
-                      classFormat === 'offline'
-                        ? 'border-emerald-600 bg-emerald-50/50 shadow-sm'
-                        : 'border-slate-200 hover:border-slate-300 bg-white'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${classFormat === 'offline' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
-                          <Building2 className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <h4 className="text-xs sm:text-sm font-bold text-slate-900">Physical In-Person Class</h4>
-                          <span className="text-[10px] text-emerald-700 font-semibold">In-Person Campus Hub</span>
-                        </div>
-                      </div>
-                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${classFormat === 'offline' ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-slate-300'}`}>
-                        {classFormat === 'offline' && <Check className="w-2.5 h-2.5 stroke-[3]" />}
-                      </div>
-                    </div>
-                    <ul className="mt-2.5 space-y-1 text-[11px] text-slate-600">
-                      <li className="flex items-center gap-1.5">
-                        <Check className="w-3 h-3 text-emerald-600" />
-                        <span>Direct face-to-face mentorship with senior devs</span>
-                      </li>
-                      <li className="flex items-center gap-1.5">
-                        <Check className="w-3 h-3 text-emerald-600" />
-                        <span>Air-conditioned workstations + stable electricity</span>
-                      </li>
-                      <li className="flex items-center gap-1.5">
-                        <Check className="w-3 h-3 text-emerald-600" />
-                        <span>High-speed fiber internet + dev community hub</span>
-                      </li>
-                    </ul>
-                  </div>
+                  <p className="text-sky-800 text-[11px] mt-1 leading-relaxed">
+                    All our courses are delivered exclusively online with live interactive sessions, hands-on screenshare mentoring, real-world project portfolios, and 24/7 access to recorded lectures.
+                  </p>
                 </div>
               </div>
 
-              {/* STEP 2: COURSE SELECTION */}
+              {/* STEP 1: COURSE SELECTION */}
               <div className="space-y-2.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                  <span className="w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[10px] font-bold">2</span>
+                  <span className="w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[10px] font-bold">1</span>
                   <span>Select Course Track</span>
                 </label>
 
@@ -409,10 +336,10 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                 </div>
               </div>
 
-              {/* STEP 3: SCHEDULE, DURATION & EXPERIENCE LEVEL */}
+              {/* STEP 2: SCHEDULE, DURATION & EXPERIENCE LEVEL */}
               <div className="space-y-2.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                  <span className="w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[10px] font-bold">3</span>
+                  <span className="w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[10px] font-bold">2</span>
                   <span>Class Schedule & Experience</span>
                 </label>
 
@@ -427,7 +354,7 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                       <option value="Weekday Morning (9:00 AM – 12:00 PM)">Weekday Morning (9:00 AM – 12:00 PM)</option>
                       <option value="Weekday Afternoon (2:00 PM – 5:00 PM)">Weekday Afternoon (2:00 PM – 5:00 PM)</option>
                       <option value="Weekend Intensive (Saturdays & Sundays)">Weekend Intensive (Saturdays & Sundays)</option>
-                      <option value="Evening / Flexible (Online Only)">Evening / Flexible (Online Only)</option>
+                      <option value="Evening / Flexible Cohort (7:00 PM – 9:30 PM)">Evening / Flexible Cohort (7:00 PM – 9:30 PM)</option>
                     </select>
                   </div>
 
@@ -460,10 +387,10 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                 </div>
               </div>
 
-              {/* STEP 4: STUDENT CONTACT DETAILS */}
+              {/* STEP 3: STUDENT CONTACT DETAILS */}
               <div className="space-y-2.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                  <span className="w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[10px] font-bold">4</span>
+                  <span className="w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[10px] font-bold">3</span>
                   <span>Student Bio & Contact Details</span>
                 </label>
 

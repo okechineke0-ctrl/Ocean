@@ -9,10 +9,11 @@ interface ChatMessage {
 }
 
 const QUICK_PROMPTS = [
+  'How much for standard website & graphics design in Nigeria?',
+  'Tell me about the upcoming Crash Course and price drop!',
+  'What are your Graphics Design & Prototyping rates?',
   'How much to build an E-commerce store in Nigeria?',
-  'Can Ocean Technologies build iOS and Android apps?',
-  'My website is down with a 500 server error, can you help?',
-  'What are your monthly website maintenance plans?',
+  'My website is down with a 500 error, can you help?',
 ];
 
 export const AiAssistantWidget: React.FC = () => {
@@ -22,7 +23,7 @@ export const AiAssistantWidget: React.FC = () => {
     {
       id: 'welcome-1',
       role: 'model',
-      text: "Hello! I'm the **Ocean Technologies AI Consultant**. How can I assist you with your website, mobile app, or software project today?",
+      text: "Hello! I'm the **Ocean Technologies AI Consultant**. How can I assist you today with website pricing, graphics design & prototyping, our upcoming crash course, or custom engineering?",
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -392,6 +393,9 @@ export const AiAssistantWidget: React.FC = () => {
                     onChange={(e) => setEstimatorType(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 bg-white"
                   >
+                    <option>Standard Business Website</option>
+                    <option>Graphics Design, Product Design & Prototyping</option>
+                    <option>Brand Identity Package</option>
                     <option>Corporate Website</option>
                     <option>E-Commerce Multi-Vendor Store</option>
                     <option>Web Application / Portal</option>

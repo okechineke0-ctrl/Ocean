@@ -62,7 +62,7 @@ const TECH_TRACKS = [
   'Backend & Cloud Engineering (Node.js, REST APIs, Cloud Backends)',
   'Full-Stack Software Engineering (End-to-End Applications)',
   'Computer Hardware, Networking & Server Maintenance',
-  'UI/UX Product Design (Figma, Systems & Wireframing)',
+  'Graphics Design, Product Design & Prototyping (Figma, Systems, Brand Identity)',
 ];
 
 export const InternshipModal: React.FC<InternshipModalProps> = ({ isOpen, onClose }) => {

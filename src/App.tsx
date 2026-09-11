@@ -16,6 +16,7 @@ import { InternshipModal } from './components/InternshipModal';
 import { CourseRegistrationModal } from './components/CourseRegistrationModal';
 import { SearchModal } from './components/SearchModal';
 import { AiAssistantWidget } from './components/AiAssistantWidget';
+import { TopAnnouncementTicker } from './components/TopAnnouncementTicker';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<ViewMode>('home');
@@ -93,6 +94,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-sky-100 selection:text-sky-900">
+      {/* Top Announcement Bar (OPay style continuous moving marquee write-up) */}
+      {!isAdminView && <TopAnnouncementTicker />}
+
       {/* Top Navbar - hidden in dedicated administration portal */}
       {!isAdminView && (
         <Header
