@@ -224,7 +224,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                   <option value="Website Maintenance">Website Maintenance & Speed Retainer</option>
                   <option value="Software Troubleshooting">Software Debugging & Issue Troubleshooting</option>
                   <option value="Custom Portals & APIs">Custom Management Portal / School / Hospital Portal</option>
-                  <option value="IT Consulting & Support">IT Consulting & Technical Support</option>
+                  <option value="Graphics Design & Branding">Graphics Design & Brand Identity</option>
                   <option value="Software Management">Software Management & 24/7 Monitoring</option>
                   <option value="Cloud Infrastructure & Performance">Cloud Infrastructure & Server Setup</option>
                 </select>

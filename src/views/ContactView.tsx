@@ -15,7 +15,8 @@ import {
   ShieldCheck, 
   HelpCircle,
   ExternalLink,
-  Building2
+  Building2,
+  Palette
 } from 'lucide-react';
 
 interface ContactViewProps {
@@ -211,22 +212,22 @@ export const ContactView: React.FC<ContactViewProps> = ({
               </div>
             </div>
 
-            {/* IT Consulting & Support Card */}
+            {/* Graphics Design & Brand Identity Card */}
             <div className="bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white p-6 rounded-2xl border border-slate-800 shadow-sm">
               <div className="flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center shrink-0 mt-1 border border-sky-400/30">
-                  <ShieldCheck className="w-5 h-5 text-sky-400" />
+                <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0 mt-1 border border-purple-400/30">
+                  <Palette className="w-5 h-5 text-purple-400" />
                 </div>
                 <div>
                   <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-400/30 mb-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>Online Consultation Available</span>
+                    <span>Design Advisory Available</span>
                   </div>
                   <h3 className="font-bold text-sm text-white font-display mb-1">
-                    IT Consulting & Strategic Technical Support
+                    Graphics Design & Brand Identity Consultation
                   </h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-3">
-                    Need expert advice on software architecture, website maintenance, cloud servers, or database scaling? Speak directly with our principal software engineer online.
+                    Need professional guidance on your company logo suite, brand style guide, promotional banners, or print marketing collateral? Speak directly with our creative design team online.
                   </p>
                   <div className="flex flex-wrap items-center gap-2">
                     <a
@@ -236,7 +237,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
                       className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-colors inline-flex items-center gap-1.5"
                     >
                       <MessageCircle className="w-3.5 h-3.5" />
-                      <span>WhatsApp Consultant</span>
+                      <span>WhatsApp Design Lead</span>
                     </a>
                     <a
                       href={COMPANY_INFO.phoneTel}
@@ -357,7 +358,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
                       <option value="Monthly Website Maintenance">Monthly Website Maintenance Retainer</option>
                       <option value="Urgent Software Bug Fix">Urgent Software Bug / Error Fix</option>
                       <option value="Custom Portal / School Portal">Custom Portal / School Management System</option>
-                      <option value="IT Consulting & Technical Support">IT Consulting & Technical Support</option>
+                      <option value="Graphics Design & Brand Identity">Graphics Design & Brand Identity</option>
                       <option value="Online Software Engineering Course">Online Software Course Registration</option>
                       <option value="General Partnership">General Question / Business Partnership</option>
                     </select>

@@ -224,10 +224,10 @@ export const Footer: React.FC<FooterProps> = ({
               </li>
               <li>
                 <button 
-                  onClick={() => onOpenQuote('IT Consulting & Support')} 
+                  onClick={() => onOpenQuote('Graphics Design & Branding')} 
                   className="hover:text-sky-300 transition-colors text-slate-400 hover:text-slate-200 flex items-center gap-1 cursor-pointer"
                 >
-                  <span>IT Consulting & Strategic Advisory</span>
+                  <span>Graphics Design & Brand Identity</span>
                 </button>
               </li>
               <li>

@@ -27,7 +27,8 @@ import {
   Database,
   Layers,
   Clock,
-  AlertTriangle
+  AlertTriangle,
+  Palette
 } from 'lucide-react';
 
 // Real high-resolution professional image assets
@@ -139,7 +140,7 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
               </div>
               <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
                 <p className="text-lg font-black text-indigo-600 font-display">ESUT</p>
-                <p className="text-[11px] text-slate-500 font-medium">Agbani Corridor</p>
+                <p className="text-[11px] text-slate-500 font-medium">Agbani</p>
               </div>
             </div>
           </div>
@@ -528,20 +529,20 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                   </div>
                 </div>
 
-                {/* 5. IT Consulting & Support */}
+                {/* 5. Graphics Design & Branding */}
                 <div 
-                  onClick={() => onOpenQuote('IT Consulting & Support')}
+                  onClick={() => onOpenQuote('Graphics Design & Branding')}
                   className="group p-4 rounded-2xl bg-white border border-slate-200 hover:border-sky-400 hover:shadow-md transition-all flex items-start gap-4 cursor-pointer"
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-600 to-emerald-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-teal-500/20 group-hover:scale-105 transition-all">
-                    <Cloud className="w-6 h-6 text-white" />
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-purple-500/20 group-hover:scale-105 transition-all">
+                    <Palette className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h3 className="text-sm font-black text-[#0B2545] group-hover:text-[#0284C7] uppercase tracking-wide transition-colors">
-                      IT CONSULTING & SUPPORT
+                      GRAPHICS DESIGN & BRANDING
                     </h3>
                     <p className="text-xs text-slate-600 leading-relaxed mt-1">
-                      Expert guidance and technical support to help you make the right technology decisions for your business.
+                      Professional logo design, brand identity, social media kits, and high-impact digital and print marketing materials.
                     </p>
                   </div>
                 </div>

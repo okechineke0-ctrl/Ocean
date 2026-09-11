@@ -16,7 +16,8 @@ import {
   Award, 
   Clock,
   Sparkles,
-  GraduationCap
+  GraduationCap,
+  Palette
 } from 'lucide-react';
 
 interface AboutViewProps {
@@ -206,25 +207,25 @@ export const AboutView: React.FC<AboutViewProps> = ({
           </div>
         </div>
 
-        {/* Remote Technology Advisory: IT Consulting & Software Strategy */}
+        {/* Creative Brand Identity & Graphics Design Advisory */}
         <div className="mb-16 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 rounded-2xl border border-slate-800 p-8 text-white shadow-md relative overflow-hidden">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30 text-xs font-semibold mb-3">
-              <ShieldCheck className="w-4 h-4 text-sky-400" />
-              <span>Remote Technology Advisory & Direct Partnership</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-400/30 text-xs font-semibold mb-3">
+              <Palette className="w-4 h-4 text-purple-400" />
+              <span>Creative Brand Direction & Design Partnership</span>
             </div>
             <h3 className="text-2xl font-bold font-display text-white mb-3">
-              IT Consulting, System Architecture & Software Management
+              Graphics Design, Brand Identity & Visual Strategy
             </h3>
             <p className="text-slate-300 text-sm leading-relaxed mb-6">
-              Ocean Technologies works directly with business owners, founders, and enterprises online. We provide end-to-end guidance on technology stack selection, security audits, database architecture, cloud hosting, and continuous system management. Connect directly with our senior engineers for personalized technical advisory.
+              Ocean Technologies works directly with business owners, founders, and enterprises online. We craft distinctive logo suites, brand guideline books, promotional social media collateral, product packaging, and print-ready business stationery. Collaborate directly with our lead creative designers for fast-turnaround visual solutions.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <button
-                onClick={() => onOpenQuote('IT Consulting & Support')}
-                className="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-sm cursor-pointer"
+                onClick={() => onOpenQuote('Graphics Design & Branding')}
+                className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-sm cursor-pointer"
               >
-                Book IT Consultation
+                Request Design Quote
               </button>
               <a
                 href={COMPANY_INFO.whatsappUrl}
@@ -233,7 +234,7 @@ export const AboutView: React.FC<AboutViewProps> = ({
                 className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors flex items-center gap-2"
               >
                 <MessageCircle className="w-4 h-4" />
-                <span>WhatsApp Principal Consultant</span>
+                <span>WhatsApp Creative Director</span>
               </a>
             </div>
           </div>

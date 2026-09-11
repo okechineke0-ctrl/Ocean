@@ -463,7 +463,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             </div>
 
             <h2 className="text-2xl sm:text-4xl font-extrabold text-white font-display tracking-tight leading-tight">
-              Software Development, Software Management <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400">& IT Consulting</span>
+              Software Development, Software Management <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400">& Graphics Design</span>
             </h2>
 
             <p className="text-slate-300 text-sm sm:text-base leading-relaxed mt-4">
@@ -552,41 +552,41 @@ export const HomeView: React.FC<HomeViewProps> = ({
               </div>
             </div>
 
-            {/* Pillar 3: IT Consulting & Support */}
-            <div className="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 backdrop-blur-sm flex flex-col justify-between hover:border-indigo-500/50 transition-all shadow-sm">
+            {/* Pillar 3: Graphics Design & Brand Identity */}
+            <div className="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 backdrop-blur-sm flex flex-col justify-between hover:border-purple-500/50 transition-all shadow-sm">
               <div className="space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-400/30 flex items-center justify-center">
-                  <ShieldCheck className="w-6 h-6" />
+                <div className="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-400/30 flex items-center justify-center">
+                  <Palette className="w-6 h-6" />
                 </div>
                 <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-400">Strategic Guidance</span>
-                  <h3 className="text-lg font-bold text-white font-display mt-0.5">IT Consulting & Support</h3>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-purple-400">Creative Direction</span>
+                  <h3 className="text-lg font-bold text-white font-display mt-0.5">Graphics Design & Branding</h3>
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  Expert guidance and technical support to help you make the right technology decisions for your business.
+                  Professional brand visual identity, custom corporate logos, typography, flyers, and digital marketing assets.
                 </p>
                 <ul className="space-y-2 text-xs text-slate-300 pt-2 border-t border-slate-700/60">
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Cloud architecture & infrastructure advice</span>
+                    <span>Custom vector logo & brand style guides</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Technology stack & vendor assessment</span>
+                    <span>Social media flyers & advertising kits</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Priority direct engineering support</span>
+                    <span>Print-ready stationery, brochures & banners</span>
                   </li>
                 </ul>
               </div>
 
               <div className="pt-6">
                 <button
-                  onClick={() => onOpenQuote('IT Consulting & Support')}
+                  onClick={() => onOpenQuote('Graphics Design & Branding')}
                   className="w-full py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs tracking-wide transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                 >
-                  <span>Book IT Consultation</span>
+                  <span>Request Design Quote</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>

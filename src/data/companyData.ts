@@ -214,30 +214,30 @@ export const SERVICES: ServiceItem[] = [
     isPopular: true,
   },
   {
-    id: 'it-consulting-support',
-    title: 'IT Consulting & Technical Support',
-    category: 'IT Consulting & Support',
-    tagline: 'Expert guidance and technical support to help you make the right technology decisions for your business.',
-    description: 'Expert guidance and technical support to help you make the right technology decisions for your business. From software vendor selection and cloud infrastructure advisory to enterprise technical support, system auditing, and digital strategy.',
+    id: 'graphics-design-branding',
+    title: 'Graphics Design & Brand Identity',
+    category: 'Graphics Design & Branding',
+    tagline: 'High-impact visual identity, custom corporate logos, brand guidelines, and digital marketing assets.',
+    description: 'Elevate your brand presence with clean, modern, and memorable design. From custom logo creation and brand identity systems to high-converting social media creatives, flyers, pitch decks, and print-ready marketing materials.',
     keyBenefits: [
-      'Strategic technology roadmap tailored to your specific business model',
-      'Vendor, tech stack, and software tool objective assessment',
-      'Cloud cost optimization, scalability audits, and migration plans',
-      'System security, database integrity, and operational disaster recovery plans',
-      'Dedicated technical advisor available via direct WhatsApp and remote sessions'
+      'Distinctive, professional brand identity tailored to your target demographic',
+      'Versatile vector logo deliverables for web, mobile apps, apparel, and large-format print',
+      'Consistent brand typography, color palettes, and comprehensive brand guideline book',
+      'High-converting marketing materials for WhatsApp, Instagram, LinkedIn, and print',
+      'Direct collaboration with creative design directors with fast revision turnarounds'
     ],
     deliverables: [
-      'Comprehensive IT Systems Audit & Architecture Report',
-      'Technology Strategy & Digital Transformation Roadmap',
-      'Software Vendor & Engineering Cost Recommendations',
-      'Security Posture & Infrastructure Optimization Checklist',
-      'Ongoing Remote Advisory & Priority Support Channel'
+      'Primary & Secondary Logo Suite (SVG, PNG, EPS, PDF, AI)',
+      'Complete Corporate Brand Style Guide (Typography, Colors, Usage)',
+      'Social Media Marketing Kit (Post Templates, Banners, Profile Graphics)',
+      'Business Stationery Suite (Business Cards, Letterheads, Envelopes)',
+      'High-Resolution Print-Ready Flyers, Brochures, & Roll-up Banners'
     ],
-    technologies: ['Cloud Advisory', 'Enterprise Architecture', 'Cybersecurity', 'AWS / Google Cloud', 'DevOps Strategy', 'System Audits'],
-    deliveryTime: 'Immediate & Retainer-Based',
-    startingPriceNGN: 60000,
-    startingPriceUSD: 50,
-    iconName: 'ShieldCheck',
+    technologies: ['Adobe Illustrator', 'Adobe Photoshop', 'Figma', 'CorelDraw', 'Brand Identity Systems', 'Typography & Layout'],
+    deliveryTime: '3 – 7 Business Days',
+    startingPriceNGN: 35000,
+    startingPriceUSD: 30,
+    iconName: 'Palette',
     isPopular: true,
   }
 ];
@@ -500,8 +500,8 @@ export const FAQS: FAQItem[] = [
   {
     id: '8',
     category: 'Payments & Billing',
-    question: 'What are your rates for IT Consulting & Technical Support?',
-    answer: 'Our IT Consulting and Technical Support rates are structured based on workload and engagement model: one-off architectural and infrastructure audits (₦50,000 – ₦150,000), monthly enterprise advisory retainers (₦75,000 – ₦200,000/month), and dedicated on-demand technical support. We tailor billing transparently according to Nigerian business realities.'
+    question: 'What are your rates for Graphics Design & Brand Identity?',
+    answer: 'Our graphics design packages are straightforward: single logo designs start from ₦25,000–₦35,000; complete brand identity packages (logo suite, brand guidelines, stationery, social media kit) range from ₦60,000 to ₦150,000; and ongoing monthly marketing creative retainers start at ₦40,000/month. We deliver all vector source files with full commercial copyright.'
   },
   {
     id: '9',
