@@ -214,30 +214,30 @@ export const SERVICES: ServiceItem[] = [
     isPopular: true,
   },
   {
-    id: 'graphics-design-prototyping',
-    title: 'Graphics Design, Product Design & Prototyping',
-    category: 'Graphics Design & Prototyping',
-    tagline: 'Professional brand identities, graphics design, interactive Figma prototypes, and product UI systems.',
-    description: 'Elevate your business presence with world-class graphic design, corporate brand identity, marketing creative materials, and clickable product prototypes. We design before code to accelerate your go-to-market timeline.',
+    id: 'it-consulting-support',
+    title: 'IT Consulting & Technical Support',
+    category: 'IT Consulting & Support',
+    tagline: 'Expert guidance and technical support to help you make the right technology decisions for your business.',
+    description: 'Expert guidance and technical support to help you make the right technology decisions for your business. From software vendor selection and cloud infrastructure advisory to enterprise technical support, system auditing, and digital strategy.',
     keyBenefits: [
-      'High-impact vector brand logos and corporate identity guidelines',
-      'Interactive, high-fidelity clickable Figma prototypes ready for user testing',
-      'Marketing banners, flyers, social media kits, and pitch deck visuals',
-      'Consistent design system tokens, typography scales, and UI palettes',
-      'Smooth developer handoff with full commercial asset source files'
+      'Strategic technology roadmap tailored to your specific business model',
+      'Vendor, tech stack, and software tool objective assessment',
+      'Cloud cost optimization, scalability audits, and migration plans',
+      'System security, database integrity, and operational disaster recovery plans',
+      'Dedicated technical advisor available via direct WhatsApp and remote sessions'
     ],
     deliverables: [
-      'Master Brand Identity Kit (SVG, PNG, PDF, Vector AI)',
-      'Clickable High-Fidelity Figma Product Prototype',
-      'Social Media & Marketing Creative Assets',
-      'Comprehensive Design Tokens & Component Library',
-      '100% Commercial Usage License & Source Archives'
+      'Comprehensive IT Systems Audit & Architecture Report',
+      'Technology Strategy & Digital Transformation Roadmap',
+      'Software Vendor & Engineering Cost Recommendations',
+      'Security Posture & Infrastructure Optimization Checklist',
+      'Ongoing Remote Advisory & Priority Support Channel'
     ],
-    technologies: ['Figma', 'Adobe Photoshop', 'Adobe Illustrator', 'CorelDraw', 'FigJam', 'Vector Systems'],
-    deliveryTime: '3 to 7 Days',
-    startingPriceNGN: 45000,
-    startingPriceUSD: 35,
-    iconName: 'Palette',
+    technologies: ['Cloud Advisory', 'Enterprise Architecture', 'Cybersecurity', 'AWS / Google Cloud', 'DevOps Strategy', 'System Audits'],
+    deliveryTime: 'Immediate & Retainer-Based',
+    startingPriceNGN: 60000,
+    startingPriceUSD: 50,
+    iconName: 'ShieldCheck',
     isPopular: true,
   }
 ];
@@ -500,14 +500,14 @@ export const FAQS: FAQItem[] = [
   {
     id: '8',
     category: 'Payments & Billing',
-    question: 'What are your rates for Graphics Design, Brand Identity & Figma Prototyping?',
-    answer: 'Our Graphics Design and Product Prototyping rates are tailored for value: Single marketing flyers and social banners (₦8,000 – ₦20,000), comprehensive Brand Identity & Vector Logo Packs (₦35,000 – ₦85,000), and complete Interactive Figma Product Prototypes (₦80,000 – ₦250,000 depending on user flows and screen count).'
+    question: 'What are your rates for IT Consulting & Technical Support?',
+    answer: 'Our IT Consulting and Technical Support rates are structured based on workload and engagement model: one-off architectural and infrastructure audits (₦50,000 – ₦150,000), monthly enterprise advisory retainers (₦75,000 – ₦200,000/month), and dedicated on-demand technical support. We tailor billing transparently according to Nigerian business realities.'
   },
   {
     id: '9',
     category: 'General',
-    question: 'When is the upcoming Tech & Graphics Crash Course starting?',
-    answer: 'We are preparing to launch an intensive Tech & Graphics Crash Course very soon! Tuition fees will drop significantly for this upcoming batch, making hands-on engineering, graphics design, and prototyping accessible to all. Please prepare your systems, stay tuned, and contact our Student Coordinator at 09129216768 to secure your early seat!'
+    question: 'When is the upcoming Crash Course starting and will tuition drop?',
+    answer: 'We are preparing to launch an intensive fast-track Online Tech Crash Course very soon! Tuition prices will drop significantly for this upcoming batch to welcome new virtual students. Please prepare your computers, stay tuned, and chat our coordinator on WhatsApp at 09129216768 to join the waiting list!'
   }
 ];
 

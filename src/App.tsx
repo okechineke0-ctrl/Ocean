@@ -105,7 +105,6 @@ export default function App() {
           onOpenQuote={handleOpenQuote}
           onOpenIssueReport={handleOpenIssueReport}
           onOpenSearch={() => setSearchModalOpen(true)}
-          onOpenInternship={handleOpenInternship}
           onOpenCourseRegistration={handleOpenCourseRegistration}
         />
       )}
@@ -117,7 +116,6 @@ export default function App() {
             onNavigate={handleNavigate}
             onOpenQuote={handleOpenQuote}
             onOpenIssueReport={handleOpenIssueReport}
-            onOpenInternship={handleOpenInternship}
             onOpenCourseRegistration={handleOpenCourseRegistration}
           />
         )}
@@ -156,7 +154,6 @@ export default function App() {
           <AboutView
             onNavigate={handleNavigate}
             onOpenQuote={handleOpenQuote}
-            onOpenInternship={handleOpenInternship}
           />
         )}
 
@@ -164,7 +161,6 @@ export default function App() {
           <ContactView
             onNavigate={handleNavigate}
             onOpenIssueReport={handleOpenIssueReport}
-            onOpenInternship={handleOpenInternship}
           />
         )}
 
@@ -181,7 +177,6 @@ export default function App() {
           onNavigate={handleNavigate}
           onOpenQuote={handleOpenQuote}
           onOpenIssueReport={handleOpenIssueReport}
-          onOpenInternship={handleOpenInternship}
           onOpenCourseRegistration={handleOpenCourseRegistration}
         />
       )}

@@ -4,8 +4,6 @@ import {
   GraduationCap, 
   Laptop, 
   CheckCircle2, 
-  Clock, 
-  Calendar, 
   Send, 
   Check, 
   Sparkles, 
@@ -13,10 +11,11 @@ import {
   Mail, 
   User, 
   BookOpen, 
-  ChevronRight,
-  MessageCircle,
-  ShieldCheck,
-  AlertCircle
+  MessageCircle, 
+  ShieldCheck, 
+  AlertCircle,
+  Users,
+  Clock
 } from 'lucide-react';
 import { COURSES_OFFERED } from '../data/coursesData';
 import { ClassFormat, CourseRegistrationFormData } from '../types';
@@ -34,18 +33,13 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
   isOpen,
   onClose,
   defaultCourseId = 'web_dev',
-  defaultFormat = 'online',
 }) => {
   const [selectedCourseId, setSelectedCourseId] = useState<string>(defaultCourseId);
-  const [classFormat, setClassFormat] = useState<ClassFormat>(defaultFormat);
-  const [schedule, setSchedule] = useState<string>('Weekday Morning (9:00 AM – 12:00 PM)');
-  const [duration, setDuration] = useState<string>('12 Weeks (3 Months Intensive)');
   const [experienceLevel, setExperienceLevel] = useState<string>('Complete Beginner');
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [preferredStartDate, setPreferredStartDate] = useState('');
   const [notes, setNotes] = useState('');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -54,7 +48,7 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
 
   if (!isOpen) return null;
 
-  const currentCourse = COURSES_OFFERED.find((c) => c.id === selectedCourseId || (selectedCourseId === 'ui_ux' && c.id === 'graphic_design')) || COURSES_OFFERED[0];
+  const currentCourse = COURSES_OFFERED.find((c) => c.id === selectedCourseId) || COURSES_OFFERED[0];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,7 +63,7 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
       return;
     }
     if (!phone.trim() || phone.length < 7) {
-      setSubmitError('Please enter a valid phone or WhatsApp number.');
+      setSubmitError('Please enter a valid phone / WhatsApp number.');
       return;
     }
 
@@ -87,11 +81,11 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
         phone: phone.trim(),
         course: currentCourse.id,
         courseTitle: currentCourse.name,
-        classFormat,
-        schedule,
-        duration,
+        classFormat: 'online',
+        schedule: 'Coordinated in WhatsApp Group',
+        duration: currentCourse.duration,
         experienceLevel,
-        preferredStartDate: preferredStartDate || 'Immediate Cohort (Starting Monday)',
+        preferredStartDate: 'Immediate Cohort (Coordinated via WhatsApp)',
         notes: notes.trim(),
       };
 
@@ -99,7 +93,7 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
       if (result.success) {
         setSuccessData({ 
           registrationNumber: result.registrationNumber,
-          storedDate: todayFormatted
+          storedDate: todayFormatted,
         });
       } else {
         setSubmitError('Registration could not be recorded. Please try again or reach out on WhatsApp.');
@@ -117,12 +111,11 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
     setFullName('');
     setEmail('');
     setPhone('');
-    setPreferredStartDate('');
     setNotes('');
   };
 
   const selectedCourseWhatsAppMessage = encodeURIComponent(
-    `Hello Ocean Technologies Student Coordinator,\n\nI have registered for an online course on your portal:\n• Student Name: ${fullName}\n• Course Registered: ${currentCourse.name}\n• Learning Format: 100% Online Virtual Classroom\n• Phone Number: ${phone}\n• Registration Ref: ${successData?.registrationNumber || 'OCT-CRS-2026'}\n\nI am contacting you to confirm my admission, get orientation details, and proceed with payment.`
+    `Hello Ocean Technologies Admissions Coordinator,\n\nI have submitted my online course registration on the portal:\n• Student Name: ${fullName}\n• Course Track: ${currentCourse.name}\n• Learning Format: 100% Online Classroom\n• Phone Number: ${phone}\n• Registration Ref: ${successData?.registrationNumber || 'OCT-CRS-2026'}\n\nPlease add me to the official course WhatsApp group and send my onboarding timetable & payment instructions.`
   );
 
   return (
@@ -141,13 +134,13 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                   <GraduationCap className="w-3.5 h-3.5" />
                   Ocean Tech Academy • 2026 Admissions
                 </span>
-                <span className="text-xs text-sky-400 font-medium hidden sm:inline">• 100% Online Intensive Programs</span>
+                <span className="text-xs text-sky-400 font-medium hidden sm:inline">• 100% Online Programs</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-bold tracking-tight font-display text-white">
-                Register for an Online Course
+                Course Registration
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 mt-1">
-                Live interactive classes across Graphics Design, Web, Mobile, and Software Engineering.
+                Live interactive classes with senior software engineering mentors.
               </p>
             </div>
             <button
@@ -161,94 +154,102 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
         </div>
 
         {/* Modal Body */}
-        <div className="overflow-y-auto p-5 sm:p-6 space-y-6 flex-1">
+        <div className="overflow-y-auto p-5 sm:p-6 space-y-5 flex-1">
           {successData ? (
             /* SUCCESS CONFIRMATION VIEW */
-            <div className="space-y-6 py-4">
+            <div className="space-y-5 py-2">
               <div className="text-center space-y-3">
                 <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto ring-8 ring-emerald-50">
                   <CheckCircle2 className="w-10 h-10" />
                 </div>
                 <div>
                   <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
-                    Registration Successfully Confirmed
+                    Registration Confirmed
                   </span>
                   <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mt-2">
                     Welcome to Ocean Technologies!
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto mt-1">
-                    Your registration has been stored in our student database. Your unique admission reference code is:
+                    Your details have been saved to our admissions system. Your official reference code is:
                   </p>
                 </div>
 
-                <div className="bg-slate-900 text-sky-300 font-mono text-base sm:text-lg font-bold py-3 px-6 rounded-xl inline-block border border-sky-500/40 shadow-inner">
+                <div className="bg-slate-900 text-sky-300 font-mono text-base sm:text-lg font-bold py-2.5 px-6 rounded-xl inline-block border border-sky-500/40 shadow-inner">
                   {successData.registrationNumber}
                 </div>
               </div>
 
+              {/* WhatsApp Group Callout Box */}
+              <div className="bg-gradient-to-br from-emerald-950 via-slate-900 to-emerald-900 text-white rounded-xl p-4 border border-emerald-600/40 shadow-sm space-y-2">
+                <div className="flex items-center gap-2 text-emerald-300 font-bold text-sm">
+                  <Users className="w-4 h-4 text-emerald-400" />
+                  <span>Next Step: Official Student WhatsApp Group</span>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  All lecture timetables, class schedules, Zoom/Google Meet links, and orientation materials are coordinated directly in our official student WhatsApp community.
+                </p>
+                <div className="pt-2">
+                  <a
+                    href={`https://wa.me/2349129216768?text=${selectedCourseWhatsAppMessage}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-md transition-all duration-200 cursor-pointer"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span>Join WhatsApp Group / Message Coordinator (09129216768)</span>
+                  </a>
+                </div>
+              </div>
+
               {/* Summary Card */}
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs sm:text-sm space-y-2.5">
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs sm:text-sm space-y-2">
                 <div className="flex justify-between py-1 border-b border-slate-200">
                   <span className="text-slate-500 font-medium">Selected Course:</span>
                   <span className="font-bold text-slate-900">{currentCourse.name}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-200">
                   <span className="text-slate-500 font-medium">Class Format:</span>
-                  <span className="font-bold uppercase text-sky-700 bg-sky-50 px-2 py-0.5 rounded">
+                  <span className="font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded">
                     🌐 100% Online Virtual Classroom
                   </span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-200">
-                  <span className="text-slate-500 font-medium">Schedule:</span>
-                  <span className="font-semibold text-slate-800">{schedule}</span>
+                  <span className="text-slate-500 font-medium">Schedule Coordination:</span>
+                  <span className="font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                    Official WhatsApp Group
+                  </span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-200">
                   <span className="text-slate-500 font-medium">Student Name:</span>
                   <span className="font-semibold text-slate-800">{fullName}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-200">
-                  <span className="text-slate-500 font-medium">Preferred Start Date:</span>
-                  <span className="font-semibold text-slate-800">{preferredStartDate || 'Immediate Cohort (Monday)'}</span>
-                </div>
                 <div className="flex justify-between py-1">
-                  <span className="text-slate-500 font-medium">Registration Date Stored:</span>
-                  <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  <span className="text-slate-500 font-medium">Registered Date:</span>
+                  <span className="font-bold text-slate-800">
                     {successData.storedDate}
                   </span>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="space-y-3 pt-2">
-                <a
-                  href={`https://wa.me/2349129216768?text=${selectedCourseWhatsAppMessage}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all duration-200"
+              <div className="flex gap-3 pt-1">
+                <button
+                  onClick={handleReset}
+                  className="flex-1 py-2.5 px-4 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-colors cursor-pointer"
                 >
-                  <MessageCircle className="w-4 h-4" />
-                  <span>Connect With Student Coordinator on WhatsApp (09129216768)</span>
-                </a>
-
-                <div className="flex gap-3">
-                  <button
-                    onClick={handleReset}
-                    className="flex-1 py-2.5 px-4 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-colors cursor-pointer"
-                  >
-                    Register Another Course
-                  </button>
-                  <button
-                    onClick={onClose}
-                    className="flex-1 py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-colors cursor-pointer"
-                  >
-                    Close Window
-                  </button>
-                </div>
+                  Register Another Course
+                </button>
+                <button
+                  onClick={onClose}
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-colors cursor-pointer"
+                >
+                  Close Window
+                </button>
               </div>
             </div>
           ) : (
-            /* REGISTRATION FORM */
-            <form onSubmit={handleSubmit} className="space-y-6">
+            /* STREAMLINED REGISTRATION FORM */
+            <form onSubmit={handleSubmit} className="space-y-5">
               {submitError && (
                 <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2.5">
                   <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
@@ -256,30 +257,33 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                 </div>
               )}
 
-              {/* LEARNING FORMAT NOTICE */}
-              <div className="bg-sky-50/80 border border-sky-200 rounded-xl p-3.5 flex items-start gap-3 text-xs text-sky-950 shadow-xs">
-                <div className="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
-                  <Laptop className="w-4 h-4" />
+              {/* WHATSAPP COORDINATION NOTICE */}
+              <div className="bg-gradient-to-r from-emerald-50 via-sky-50 to-emerald-50 border border-emerald-200/80 rounded-xl p-3.5 flex items-start gap-3 text-xs text-slate-800 shadow-xs">
+                <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                  <MessageCircle className="w-4 h-4" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <h4 className="font-bold text-sky-950 text-xs sm:text-sm">100% Online Virtual Classroom</h4>
-                    <span className="bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Active Enrollment</span>
+                    <h4 className="font-bold text-slate-900 text-xs sm:text-sm">100% Online • Schedules in WhatsApp Group</h4>
+                    <span className="bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Active</span>
                   </div>
-                  <p className="text-sky-800 text-[11px] mt-1 leading-relaxed">
-                    All our courses are delivered exclusively online with live interactive sessions, hands-on screenshare mentoring, real-world project portfolios, and 24/7 access to recorded lectures.
+                  <p className="text-slate-600 text-[11px] mt-0.5 leading-relaxed">
+                    Class schedules, timetables, and live interactive session links are coordinated directly inside the official student WhatsApp group. Register below to get added.
                   </p>
                 </div>
               </div>
 
-              {/* STEP 1: COURSE SELECTION */}
-              <div className="space-y-2.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                  <span className="w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[10px] font-bold">1</span>
-                  <span>Select Course Track</span>
+              {/* 1. SELECT COURSE TRACK */}
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[10px] font-bold">1</span>
+                    <span>Select Course Track</span>
+                  </span>
+                  <span className="text-[11px] text-slate-500 font-normal">Choose your focus area</span>
                 </label>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1 border border-slate-200 rounded-xl p-2 bg-slate-50/50">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1 border border-slate-200 rounded-xl p-2 bg-slate-50/50">
                   {COURSES_OFFERED.map((course) => {
                     const isSelected = course.id === selectedCourseId;
                     return (
@@ -315,19 +319,19 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                   })}
                 </div>
 
-                {/* Selected Course Technologies Badge Bar */}
-                <div className="p-3 bg-sky-50/50 border border-sky-100 rounded-xl text-xs space-y-1.5">
+                {/* Selected Course Technologies */}
+                <div className="p-2.5 bg-sky-50/60 border border-sky-100 rounded-xl text-xs space-y-1">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-slate-800">
-                      Curriculum Highlights for {currentCourse.name}:
+                    <span className="font-bold text-slate-800 text-[11px]">
+                      Curriculum Stack for {currentCourse.name}:
                     </span>
-                    <span className="text-[11px] text-slate-500 font-mono">{currentCourse.duration}</span>
+                    <span className="text-[10px] text-slate-500 font-mono">{currentCourse.duration}</span>
                   </div>
                   <div className="flex flex-wrap gap-1">
-                    {currentCourse.technologies.map((tech) => (
+                    {currentCourse.technologies.slice(0, 6).map((tech) => (
                       <span
                         key={tech}
-                        className="px-2 py-0.5 rounded-md bg-white border border-sky-200 text-sky-900 text-[10px] font-medium"
+                        className="px-2 py-0.5 rounded bg-white border border-sky-200/80 text-sky-900 text-[10px] font-medium"
                       >
                         {tech}
                       </span>
@@ -336,62 +340,11 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                 </div>
               </div>
 
-              {/* STEP 2: SCHEDULE, DURATION & EXPERIENCE LEVEL */}
+              {/* 2. STUDENT BIO & CONTACT */}
               <div className="space-y-2.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
                   <span className="w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[10px] font-bold">2</span>
-                  <span>Class Schedule & Experience</span>
-                </label>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                  <div>
-                    <label className="block text-slate-600 font-medium mb-1">Schedule Preference</label>
-                    <select
-                      value={schedule}
-                      onChange={(e) => setSchedule(e.target.value)}
-                      className="w-full p-2.5 rounded-lg border border-slate-300 bg-white text-slate-800 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-hidden"
-                    >
-                      <option value="Weekday Morning (9:00 AM – 12:00 PM)">Weekday Morning (9:00 AM – 12:00 PM)</option>
-                      <option value="Weekday Afternoon (2:00 PM – 5:00 PM)">Weekday Afternoon (2:00 PM – 5:00 PM)</option>
-                      <option value="Weekend Intensive (Saturdays & Sundays)">Weekend Intensive (Saturdays & Sundays)</option>
-                      <option value="Evening / Flexible Cohort (7:00 PM – 9:30 PM)">Evening / Flexible Cohort (7:00 PM – 9:30 PM)</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-slate-600 font-medium mb-1">Duration & Track</label>
-                    <select
-                      value={duration}
-                      onChange={(e) => setDuration(e.target.value)}
-                      className="w-full p-2.5 rounded-lg border border-slate-300 bg-white text-slate-800 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-hidden"
-                    >
-                      <option value="12 Weeks (3 Months Intensive Bootcamp)">12 Weeks (3 Months Intensive Bootcamp)</option>
-                      <option value="24 Weeks (6 Months Full Diploma + Internship)">24 Weeks (6 Months Full Diploma + Internship)</option>
-                      <option value="4 Weeks (1 Month Specialized Crash Course)">4 Weeks (1 Month Specialized Crash Course)</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-slate-600 font-medium mb-1">Your Prior Experience</label>
-                    <select
-                      value={experienceLevel}
-                      onChange={(e) => setExperienceLevel(e.target.value)}
-                      className="w-full p-2.5 rounded-lg border border-slate-300 bg-white text-slate-800 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-hidden"
-                    >
-                      <option value="Complete Beginner (Zero Coding Knowledge)">Complete Beginner (Zero Coding)</option>
-                      <option value="Beginner (Self-Taught / YouTube Tutorials)">Beginner (Self-Taught Basics)</option>
-                      <option value="Intermediate (Some Projects Built)">Intermediate (Some Projects)</option>
-                      <option value="Experienced (Upgrading Tech Stack)">Experienced (Stack Upgrade)</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              {/* STEP 3: STUDENT CONTACT DETAILS */}
-              <div className="space-y-2.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                  <span className="w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[10px] font-bold">3</span>
-                  <span>Student Bio & Contact Details</span>
+                  <span>Student Bio & WhatsApp Details</span>
                 </label>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
@@ -426,7 +379,7 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                   </div>
 
                   <div>
-                    <label className="block text-slate-600 font-medium mb-1">Phone / WhatsApp Number *</label>
+                    <label className="block text-slate-600 font-medium mb-1">WhatsApp / Phone Number *</label>
                     <div className="relative">
                       <Phone className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-3" />
                       <input
@@ -438,68 +391,62 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                         className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-300 text-slate-800 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-hidden"
                       />
                     </div>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Used to invite you to the course WhatsApp group</p>
                   </div>
 
                   <div>
-                    <label className="block text-slate-600 font-medium mb-1">Preferred Start Date / Intake Batch</label>
-                    <div className="relative">
-                      <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-3" />
-                      <input
-                        type="date"
-                        value={preferredStartDate}
-                        onChange={(e) => setPreferredStartDate(e.target.value)}
-                        className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-300 text-slate-800 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-hidden"
-                      />
-                    </div>
+                    <label className="block text-slate-600 font-medium mb-1">Current Experience Level</label>
+                    <select
+                      value={experienceLevel}
+                      onChange={(e) => setExperienceLevel(e.target.value)}
+                      className="w-full p-2 rounded-lg border border-slate-300 bg-white text-slate-800 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-hidden"
+                    >
+                      <option value="Complete Beginner">Complete Beginner (Zero Coding)</option>
+                      <option value="Beginner (Self-Taught Basics)">Beginner (Self-Taught Basics)</option>
+                      <option value="Intermediate">Intermediate (Built Simple Projects)</option>
+                      <option value="Experienced">Experienced (Upgrading Stack)</option>
+                    </select>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Helps mentors adjust class pacing</p>
                   </div>
-                </div>
-
-                <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs text-slate-600 flex items-center justify-between">
-                  <span className="flex items-center gap-2">
-                    <Clock className="w-3.5 h-3.5 text-sky-600 shrink-0" />
-                    <span><strong>Registration Date Store:</strong> Stored and timestamped automatically: <em>{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</em></span>
-                  </span>
-                  <span className="font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded text-[11px] border border-emerald-200 shrink-0">
-                    Live Cloud Sync
-                  </span>
                 </div>
 
                 <div>
                   <label className="block text-slate-600 font-medium mb-1 text-xs">
-                    Special Learning Goals or Notes (Optional)
+                    Special Learning Goals or Questions (Optional)
                   </label>
-                  <textarea
-                    rows={2}
-                    placeholder="Tell us what you want to achieve with this course or any specific goals..."
+                  <input
+                    type="text"
+                    placeholder="e.g. Preparing for remote tech roles, want to build an app..."
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    className="w-full p-2.5 rounded-lg border border-slate-300 text-slate-800 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-hidden"
+                    className="w-full px-3 py-2 rounded-lg border border-slate-300 text-slate-800 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-hidden"
                   />
                 </div>
               </div>
 
-              {/* Submit Button */}
+              {/* SUBMIT BUTTON */}
               <div className="pt-2 border-t border-slate-200">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-700 hover:to-blue-800 text-white font-bold text-sm shadow-md hover:shadow-lg disabled:opacity-60 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-emerald-600 via-sky-600 to-blue-700 hover:from-emerald-500 hover:to-blue-800 text-white font-bold text-sm shadow-md hover:shadow-lg disabled:opacity-60 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span>Saving Registration to Database...</span>
+                      <span>Saving Registration...</span>
                     </>
                   ) : (
                     <>
                       <Send className="w-4 h-4" />
-                      <span>Complete Registration for {currentCourse.name} ({classFormat.toUpperCase()})</span>
+                      <span>Register & Get WhatsApp Group Access</span>
                     </>
                   )}
                 </button>
-                <p className="text-center text-[11px] text-slate-500 mt-2">
-                  🔒 Data is securely saved to Cloud Firestore and PostgreSQL database. No spam guaranteed.
-                </p>
+                <div className="flex items-center justify-center gap-2 text-center text-[11px] text-slate-500 mt-2">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>100% Online • Class schedules & orientation coordinated via WhatsApp</span>
+                </div>
               </div>
             </form>
           )}

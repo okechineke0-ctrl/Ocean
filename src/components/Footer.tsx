@@ -21,7 +21,6 @@ interface FooterProps {
   onNavigate: (view: ViewMode) => void;
   onOpenQuote: (serviceId?: string) => void;
   onOpenIssueReport: () => void;
-  onOpenInternship?: () => void;
   onOpenCourseRegistration?: () => void;
 }
 
@@ -29,7 +28,6 @@ export const Footer: React.FC<FooterProps> = ({
   onNavigate,
   onOpenQuote,
   onOpenIssueReport,
-  onOpenInternship,
   onOpenCourseRegistration,
 }) => {
   const [subscribedEmail, setSubscribedEmail] = useState('');
@@ -226,11 +224,10 @@ export const Footer: React.FC<FooterProps> = ({
               </li>
               <li>
                 <button 
-                  onClick={() => onOpenInternship ? onOpenInternship() : onOpenQuote('Internship / IT & SIWES Placement')} 
-                  className="hover:text-indigo-300 transition-colors text-indigo-400 font-medium flex items-center gap-1 cursor-pointer"
+                  onClick={() => onOpenQuote('IT Consulting & Support')} 
+                  className="hover:text-sky-300 transition-colors text-slate-400 hover:text-slate-200 flex items-center gap-1 cursor-pointer"
                 >
-                  <span>🎓 Internships, IT & SIWES</span>
-                  <span className="text-[10px] px-1 py-0.2 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/60">Open</span>
+                  <span>IT Consulting & Strategic Advisory</span>
                 </button>
               </li>
               <li>
@@ -255,7 +252,7 @@ export const Footer: React.FC<FooterProps> = ({
                   <ShieldCheck className="w-3.5 h-3.5 text-white" />
                 </div>
                 <span className="leading-relaxed text-slate-300">
-                  Engineering & Student Advisory<br />
+                  Engineering & Technical Advisory<br />
                   <span className="text-[11px] text-slate-400">Monday – Saturday: 8:00 AM – 7:00 PM</span>
                 </span>
               </div>

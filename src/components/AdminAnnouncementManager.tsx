@@ -102,9 +102,9 @@ export const AdminAnnouncementManager: React.FC<AdminAnnouncementManagerProps> =
       theme: 'opay' as const,
     },
     {
-      name: 'Graphics Design Promo',
-      badge: 'SPECIAL OFFER',
-      text: '🎨 FLASH PROMO: 40% discount on Graphics Design, Brand Identity & Prototyping packages this week! Chat our design team directly on WhatsApp: 09129216768.',
+      name: 'IT Consulting & Advisory',
+      badge: 'SPECIAL ADVISORY',
+      text: '🛡️ STRATEGIC IT CONSULTING: Get a comprehensive software architecture and systems audit for your business. Chat directly with our principal engineer on WhatsApp: 09129216768.',
       theme: 'emerald' as const,
     },
     {

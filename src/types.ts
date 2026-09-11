@@ -12,7 +12,6 @@ export type ServiceCategory =
   | 'All'
   | 'Website Development'
   | 'Mobile App Development'
-  | 'Graphics Design & Prototyping'
   | 'Software Engineering'
   | 'Software Management'
   | 'IT Consulting & Support'
@@ -183,9 +182,9 @@ export interface CourseRegistrationFormData {
   course: string;
   courseTitle: string;
   classFormat: ClassFormat;
-  schedule: string;
-  duration: string;
-  experienceLevel: string;
+  schedule?: string;
+  duration?: string;
+  experienceLevel?: string;
   preferredStartDate?: string;
   cityState?: string;
   notes?: string;

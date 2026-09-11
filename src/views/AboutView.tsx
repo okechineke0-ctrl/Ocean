@@ -22,13 +22,11 @@ import {
 interface AboutViewProps {
   onNavigate: (view: ViewMode) => void;
   onOpenQuote: (serviceId?: string) => void;
-  onOpenInternship?: () => void;
 }
 
 export const AboutView: React.FC<AboutViewProps> = ({
   onNavigate,
   onOpenQuote,
-  onOpenInternship
 }) => {
   return (
     <div className="bg-slate-50 min-h-screen">
@@ -66,7 +64,7 @@ export const AboutView: React.FC<AboutViewProps> = ({
               Ocean Technologies was founded with a clear objective: to bridge the gap between complex software engineering and practical business success. Too many organizations struggle with slow, vulnerable websites, crashing apps, or uncooperative developers who disappear after launching.
             </p>
             <p>
-              We established our engineering labs to bring together experienced software engineers, graphics & product designers, and systems architects. Whether we are engineering a new corporate web application, developing an iOS/Android mobile app, or providing proactive monthly website maintenance, we treat every line of code with craftsmanship and security rigor.
+              We established our engineering labs to bring together experienced software engineers, IT consultants, and systems architects. Whether we are engineering a new corporate web application, developing an iOS/Android mobile app, or providing proactive monthly website maintenance, we treat every line of code with craftsmanship and security rigor.
             </p>
             
             <div className="pt-4 grid grid-cols-2 sm:grid-cols-3 gap-4 border-t border-slate-200">
@@ -208,34 +206,34 @@ export const AboutView: React.FC<AboutViewProps> = ({
           </div>
         </div>
 
-        {/* Talent & Student Development: Internships, IT & SIWES */}
-        <div className="mb-16 bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 rounded-2xl border border-indigo-700/50 p-8 text-white shadow-md relative overflow-hidden">
+        {/* Remote Technology Advisory: IT Consulting & Software Strategy */}
+        <div className="mb-16 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 rounded-2xl border border-slate-800 p-8 text-white shadow-md relative overflow-hidden">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 text-xs font-semibold mb-3">
-              <GraduationCap className="w-4 h-4 text-indigo-400" />
-              <span>Community Impact & Talent Incubation</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30 text-xs font-semibold mb-3">
+              <ShieldCheck className="w-4 h-4 text-sky-400" />
+              <span>Remote Technology Advisory & Direct Partnership</span>
             </div>
             <h3 className="text-2xl font-bold font-display text-white mb-3">
-              Open for Internships, Industrial Training (IT) & SIWES Placements
+              IT Consulting, System Architecture & Software Management
             </h3>
             <p className="text-slate-300 text-sm leading-relaxed mb-6">
-              Ocean Technologies is deeply committed to closing the gap between academic theory and industry engineering. We welcome undergraduates for intensive 3-month, 6-month, and 1-year Industrial Training (IT) and SIWES placements, providing hands-on coding, live cloud deployments, mentor oversight, and professional software craft.
+              Ocean Technologies works directly with business owners, founders, and enterprises online. We provide end-to-end guidance on technology stack selection, security audits, database architecture, cloud hosting, and continuous system management. Connect directly with our senior engineers for personalized technical advisory.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <button
-                onClick={() => onOpenInternship ? onOpenInternship() : onOpenQuote('Internship / IT & SIWES Placement')}
+                onClick={() => onOpenQuote('IT Consulting & Support')}
                 className="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-sm cursor-pointer"
               >
-                Register for Student Placement
+                Book IT Consultation
               </button>
               <a
-                href="https://wa.me/2349129216768?text=Hello%20Ocean%20Technologies,%20I%20am%20interested%20in%20applying%20for%20an%20IT%20/%20SIWES%20internship."
+                href={COMPANY_INFO.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors flex items-center gap-2"
               >
                 <MessageCircle className="w-4 h-4" />
-                <span>Contact Student Coordinator</span>
+                <span>WhatsApp Principal Consultant</span>
               </a>
             </div>
           </div>

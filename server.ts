@@ -515,9 +515,9 @@ app.post('/api/course-registrations', async (req, res) => {
       notes,
     } = req.body;
 
-    if (!fullName || !email || !phone || !course || !classFormat) {
+    if (!fullName || !email || !phone || !course) {
       return res.status(400).json({
-        error: 'Missing required registration fields: fullName, email, phone, course, and classFormat are required.',
+        error: 'Missing required registration fields: fullName, email, phone, and course are required.',
       });
     }
 
@@ -535,11 +535,11 @@ app.post('/api/course-registrations', async (req, res) => {
       phone: phone.trim(),
       course: course.trim(),
       courseTitle: (courseTitle || course).trim(),
-      classFormat: classFormat.trim(),
-      schedule: schedule || 'Flexible',
-      duration: duration || '12 Weeks',
+      classFormat: (classFormat || 'online').trim(),
+      schedule: schedule || 'Coordinated in WhatsApp Group',
+      duration: duration || 'Online Cohort',
       experienceLevel: experienceLevel || 'Beginner',
-      preferredStartDate: preferredStartDate || 'Immediate Cohort (Monday)',
+      preferredStartDate: preferredStartDate || 'Immediate Cohort (Coordinated via WhatsApp)',
       registrationDate: formattedDate,
       cityState: cityState ? cityState.trim() : 'Candidate',
       notes: notes || '',
@@ -609,48 +609,53 @@ function generateMatureConsultantResponse(userQuery: string): string {
 
   // 1. Crash Course / Training / Curriculum Inquiry
   if (query.includes('crash course') || query.includes('training') || query.includes('course') || query.includes('learn') || query.includes('class') || query.includes('student') || query.includes('curriculum')) {
-    return `### **Ocean Technologies Institute — Technical Courses & Upcoming Crash Course**
+    return `### **Ocean Technologies Academy — 100% Online Technical Courses & Upcoming Crash Course**
 
 **Accelerate your tech career with intensive, practical hands-on mentorship from senior software engineers.**
 
-#### **Active Cohort Programs:**
-1. **Graphics Design, Product Design & Prototyping** (Photoshop, Illustrator, Figma, User Experience, Interactive Prototypes, Brand Identity Systems)
-2. **Full-Stack Web Development** (React, TypeScript, Tailwind CSS, Node.js, Express, PostgreSQL / Supabase)
-3. **Python Software Engineering & Data Automation**
-4. **Mobile App Engineering** (Flutter & React Native cross-platform apps)
+#### **Active Online Cohort Programs:**
+1. **Full-Stack Web Development** (React, TypeScript, Tailwind CSS, Node.js, Express, PostgreSQL & Cloud APIs)
+2. **Mobile App Engineering** (Flutter & React Native cross-platform apps for iOS & Android)
+3. **IT Consulting & Technical Support** (Systems Architecture, Cloud Advisory, Cybersecurity & Infrastructure)
+4. **Python Software Engineering, AI & Automation**
+5. **Software Engineering & System Architecture**
 
 ---
 
-### **SPECIAL ANNOUNCEMENT: UPCOMING CRASH COURSE**
+### **SPECIAL ANNOUNCEMENT: UPCOMING ONLINE CRASH COURSE**
 > **Get Prepared!** Ocean Technologies is launching an intensive, fast-track **CRASH COURSE** very soon. 
-> - **Major Price Drop**: Tuition prices will drop significantly to make cutting-edge design, prototyping, and coding skills accessible to everyone.
+> - **Major Price Drop**: Tuition prices will drop significantly to make cutting-edge coding, engineering, and IT skills accessible to everyone online.
+> - **WhatsApp Group Coordination**: All live lecture links, timetables, and mentoring schedules are coordinated directly inside our official student WhatsApp group.
 > - **Hands-on Production Portfolio**: Build real-world client-ready deliverables from day one.
-> - **Stay Tuned & Secure Priority Access**: Seats will be strictly capped.
+> - **Priority Access**: Seats will be strictly capped.
 > 
-> **To reserve your early-bird spot before public release or ask questions, chat directly with our Admissions Coordinator on WhatsApp: [09129216768](https://wa.me/2349129216768)**.`;
+> **To join our priority waiting list or chat with our Admissions Coordinator directly, message us on WhatsApp: [09129216768](https://wa.me/2349129216768)**.`;
   }
 
-  // 2. Graphics Design, Product Design & Prototyping
-  if (query.includes('graphic') || query.includes('graphics') || query.includes('design') || query.includes('prototype') || query.includes('prototyping') || query.includes('figma') || query.includes('logo') || query.includes('brand') || query.includes('flyer') || query.includes('ui') || query.includes('ux')) {
-    return `### **Graphics Design, Product Design & Prototyping Services**
+  // 2. IT Consulting & Technical Support Services
+  if (query.includes('consult') || query.includes('consulting') || query.includes('consultant') || query.includes('advisory') || query.includes('architecture') || query.includes('audit') || query.includes('security') || query.includes('cloud') || query.includes('infrastructure')) {
+    return `### **IT Consulting & Technical Support Services**
 
-**At Ocean Technologies, our design team transforms product visions into memorable brand assets and interactive, high-fidelity prototypes.**
+**At Ocean Technologies, our senior IT consultants and software architects guide businesses through critical technology decisions, systems modernizations, and cloud infrastructure scale.**
 
-#### **How Nigeria Billing Works (Workload-Dependent):**
-In Nigeria's professional design market, billing is strictly calculated based on **scope of workload**, asset complexity, timeline, and revision rounds:
-- **Standard Milestone Structure**: 60% mobilization deposit upon project kickoff, and 40% final balance upon file handover (Figma source file, SVG/PNG vectors, print-ready PDFs).
+#### **Our IT Advisory & Support Capabilities:**
+- **Enterprise Systems Architecture**: Designing scalable, secure software and database architecture.
+- **Cloud & Infrastructure Advisory**: Migration to AWS, GCP, Cloud Run, Supabase, and automated CI/CD pipelines.
+- **Digital Transformation Strategy**: Selecting the right software stack and vetting third-party vendors.
+- **Cybersecurity & Compliance Audits**: Vulnerability reviews, authentication hardening, and data protection.
+- **24/7 Technical Support Operations**: Dedicated SLA-backed engineering support for business operations.
 
-#### **Transparent Pricing Estimates (Nigerian Naira ₦):**
-| Deliverable Category | Scope & Inclusions | Timeline | Estimated Cost (₦) |
+#### **Transparent Advisory Pricing Estimates (Nigerian Naira ₦):**
+| Service Package | Scope & Inclusions | Timeline | Estimated Cost (₦) |
 | :--- | :--- | :--- | :--- |
-| **Single Promotional Flyer / Social Post** | High-res marketing flyer, Instagram/LinkedIn sizes | 24–48 hours | **₦15,000 – ₦35,000** |
-| **Brand Identity Package** | Primary logo, secondary mark, typography scale, color system, business cards, letterhead | 4–7 days | **₦50,000 – ₦120,000** |
-| **UI/UX & Interactive Product Prototype** | Figma user flow, component system, interactive clickable wireframes & prototypes (5–12 screens) | 1–2 weeks | **₦100,000 – ₦250,000** |
-| **Comprehensive Brand + Product Design Suite** | Full corporate branding guide + multi-screen web/mobile prototype + marketing kit | 2–3 weeks | **₦250,000 – ₦500,000** |
+| **Technical Architecture Audit** | Comprehensive codebase, database & infrastructure security review | 3–5 days | **₦75,000 – ₦150,000** |
+| **Cloud Infrastructure Setup** | Production containerization, database setup & automated deployment | 1–2 weeks | **₦150,000 – ₦350,000** |
+| **Monthly IT Support Retainer** | Dedicated troubleshooting, uptime monitoring & priority SLA | Monthly | **₦80,000 – ₦250,000/mo** |
+| **End-to-End Enterprise Consulting** | Full software scoping, architectural roadmap & engineering advisory | 2–4 weeks | **₦300,000 – ₦800,000** |
 
 ---
 
-> **UPCOMING CRASH COURSE ALERT**: If you are looking to *learn* Graphics Design, Product Design & Prototyping, get prepared! We are launching an intensive crash course soon with a **significant price drop**. Chat with us on WhatsApp at **[09129216768](https://wa.me/2349129216768)** to join the priority waiting list!`;
+> **Ready to discuss your technology strategy?** Chat directly with our Lead Consultant Engr. Kechineke on WhatsApp at **[09129216768](https://wa.me/2349129216768)**.`;
   }
 
   // 3. Emergency 500 error / Downtime / Broken website
@@ -748,33 +753,34 @@ In Nigeria, realistic technology and design billing is directly calibrated to th
 | **Standard Business Website** | 5–8 pages, custom responsive design, contact forms, WhatsApp integration, basic SEO | 7–14 days | **₦120,000 – ₦280,000** |
 | **Corporate Brand Portal** | Advanced CMS, blog, career board, lead capture funnels, performance optimization | 2–4 weeks | **₦300,000 – ₦650,000** |
 | **Custom E-Commerce Store** | Payment gateways (Paystack/Flutterwave), product catalog, cart, customer accounts | 3–5 weeks | **₦450,000 – ₦1,200,000** |
-| **Graphics Design & Branding** | Logo pack, brand identity typography, stationery, social media promo kits | 3–7 days | **₦50,000 – ₦120,000** |
-| **UI/UX & Interactive Prototyping** | Figma wireframes, clickable high-fidelity prototypes, user journey mapping | 1–2 weeks | **₦100,000 – ₦250,000** |
+| **IT Consulting & Architecture** | Infrastructure advisory, security audits, database scaling, vendor evaluation | 3–14 days | **₦75,000 – ₦250,000** |
 | **Full-Stack SaaS / Web App** | Authentication, database schema, APIs, role-based dashboards, cloud deploy | 4–8 weeks | **₦800,000 – ₦2,500,000+** |
+| **Cross-Platform Mobile App** | Flutter / React Native iOS & Android apps, push notifications, offline cache | 4–10 weeks | **₦950,000 – ₦3,000,000** |
 | **Emergency Bug Fix / Recovery** | Root cause diagnosis, server crash fix, malware cleanup, checkout repair | 24 hours | **₦35,000 – ₦120,000** |
 
 ---
 
-### **ANNOUNCEMENT: UPCOMING CRASH COURSE**
+### **ANNOUNCEMENT: UPCOMING ONLINE CRASH COURSE**
 > **Prepare yourself!** Ocean Technologies is launching an intensive, practical **CRASH COURSE** very soon. 
-> Pricing will **drop significantly** for upcoming student cohorts in **Graphics Design, Product Design & Prototyping**, and **Web Development**.
+> Pricing will **drop significantly** for upcoming online student cohorts in **Full-Stack Web Development, Mobile Apps, IT Consulting**, and **Software Engineering**.
+> Class schedules and live sessions will be coordinated directly inside our official student WhatsApp group.
 > **Stay tuned** or chat with our admissions coordinator on WhatsApp at **[09129216768](https://wa.me/2349129216768)** to secure your priority spot!`;
   }
 
   // 8. Default General Inquiry
   return `### **Welcome to Ocean Technologies**
 
-**We are a premier software engineering, product design, and technology training firm.**
+**We are a premier software engineering firm, enterprise IT consultancy, and technology academy.**
 
 #### **Our Core Capabilities:**
 - **Custom Web Engineering**: High-speed standard corporate websites, web applications, and customer portals.
-- **Graphics Design, Product Design & Prototyping**: Brand identity systems, logos, marketing assets, and interactive Figma UI/UX prototypes.
+- **IT Consulting & Technical Support**: Enterprise systems architecture, cloud infrastructure, cybersecurity audits, and 24/7 technical advisory.
 - **Mobile Development**: Native-grade iOS & Android applications.
 - **Enterprise Software**: Database architecture, API integrations, and cloud infrastructure.
-- **Maintenance & Emergency Support**: 24/7 monitoring, security patches, and rapid bug resolution.
+- **Software Maintenance & Emergency Support**: 24/7 monitoring, security patches, and rapid bug resolution.
 
-#### **Upcoming Crash Course Alert:**
-> **Prepare yourself!** We are launching an intensive **CRASH COURSE** soon where tuition pricing will **drop significantly**. Stay tuned and contact our coordinator to get on the priority list.
+#### **Upcoming Online Crash Course Alert:**
+> **Prepare yourself!** We are launching an intensive **CRASH COURSE** online soon where tuition pricing will **drop significantly**. All lecture timetables and cohorts are coordinated directly inside our student WhatsApp group. Stay tuned and contact our coordinator to get on the priority list.
 
 #### **Connect With Us:**
 - Use the **AI Estimator** tab to calculate custom project milestones and pricing.
@@ -783,7 +789,7 @@ In Nigeria, realistic technology and design billing is directly calibrated to th
 
 // System instruction for Ocean Technologies Assistant
 const OCEAN_SYSTEM_PROMPT = `
-You are the official Senior AI Technical Consultant for "Ocean Technologies", a premier software engineering, product design, and technical institute.
+You are the official Senior AI Technical Consultant for "Ocean Technologies", a premier software engineering firm, enterprise IT consultancy, and technology academy.
 
 Company Details:
 - Brand Name: Ocean Technologies
@@ -792,11 +798,12 @@ Company Details:
 - Official Email: oceantechnologies62@gmail.com
 - Services Offered:
   1. Custom Website Design & Development (Standard business sites, landing pages, corporate portals, e-commerce stores)
-  2. Graphics Design, Product Design & Prototyping (Brand identity systems, logos, social media marketing kits, interactive Figma UI/UX prototypes, product design specifications)
+  2. IT Consulting & Technical Support (Systems architecture reviews, cloud migration, cybersecurity audits, infrastructure scaling, 24/7 technical support operations)
   3. Mobile App Development (Cross-platform iOS & Android using Flutter / React Native)
   4. Custom Web Applications & Enterprise SaaS (Node.js, Python, PostgreSQL, Next.js, React)
   5. Software Maintenance, Server Uptime Monitoring, Security Patches & Cloud Backups
   6. Emergency 24/7 Bug Fixes & Website Repair (500 errors, broken checkouts, malware cleanup, database recovery)
+  7. 100% Online Crash Course & Tech Academy (Full-stack web development, mobile apps, IT consulting, Python AI & automation with schedules coordinated via WhatsApp group)
 
 Pricing Benchmarks & Nigerian Billing Principles (Nigerian Naira ₦):
 You know how the Nigerian tech billing system works:
@@ -806,22 +813,20 @@ You know how the Nigerian tech billing system works:
    - Standard Business Website: ₦120,000 – ₦280,000 (workload dependent: 5-8 pages, mobile-first, contact forms, WhatsApp integration)
    - Corporate / Brand Portal: ₦300,000 – ₦650,000 (2-4 weeks)
    - E-Commerce / Online Store: ₦450,000 – ₦1,200,000+ (Paystack/Flutterwave gateway, cart, inventory, order notifications)
-   - Graphics Design & Single Deliverables: ₦15,000 – ₦35,000 (Flyers, banners, single logo concepts)
-   - Complete Brand Identity Pack: ₦50,000 – ₦120,000 (Logo suite, typography scale, color palette, business cards, letterheads, social media kit)
-   - Product Design & Interactive Prototyping: ₦100,000 – ₦350,000 (Figma clickable high-fidelity wireframes, interactive user flows, design system components)
-   - Comprehensive Brand + Product Prototype Suite: ₦250,000 – ₦500,000
+   - IT Consulting & Technical Audit: ₦75,000 – ₦250,000 (Architecture audit, security scan, cloud recommendations)
+   - Monthly IT Support Retainer: ₦80,000 – ₦250,000/month
    - Full-Stack Web App / SaaS: ₦800,000 – ₦2,500,000+ (4-10 weeks)
    - Native / Hybrid Mobile App (iOS & Android): ₦950,000 – ₦3,000,000+ (6-12 weeks)
    - Emergency Bug Fix: ₦35,000 – ₦120,000 (Same day / 24 hours turnaround)
    - Monthly Maintenance Retainer: ₦45,000 – ₦180,000/month
 
 CRITICAL UPCOMING CRASH COURSE ANNOUNCEMENT:
-- Always inform clients, students, and prospects: Ocean Technologies is about to launch an intensive, hands-on CRASH COURSE very soon!
-- Explicitly tell them: "You should prepare, because we are about to do a crash course soon and the price will drop significantly! Stay tuned!"
+- Always inform clients, students, and prospects: Ocean Technologies is about to launch an intensive, hands-on 100% ONLINE CRASH COURSE very soon!
+- Explicitly tell them: "You should prepare, because we are about to do a crash course soon and the price will drop significantly! All schedules and lectures will be coordinated directly in our official student WhatsApp group. Stay tuned!"
 - Advise them to contact our Student Admissions Coordinator directly on WhatsApp at 09129216768 to join the priority reservation list and receive early-bird cohort notifications.
 
 Guidelines for your responses:
-1. Always maintain a professional, articulate, authoritative, and encouraging tone.
+1. Always maintain a mature, personal, authoritative, articulate, and encouraging tone.
 2. Clearly explain how Nigerian billing works based on workload, deliverables, and milestone deposits.
 3. If asked about prices, provide clear Naira (₦) ranges with timeline and workload breakdown.
 4. Promote the upcoming crash course and price drop whenever relevant.

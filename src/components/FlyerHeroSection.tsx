@@ -39,7 +39,6 @@ interface FlyerHeroSectionProps {
   onNavigate: (view: ViewMode) => void;
   onOpenQuote: (serviceId?: string) => void;
   onOpenIssueReport: () => void;
-  onOpenInternship?: () => void;
   onOpenCourseRegistration?: () => void;
 }
 
@@ -47,7 +46,6 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
   onNavigate,
   onOpenQuote,
   onOpenIssueReport,
-  onOpenInternship,
   onOpenCourseRegistration,
 }) => {
   const [activeShowcaseTab, setActiveShowcaseTab] = useState<'both' | 'engineering' | 'management'>('both');
@@ -103,14 +101,14 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                   <ArrowRight className="w-4 h-4" />
                 </button>
 
-                {onOpenInternship && (
+                {onOpenCourseRegistration && (
                   <button
-                    id="hero-internship-btn"
-                    onClick={onOpenInternship}
-                    className="px-5 py-3.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold text-sm transition-colors flex items-center gap-2 cursor-pointer shadow-xs"
+                    id="hero-course-btn"
+                    onClick={onOpenCourseRegistration}
+                    className="px-5 py-3.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 font-bold text-sm transition-colors flex items-center gap-2 cursor-pointer shadow-xs"
                   >
-                    <GraduationCap className="w-4 h-4 text-indigo-600" />
-                    <span>Student IT & SIWES</span>
+                    <GraduationCap className="w-4 h-4 text-sky-600" />
+                    <span>Register for Online Course</span>
                   </button>
                 )}
 

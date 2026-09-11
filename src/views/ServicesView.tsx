@@ -37,9 +37,9 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
     'All',
     'Website Development',
     'Mobile App Development',
-    'Graphics Design & Prototyping',
     'Software Engineering',
     'Software Management',
+    'IT Consulting & Support',
     'Website Maintenance',
     'Software Troubleshooting',
     'Custom Portals & APIs'

@@ -9,9 +9,9 @@ interface ChatMessage {
 }
 
 const QUICK_PROMPTS = [
-  'How much for standard website & graphics design in Nigeria?',
-  'Tell me about the upcoming Crash Course and price drop!',
-  'What are your Graphics Design & Prototyping rates?',
+  'How much for a standard business website in Nigeria?',
+  'Tell me about the 100% online crash course cohort!',
+  'What does your IT Consulting & Support service include?',
   'How much to build an E-commerce store in Nigeria?',
   'My website is down with a 500 error, can you help?',
 ];
@@ -23,7 +23,7 @@ export const AiAssistantWidget: React.FC = () => {
     {
       id: 'welcome-1',
       role: 'model',
-      text: "Hello! I'm the **Ocean Technologies AI Consultant**. How can I assist you today with website pricing, graphics design & prototyping, our upcoming crash course, or custom engineering?",
+      text: "Hello! I'm the **Ocean Technologies AI Consultant**. How can I assist you today with custom software development, website maintenance, strategic IT consulting, or our 100% online crash course?",
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -394,8 +394,8 @@ export const AiAssistantWidget: React.FC = () => {
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 bg-white"
                   >
                     <option>Standard Business Website</option>
-                    <option>Graphics Design, Product Design & Prototyping</option>
-                    <option>Brand Identity Package</option>
+                    <option>IT Consulting & Strategic Tech Advisory</option>
+                    <option>Software Management & Maintenance Retainer</option>
                     <option>Corporate Website</option>
                     <option>E-Commerce Multi-Vendor Store</option>
                     <option>Web Application / Portal</option>

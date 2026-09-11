@@ -30,7 +30,6 @@ interface HomeViewProps {
   onNavigate: (view: ViewMode) => void;
   onOpenQuote: (serviceId?: string) => void;
   onOpenIssueReport: () => void;
-  onOpenInternship?: () => void;
   onOpenCourseRegistration?: () => void;
 }
 
@@ -38,7 +37,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
   onNavigate,
   onOpenQuote,
   onOpenIssueReport,
-  onOpenInternship,
   onOpenCourseRegistration,
 }) => {
   const [activeTab, setActiveTab] = useState<'all' | 'web' | 'app' | 'engineering' | 'management' | 'maintenance'>('all');
@@ -74,7 +72,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
         onNavigate={onNavigate}
         onOpenQuote={onOpenQuote}
         onOpenIssueReport={onOpenIssueReport}
-        onOpenInternship={onOpenInternship}
         onOpenCourseRegistration={onOpenCourseRegistration}
       />
 
@@ -354,7 +351,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               Why Businesses & Students Choose Ocean Technologies
             </h2>
             <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-6">
-              We combine deep technical software expertise with responsive customer communication, rapid emergency turnarounds, modern graphics design, and 100% online mentorship cohorts across Nigeria and beyond.
+              We combine deep technical software expertise with responsive customer communication, rapid emergency turnarounds, strategic IT consulting, and 100% online mentorship cohorts across Nigeria and beyond.
             </p>
 
             <div className="space-y-4">
@@ -455,119 +452,173 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
       </section>
 
-      {/* 5.5 Open for Internships, Industrial Training (IT) & SIWES Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-950 text-white border-y border-indigo-900/50 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(#6366f1_1px,transparent_1px)] [background-size:28px_28px] opacity-15 pointer-events-none"></div>
+      {/* 5.5 Software Development, Software Management & IT Consulting (Mature Online Solutions) */}
+      <section className="py-16 md:py-24 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 text-white border-y border-slate-800 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            
-            {/* Left Column: Heading, Context & Highlights */}
-            <div className="lg:col-span-7 space-y-5">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 text-xs font-semibold">
-                <GraduationCap className="w-4 h-4 text-indigo-400" />
-                <span>Now Open: Student Talent & Tech Incubation</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <div className="max-w-3xl mb-12">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-400/20 text-xs font-semibold mb-4">
+              <ShieldCheck className="w-4 h-4 text-sky-400" />
+              <span>Direct Engineering Partnerships • 100% Online Operations</span>
+            </div>
+
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white font-display tracking-tight leading-tight">
+              Software Development, Software Management <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400">& IT Consulting</span>
+            </h2>
+
+            <p className="text-slate-300 text-sm sm:text-base leading-relaxed mt-4">
+              We partner directly with business owners, founders, and growing companies online. With our remote-first engineering model, you get dedicated senior software engineers who craft bespoke software solutions, manage your live systems 24/7, and provide strategic advisory to scale your operations.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            {/* Pillar 1: Software Development */}
+            <div className="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 backdrop-blur-sm flex flex-col justify-between hover:border-sky-500/50 transition-all shadow-sm">
+              <div className="space-y-4">
+                <div className="w-12 h-12 rounded-xl bg-sky-500/20 text-sky-400 border border-sky-400/30 flex items-center justify-center">
+                  <Code2 className="w-6 h-6" />
+                </div>
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-sky-400">Core Engineering</span>
+                  <h3 className="text-lg font-bold text-white font-display mt-0.5">Software Development</h3>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Scalable and secure software solutions tailored to your business needs and workflow, including custom portals and automated backend engines.
+                </p>
+                <ul className="space-y-2 text-xs text-slate-300 pt-2 border-t border-slate-700/60">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span>Custom business web & client portals</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span>Mobile apps for iOS and Android</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span>Automated payment & database engines</span>
+                  </li>
+                </ul>
               </div>
 
-              <h2 className="text-2xl sm:text-4xl font-extrabold text-white font-display tracking-tight leading-tight">
-                Open for Internships, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-sky-300 to-emerald-300">Industrial Training (IT) & SIWES</span>
-              </h2>
-
-              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-                Are you an undergraduate studying Computer Science, Computer Engineering, Software Engineering, Electrical/Electronic, or related disciplines at <strong>ESUT, UNN, IMT</strong>, or tertiary institutions across Nigeria? Ocean Technologies is actively accepting applications for <strong>3-month, 6-month, and 1-year IT and SIWES placements</strong> at our Agbani tech hub.
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/5 border border-white/10">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span className="text-xs text-slate-200">Official logbook endorsement & SIWES/IT clearance signed by verified senior engineers</span>
-                </div>
-                <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/5 border border-white/10">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span className="text-xs text-slate-200">Work directly on production web applications, cloud backends, and mobile apps</span>
-                </div>
-                <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/5 border border-white/10">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span className="text-xs text-slate-200">Hands-on mentorship in React, Next.js, Node.js, Flutter & Cloud Architecture</span>
-                </div>
-                <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/5 border border-white/10">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span className="text-xs text-slate-200">Pathways to junior developer retention and recommendations post-graduation</span>
-                </div>
-              </div>
-
-              <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <div className="pt-6">
                 <button
-                  onClick={() => onOpenInternship ? onOpenInternship() : onOpenQuote('Internship / IT & SIWES Placement')}
-                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-400 hover:to-sky-400 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-indigo-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  onClick={() => onOpenQuote('Software Engineering')}
+                  className="w-full py-2.5 rounded-xl bg-slate-700/80 hover:bg-slate-700 text-white font-semibold text-xs tracking-wide transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <span>Register for IT / SIWES Placement</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <span>Request Dev Quote</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
+              </div>
+            </div>
 
-                <a
-                  href="https://wa.me/2349129216768?text=Hello%20Ocean%20Technologies!%20I%20am%20an%20undergraduate%20student%20interested%20in%20applying%20for%20an%20Internship%20/%20IT%20/%20SIWES%20placement%20at%20your%20Agbani%20office."
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs tracking-wider transition-colors flex items-center justify-center gap-2"
+            {/* Pillar 2: Software Management */}
+            <div className="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 backdrop-blur-sm flex flex-col justify-between hover:border-emerald-500/50 transition-all shadow-sm">
+              <div className="space-y-4">
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 flex items-center justify-center">
+                  <Wrench className="w-6 h-6" />
+                </div>
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">Continuous Reliability</span>
+                  <h3 className="text-lg font-bold text-white font-display mt-0.5">Software Management</h3>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  System maintenance, security updates, performance monitoring, speed optimization, and support to keep your software running at its best.
+                </p>
+                <ul className="space-y-2 text-xs text-slate-300 pt-2 border-t border-slate-700/60">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span>24/7 uptime & health monitoring</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span>Speed optimization & cache tuning</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span>Security patches & automated backups</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="pt-6">
+                <button
+                  onClick={() => onOpenQuote('Software Management')}
+                  className="w-full py-2.5 rounded-xl bg-slate-700/80 hover:bg-slate-700 text-white font-semibold text-xs tracking-wide transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <MessageCircle className="w-4 h-4" />
-                  <span>WhatsApp Student Desk</span>
-                </a>
+                  <span>Explore Management</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
 
-            {/* Right Column: Track Cards */}
-            <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3.5">
-              <div className="bg-slate-900/80 border border-indigo-800/40 rounded-xl p-4 backdrop-blur-md">
-                <div className="flex items-center gap-2.5 mb-1.5">
-                  <div className="p-1.5 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-400/30">
-                    <Code2 className="w-4 h-4" />
-                  </div>
-                  <h4 className="text-sm font-bold text-white font-display">1. Modern Web & Frontend</h4>
+            {/* Pillar 3: IT Consulting & Support */}
+            <div className="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 backdrop-blur-sm flex flex-col justify-between hover:border-indigo-500/50 transition-all shadow-sm">
+              <div className="space-y-4">
+                <div className="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-400/30 flex items-center justify-center">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-400">Strategic Guidance</span>
+                  <h3 className="text-lg font-bold text-white font-display mt-0.5">IT Consulting & Support</h3>
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  Learn modern React 18, Next.js, Tailwind CSS, TypeScript, and state management. Build responsive, high-converting client interfaces.
+                  Expert guidance and technical support to help you make the right technology decisions for your business.
                 </p>
+                <ul className="space-y-2 text-xs text-slate-300 pt-2 border-t border-slate-700/60">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span>Cloud architecture & infrastructure advice</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span>Technology stack & vendor assessment</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span>Priority direct engineering support</span>
+                  </li>
+                </ul>
               </div>
 
-              <div className="bg-slate-900/80 border border-indigo-800/40 rounded-xl p-4 backdrop-blur-md">
-                <div className="flex items-center gap-2.5 mb-1.5">
-                  <div className="p-1.5 rounded-lg bg-indigo-500/20 text-indigo-400 border border-indigo-400/30">
-                    <Smartphone className="w-4 h-4" />
-                  </div>
-                  <h4 className="text-sm font-bold text-white font-display">2. Mobile App Development</h4>
-                </div>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  Cross-platform iOS & Android mobile engineering with Flutter & Dart, device APIs, and offline-first data caching.
-                </p>
-              </div>
-
-              <div className="bg-slate-900/80 border border-indigo-800/40 rounded-xl p-4 backdrop-blur-md">
-                <div className="flex items-center gap-2.5 mb-1.5">
-                  <div className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-400/30">
-                    <Server className="w-4 h-4" />
-                  </div>
-                  <h4 className="text-sm font-bold text-white font-display">3. Backend & Cloud Infrastructure</h4>
-                </div>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  Build high-performance RESTful APIs with Node.js/Express, scalable cloud backends, and secure payment processing.
-                </p>
-              </div>
-
-              <div className="bg-slate-900/80 border border-indigo-800/40 rounded-xl p-4 backdrop-blur-md">
-                <div className="flex items-center gap-2.5 mb-1.5">
-                  <div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-400/30">
-                    <Wrench className="w-4 h-4" />
-                  </div>
-                  <h4 className="text-sm font-bold text-white font-display">4. DevOps, Security & Debugging</h4>
-                </div>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  Practical Linux server management, cPanel setup, SSL encryption, emergency 500 error debugging, and disaster recovery.
-                </p>
+              <div className="pt-6">
+                <button
+                  onClick={() => onOpenQuote('IT Consulting & Support')}
+                  className="w-full py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs tracking-wide transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                >
+                  <span>Book IT Consultation</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
+          </div>
 
+          {/* Quick Action Footer Strip */}
+          <div className="p-6 rounded-2xl bg-slate-800/40 border border-slate-700/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-center sm:text-left">
+              <h4 className="text-sm font-bold text-white">Looking for dedicated software assistance or online training?</h4>
+              <p className="text-xs text-slate-400 mt-0.5">Direct phone and WhatsApp access: 09129216768 • Online enrollment active</p>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              {onOpenCourseRegistration && (
+                <button
+                  onClick={onOpenCourseRegistration}
+                  className="px-4 py-2.5 rounded-xl bg-sky-500/20 text-sky-300 border border-sky-400/30 hover:bg-sky-500/30 text-xs font-bold transition-colors flex items-center gap-2 cursor-pointer"
+                >
+                  <GraduationCap className="w-4 h-4" />
+                  <span>Online Courses</span>
+                </button>
+              )}
+              <a
+                href={COMPANY_INFO.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors flex items-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>WhatsApp Consultant</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>
