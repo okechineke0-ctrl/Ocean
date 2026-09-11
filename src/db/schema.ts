@@ -47,28 +47,7 @@ export const emergencyTickets = pgTable('emergency_tickets', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-// 4. Internships, Industrial Training (IT) & SIWES Registrations Table
-export const internships = pgTable('internships', {
-  id: serial('id').primaryKey(),
-  registrationNumber: varchar('registration_number', { length: 100 }).notNull().unique(),
-  fullName: varchar('full_name', { length: 255 }).notNull(),
-  email: varchar('email', { length: 255 }).notNull(),
-  phone: varchar('phone', { length: 100 }).notNull(),
-  school: varchar('school', { length: 255 }).notNull(),
-  department: varchar('department', { length: 255 }).notNull(),
-  level: varchar('level', { length: 50 }).notNull(),
-  studentId: varchar('student_id', { length: 100 }).notNull(),
-  programType: varchar('program_type', { length: 100 }).notNull(),
-  techTrack: varchar('tech_track', { length: 150 }).notNull(),
-  preferredStartDate: varchar('preferred_start_date', { length: 100 }),
-  statementOfPurpose: text('statement_of_purpose'),
-  status: varchar('status', { length: 50 }).default('pending').notNull(),
-  adminNotes: text('admin_notes'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-});
-
-// 5. Course Registrations Table (Online & Offline Classes)
+// 4. Course Registrations Table (Online & Offline Classes)
 export const courseRegistrations = pgTable('course_registrations', {
   id: serial('id').primaryKey(),
   registrationNumber: varchar('registration_number', { length: 100 }).notNull().unique(),

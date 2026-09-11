@@ -214,30 +214,30 @@ export const SERVICES: ServiceItem[] = [
     isPopular: true,
   },
   {
-    id: 'it-consulting-support',
-    title: 'IT Consulting & Technical Support',
-    category: 'IT Consulting & Support',
-    tagline: 'Expert guidance and technical support to help you make the right technology decisions for your business.',
-    description: 'Expert guidance and technical support to help you make the right technology decisions for your business. From software vendor selection and cloud infrastructure advisory to enterprise technical support, system auditing, and digital strategy.',
+    id: 'graphics-design-prototyping',
+    title: 'Graphics Design, Product Design & Prototyping',
+    category: 'Graphics Design & Prototyping',
+    tagline: 'High-impact visual brand identities, vector assets, marketing collateral, and interactive Figma prototypes.',
+    description: 'We craft memorable visual experiences that set your brand apart. From bespoke brand identity systems, corporate logos, and high-impact marketing collateral to complete UI/UX wireframing, design systems, and interactive clickable Figma prototypes that bring software products to life before development.',
     keyBenefits: [
-      'Strategic technology roadmap tailored to your specific business model',
-      'Vendor, tech stack, and software tool objective assessment',
-      'Cloud cost optimization, scalability audits, and migration plans',
-      'System security, database integrity, and operational disaster recovery plans',
-      'Dedicated technical advisor available via direct WhatsApp and remote sessions'
+      'Professional brand identity systems, logos & vector stationery',
+      'Interactive, clickable Figma UI/UX prototypes and user journeys',
+      'High-resolution marketing banners, social media kits & flyers',
+      'Design system creation with responsive typography & color tokens',
+      'Pixel-perfect production assets ready for engineering implementation'
     ],
     deliverables: [
-      'Comprehensive IT Systems Audit & Architecture Report',
-      'Technology Strategy & Digital Transformation Roadmap',
-      'Software Vendor & Engineering Cost Recommendations',
-      'Security Posture & Infrastructure Optimization Checklist',
-      'Ongoing Remote Advisory & Priority Support Channel'
+      'Vector Brand Identity Kit (Logo suite, SVG, PNG, PDF guidelines)',
+      'Interactive Clickable Figma Prototype (Mobile & Web views)',
+      'Complete UI Component Library & Typography Scale',
+      'Social Media Marketing Launch Assets & Banners',
+      'Production-Ready Design Assets Handover'
     ],
-    technologies: ['Cloud Advisory', 'Enterprise Architecture', 'Cybersecurity', 'AWS / Google Cloud', 'DevOps Strategy', 'System Audits'],
-    deliveryTime: 'Immediate & Retainer-Based',
-    startingPriceNGN: 60000,
-    startingPriceUSD: 50,
-    iconName: 'ShieldCheck',
+    technologies: ['Figma', 'Adobe Photoshop', 'Adobe Illustrator', 'UI/UX Prototyping', 'Brand Identity', 'Vector Graphics'],
+    deliveryTime: '3 to 10 Days',
+    startingPriceNGN: 45000,
+    startingPriceUSD: 35,
+    iconName: 'Palette',
     isPopular: true,
   }
 ];
@@ -500,8 +500,8 @@ export const FAQS: FAQItem[] = [
   {
     id: '8',
     category: 'Payments & Billing',
-    question: 'What are your rates for IT Consulting & Technical Support?',
-    answer: 'Our IT Consulting and Technical Support rates are structured based on workload and engagement model: one-off architectural and infrastructure audits (₦50,000 – ₦150,000), monthly enterprise advisory retainers (₦75,000 – ₦200,000/month), and dedicated on-demand technical support. We tailor billing transparently according to Nigerian business realities.'
+    question: 'What are your rates for Graphics Design, Brand Identity & Prototyping?',
+    answer: 'Our Graphics Design, Brand Identity and Prototyping pricing is workload-driven: promotional marketing flyers and banners (₦15,000 – ₦35,000), complete corporate brand identity systems & vector logo packs (₦50,000 – ₦120,000), and interactive clickable Figma UI/UX prototypes for web and mobile apps (₦100,000 – ₦250,000). We deliver production-grade files with transparent milestone billing.'
   },
   {
     id: '9',

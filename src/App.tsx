@@ -12,7 +12,6 @@ import { ContactView } from './views/ContactView';
 import { AdminInboxView } from './views/AdminInboxView';
 import { QuoteModal } from './components/QuoteModal';
 import { IssueReportModal } from './components/IssueReportModal';
-import { InternshipModal } from './components/InternshipModal';
 import { CourseRegistrationModal } from './components/CourseRegistrationModal';
 import { SearchModal } from './components/SearchModal';
 import { AiAssistantWidget } from './components/AiAssistantWidget';
@@ -23,7 +22,6 @@ export default function App() {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
   const [selectedServiceForQuote, setSelectedServiceForQuote] = useState<string | undefined>(undefined);
   const [issueReportModalOpen, setIssueReportModalOpen] = useState(false);
-  const [internshipModalOpen, setInternshipModalOpen] = useState(false);
   const [courseRegistrationModalOpen, setCourseRegistrationModalOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
 
@@ -80,10 +78,6 @@ export default function App() {
 
   const handleOpenIssueReport = () => {
     setIssueReportModalOpen(true);
-  };
-
-  const handleOpenInternship = () => {
-    setInternshipModalOpen(true);
   };
 
   const handleOpenCourseRegistration = () => {
@@ -196,11 +190,6 @@ export default function App() {
       <IssueReportModal
         isOpen={issueReportModalOpen}
         onClose={() => setIssueReportModalOpen(false)}
-      />
-
-      <InternshipModal
-        isOpen={internshipModalOpen}
-        onClose={() => setInternshipModalOpen(false)}
       />
 
       <SearchModal

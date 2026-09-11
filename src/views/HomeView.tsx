@@ -452,22 +452,22 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
       </section>
 
-      {/* 5.5 Software Development, Software Management & IT Consulting (Mature Online Solutions) */}
+      {/* 5.5 Software Development, Software Management & Graphics Design (Mature Online Solutions) */}
       <section className="py-16 md:py-24 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 text-white border-y border-slate-800 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl mb-12">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-400/20 text-xs font-semibold mb-4">
-              <ShieldCheck className="w-4 h-4 text-sky-400" />
-              <span>Direct Engineering Partnerships • 100% Online Operations</span>
+              <Palette className="w-4 h-4 text-sky-400" />
+              <span>Full-Stack Engineering & Creative Design Studio • 100% Online Operations</span>
             </div>
 
             <h2 className="text-2xl sm:text-4xl font-extrabold text-white font-display tracking-tight leading-tight">
-              Software Development, Software Management <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400">& IT Consulting</span>
+              Software Development, Software Management <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400">& Graphics Design</span>
             </h2>
 
             <p className="text-slate-300 text-sm sm:text-base leading-relaxed mt-4">
-              We partner directly with business owners, founders, and growing companies online. With our remote-first engineering model, you get dedicated senior software engineers who craft bespoke software solutions, manage your live systems 24/7, and provide strategic advisory to scale your operations.
+              We partner directly with business owners, founders, and growing companies online. With our remote-first engineering and creative design model, you get dedicated senior engineers and designers who craft bespoke software solutions, manage your live systems 24/7, and engineer distinctive visual brand identities and interactive prototypes.
             </p>
           </div>
 
@@ -552,41 +552,41 @@ export const HomeView: React.FC<HomeViewProps> = ({
               </div>
             </div>
 
-            {/* Pillar 3: IT Consulting & Support */}
-            <div className="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 backdrop-blur-sm flex flex-col justify-between hover:border-indigo-500/50 transition-all shadow-sm">
+            {/* Pillar 3: Graphics Design, Product Design & Prototyping */}
+            <div className="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 backdrop-blur-sm flex flex-col justify-between hover:border-pink-500/50 transition-all shadow-sm">
               <div className="space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-400/30 flex items-center justify-center">
-                  <ShieldCheck className="w-6 h-6" />
+                <div className="w-12 h-12 rounded-xl bg-pink-500/20 text-pink-400 border border-pink-400/30 flex items-center justify-center">
+                  <Palette className="w-6 h-6" />
                 </div>
                 <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-400">Strategic Guidance</span>
-                  <h3 className="text-lg font-bold text-white font-display mt-0.5">IT Consulting & Support</h3>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-pink-400">Creative Architecture</span>
+                  <h3 className="text-lg font-bold text-white font-display mt-0.5">Graphics Design & Prototyping</h3>
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  Expert guidance and technical support to help you make the right technology decisions for your business.
+                  High-impact visual brand identities, vector assets, marketing collateral, and interactive Figma UI/UX prototypes.
                 </p>
                 <ul className="space-y-2 text-xs text-slate-300 pt-2 border-t border-slate-700/60">
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Cloud architecture & infrastructure advice</span>
+                    <span>Brand identity systems, logos & typography</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Technology stack & vendor assessment</span>
+                    <span>Clickable Figma UI/UX prototypes & user flows</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Priority direct engineering support</span>
+                    <span>Marketing kits, flyers & social media assets</span>
                   </li>
                 </ul>
               </div>
 
               <div className="pt-6">
                 <button
-                  onClick={() => onOpenQuote('IT Consulting & Support')}
+                  onClick={() => onOpenQuote('graphics-design-prototyping')}
                   className="w-full py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs tracking-wide transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                 >
-                  <span>Book IT Consultation</span>
+                  <span>Request Design Quote</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
