@@ -6,8 +6,18 @@ service cloud.firestore {
     // Any prospective client can submit quotes, contact inquiries, or emergency tickets.
     // Read and update access is permitted for management of client inquiries.
     match /inquiries/{inquiryId} {
-      allow create: if request.resource.data.type in ['quote', 'contact', 'emergency_issue']
+      allow create: if request.resource.data.type in ['quote', 'contact', 'emergency_issue', 'internship']
                     && request.resource.data.fullName is string
+                    && request.resource.data.fullName.size() > 0
+                    && request.resource.data.email is string
+                    && request.resource.data.phone is string;
+      allow read, update, delete: if true;
+    }
+
+    // Internships, IT & SIWES Registrations Collection:
+    // Students can submit internship applications. Read/write permitted for admin portal.
+    match /internships/{internshipId} {
+      allow create: if request.resource.data.fullName is string
                     && request.resource.data.fullName.size() > 0
                     && request.resource.data.email is string
                     && request.resource.data.phone is string;
