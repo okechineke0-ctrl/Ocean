@@ -214,17 +214,6 @@ export const Header: React.FC<HeaderProps> = ({
               <span>Contact Us</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
-
-            {/* Admin Portal Quick Access */}
-            <button
-              id="header-admin-quick-btn"
-              onClick={() => onNavigate('admin-inbox')}
-              title="Administration Dashboard"
-              aria-label="Administration Dashboard"
-              className="p-2 rounded-lg text-slate-400 hover:text-sky-600 hover:bg-slate-100 transition-colors cursor-pointer"
-            >
-              <ShieldCheck className="w-4 h-4" />
-            </button>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -288,17 +277,6 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <GraduationCap className="w-4 h-4" />
                 <span>Register for Tech Training Course</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  onNavigate('admin-inbox');
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full py-2 px-4 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold text-center flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
-                <span>Administration Dashboard</span>
               </button>
 
               <button

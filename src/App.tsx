@@ -25,41 +25,13 @@ export default function App() {
   const [courseRegistrationModalOpen, setCourseRegistrationModalOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
 
-  // Check URL hash / query param on mount or hash change for secret admin access
-  useEffect(() => {
-    const checkAdminHash = () => {
-      const hash = window.location.hash.toLowerCase();
-      const params = new URLSearchParams(window.location.search);
-      if (hash === '#admin' || hash === '#portal' || hash === '#db' || params.get('admin') === 'true' || params.get('portal') === '1') {
-        setCurrentView('admin-inbox');
-      }
-    };
-
-    checkAdminHash();
-    window.addEventListener('hashchange', checkAdminHash);
-    return () => window.removeEventListener('hashchange', checkAdminHash);
-  }, []);
-
-  // Listen for open-admin-portal event (triggered by triple-clicking any logo on the site or footer admin link)
+  // Listen for open-admin-portal event (triggered solely by triple-clicking the Ocean Tech logo)
   useEffect(() => {
     const handleOpenAdmin = () => {
       setCurrentView('admin-inbox');
     };
     window.addEventListener('open-admin-portal', handleOpenAdmin);
     return () => window.removeEventListener('open-admin-portal', handleOpenAdmin);
-  }, []);
-
-  // Secret keyboard shortcut: Ctrl+Shift+A or Cmd+Shift+A anywhere on the site
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
-        e.preventDefault();
-        setCurrentView((prev) => (prev === 'admin-inbox' ? 'home' : 'admin-inbox'));
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   // Scroll to top whenever view changes

@@ -338,20 +338,7 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Bottom Bar */}
         <div className="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <div>
-            © {new Date().getFullYear()}{' '}
-            <span 
-              onClick={(e) => {
-                if (e.detail >= 3) {
-                  window.dispatchEvent(new CustomEvent('open-admin-portal'));
-                  onNavigate('admin-inbox');
-                }
-              }}
-              className="cursor-default select-none"
-              title=""
-            >
-              Ocean Technologies
-            </span>
-            . All rights reserved. Agbani, Enugu State, Nigeria.
+            © {new Date().getFullYear()} Ocean Technologies. All rights reserved. Agbani, Enugu State, Nigeria.
           </div>
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <button onClick={() => onNavigate('about')} className="hover:text-slate-200 transition-colors cursor-pointer">
@@ -362,15 +349,6 @@ export const Footer: React.FC<FooterProps> = ({
             </button>
             <button onClick={() => onNavigate('contact')} className="hover:text-slate-200 transition-colors cursor-pointer">
               Agbani Office
-            </button>
-            <button 
-              id="footer-admin-portal-link"
-              onClick={() => onNavigate('admin-inbox')} 
-              className="text-slate-500 hover:text-sky-400 transition-colors flex items-center gap-1.5 cursor-pointer py-1 px-2 rounded hover:bg-slate-800" 
-              title="Staff Administration Portal"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-sky-500" />
-              <span className="font-medium">Admin Portal</span>
             </button>
           </div>
         </div>
