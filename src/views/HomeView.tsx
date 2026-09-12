@@ -39,15 +39,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
   onOpenIssueReport,
   onOpenCourseRegistration,
 }) => {
-  const [activeTab, setActiveTab] = useState<'all' | 'web' | 'app' | 'engineering' | 'management' | 'maintenance'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'web' | 'app' | 'software' | 'maintenance'>('all');
 
   const filteredServices = SERVICES.filter((s) => {
     if (activeTab === 'all') return true;
     if (activeTab === 'web') return s.category === 'Website Development';
     if (activeTab === 'app') return s.category === 'Mobile App Development';
-    if (activeTab === 'engineering') return s.category === 'Software Engineering' || s.category === 'Custom Portals & APIs';
-    if (activeTab === 'management') return s.category === 'Software Management' || s.category === 'Website Maintenance';
-    if (activeTab === 'maintenance') return s.category === 'Software Management' || s.category === 'Website Maintenance' || s.category === 'Software Troubleshooting';
+    if (activeTab === 'software') return s.category === 'Software Development & Management' || s.category === 'Software Engineering' || s.category === 'Software Management' || s.category === 'Custom Portals & APIs';
+    if (activeTab === 'maintenance') return s.category === 'Software Development & Management' || s.category === 'Website Maintenance' || s.category === 'Software Troubleshooting';
     return true;
   });
 
@@ -124,8 +123,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               { id: 'all', label: 'All Capabilities' },
               { id: 'web', label: 'Website Development' },
               { id: 'app', label: 'Mobile Apps' },
-              { id: 'engineering', label: 'Software Engineering' },
-              { id: 'management', label: 'Software Management' },
+              { id: 'software', label: 'Software Development & Management' },
               { id: 'maintenance', label: 'Maintenance & Troubleshooting' }
             ].map((tab) => (
               <button
@@ -196,10 +194,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </div>
 
                 <button
-                  onClick={() => onOpenQuote(service.id)}
+                  onClick={() => onNavigate('services')}
                   className="px-3 py-1.5 rounded-lg bg-sky-50 hover:bg-sky-600 text-sky-700 hover:text-white text-xs font-semibold transition-all flex items-center gap-1 cursor-pointer"
                 >
-                  <span>Request Quote</span>
+                  <span>Explore Service</span>
                   <ArrowRight className="w-3 h-3" />
                 </button>
               </div>
@@ -432,10 +430,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
               <div className="flex gap-2">
                 <button
-                  onClick={() => onOpenQuote()}
+                  onClick={() => onNavigate('contact')}
                   className="flex-1 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs tracking-wide transition-colors text-center cursor-pointer shadow-xs"
                 >
-                  Request Quote
+                  Contact Office
                 </button>
                 <a
                   href={COMPANY_INFO.whatsappUrl}
@@ -463,96 +461,83 @@ export const HomeView: React.FC<HomeViewProps> = ({
             </div>
 
             <h2 className="text-2xl sm:text-4xl font-extrabold text-white font-display tracking-tight leading-tight">
-              Software Development, Software Management <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400">& Graphics Design</span>
+              Software Development & Management <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400">& Creative Branding</span>
             </h2>
 
             <p className="text-slate-300 text-sm sm:text-base leading-relaxed mt-4">
-              We partner directly with business owners, founders, and growing companies online. With our remote-first engineering model, you get dedicated senior software engineers who craft bespoke software solutions, manage your live systems 24/7, and provide strategic advisory to scale your operations.
+              We partner directly with business owners, founders, and enterprises online. With our engineering-led approach, you get dedicated software experts who build custom systems, manage production infrastructure 24/7, and deliver cohesive brand identities.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            {/* Pillar 1: Software Development */}
-            <div className="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 backdrop-blur-sm flex flex-col justify-between hover:border-sky-500/50 transition-all shadow-sm">
+            {/* Unified Pillar 1: Software Development & Management */}
+            <div className="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 backdrop-blur-sm flex flex-col justify-between hover:border-sky-500/50 transition-all shadow-sm md:col-span-2">
               <div className="space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-sky-500/20 text-sky-400 border border-sky-400/30 flex items-center justify-center">
-                  <Code2 className="w-6 h-6" />
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-sky-500/20 text-sky-400 border border-sky-400/30 flex items-center justify-center shrink-0">
+                    <Code2 className="w-6 h-6" />
+                  </div>
+                  <div className="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 flex items-center justify-center shrink-0">
+                    <Wrench className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-sky-400">Integrated Lifecycle</span>
+                    <h3 className="text-lg sm:text-xl font-bold text-white font-display">Software Development & Management</h3>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-sky-400">Core Engineering</span>
-                  <h3 className="text-lg font-bold text-white font-display mt-0.5">Software Development</h3>
-                </div>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  Scalable and secure software solutions tailored to your business needs and workflow, including custom portals and automated backend engines.
+
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  End-to-end software engineering combined with proactive lifecycle management. We architect, build, and continuously optimize high-performance web applications, mobile platforms, custom internal portals, and automated database APIs — then protect them with 24/7 uptime monitoring, security patching, and ongoing feature updates.
                 </p>
-                <ul className="space-y-2 text-xs text-slate-300 pt-2 border-t border-slate-700/60">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Custom business web & client portals</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Mobile apps for iOS and Android</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Automated payment & database engines</span>
-                  </li>
-                </ul>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-slate-700/60 text-xs text-slate-300">
+                  <div className="space-y-2">
+                    <p className="font-semibold text-sky-300 uppercase text-[10px] tracking-wider">Engineering & Architecture</p>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                      <span>Custom web portals, SaaS platforms & mobile apps</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                      <span>REST/GraphQL APIs & automated database backends</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                      <span>Clean architecture, secure authentication & payments</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="font-semibold text-emerald-300 uppercase text-[10px] tracking-wider">Proactive Management & SLA</p>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                      <span>24/7 uptime monitoring, health checks & alerts</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                      <span>Security patches, automated backups & disaster recovery</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                      <span>Speed optimization, database indexing & continuous updates</span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="pt-6">
+              <div className="pt-6 mt-4 border-t border-slate-700/50 flex flex-wrap items-center justify-between gap-3">
+                <span className="text-xs text-slate-400 font-mono">Dedicated Engineering Sprints</span>
                 <button
-                  onClick={() => onOpenQuote('Software Engineering')}
-                  className="w-full py-2.5 rounded-xl bg-slate-700/80 hover:bg-slate-700 text-white font-semibold text-xs tracking-wide transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  onClick={() => onNavigate('services')}
+                  className="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs tracking-wide transition-colors flex items-center gap-2 cursor-pointer shadow-xs"
                 >
-                  <span>Request Dev Quote</span>
+                  <span>Explore Software Solutions</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
 
-            {/* Pillar 2: Software Management */}
-            <div className="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 backdrop-blur-sm flex flex-col justify-between hover:border-emerald-500/50 transition-all shadow-sm">
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 flex items-center justify-center">
-                  <Wrench className="w-6 h-6" />
-                </div>
-                <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">Continuous Reliability</span>
-                  <h3 className="text-lg font-bold text-white font-display mt-0.5">Software Management</h3>
-                </div>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  System maintenance, security updates, performance monitoring, speed optimization, and support to keep your software running at its best.
-                </p>
-                <ul className="space-y-2 text-xs text-slate-300 pt-2 border-t border-slate-700/60">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>24/7 uptime & health monitoring</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Speed optimization & cache tuning</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Security patches & automated backups</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="pt-6">
-                <button
-                  onClick={() => onOpenQuote('Software Management')}
-                  className="w-full py-2.5 rounded-xl bg-slate-700/80 hover:bg-slate-700 text-white font-semibold text-xs tracking-wide transition-colors flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <span>Explore Management</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Pillar 3: Graphics Design & Brand Identity */}
+            {/* Pillar 2: Graphics Design & Brand Identity */}
             <div className="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 backdrop-blur-sm flex flex-col justify-between hover:border-purple-500/50 transition-all shadow-sm">
               <div className="space-y-4">
                 <div className="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-400/30 flex items-center justify-center">
@@ -563,30 +548,30 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <h3 className="text-lg font-bold text-white font-display mt-0.5">Graphics Design & Branding</h3>
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  Professional brand visual identity, custom corporate logos, typography, flyers, and digital marketing assets.
+                  Professional brand visual identity, custom corporate logos, typography, marketing collateral, and digital advertising assets.
                 </p>
                 <ul className="space-y-2 text-xs text-slate-300 pt-2 border-t border-slate-700/60">
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 shrink-0" />
                     <span>Custom vector logo & brand style guides</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Social media flyers & advertising kits</span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                    <span>Social media graphics & advertising kits</span>
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Print-ready stationery, brochures & banners</span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                    <span>Print-ready stationery, brochures & rollups</span>
                   </li>
                 </ul>
               </div>
 
               <div className="pt-6">
                 <button
-                  onClick={() => onOpenQuote('Graphics Design & Branding')}
-                  className="w-full py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs tracking-wide transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                  onClick={() => onNavigate('services')}
+                  className="w-full py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-semibold text-xs tracking-wide transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                 >
-                  <span>Request Design Quote</span>
+                  <span>View Creative Services</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -769,10 +754,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
             <button
-              onClick={() => onOpenQuote()}
+              onClick={() => onNavigate('contact')}
               className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs tracking-wide transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
             >
-              <span>Request Free Project Quote</span>
+              <span>Contact Engineering Team</span>
               <ArrowRight className="w-4 h-4" />
             </button>
             <a

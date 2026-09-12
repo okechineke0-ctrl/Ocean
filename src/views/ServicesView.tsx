@@ -37,8 +37,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
     'All',
     'Website Development',
     'Mobile App Development',
-    'Software Engineering',
-    'Software Management',
+    'Software Development & Management',
     'Graphics Design & Branding',
     'Website Maintenance',
     'Software Troubleshooting',
@@ -239,10 +238,10 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center gap-3">
               <button
-                onClick={() => onOpenQuote(activeService.id)}
+                onClick={() => onNavigate('contact')}
                 className="w-full sm:flex-1 py-3 px-5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs tracking-wide shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>Request Quote for {activeService.title}</span>
+                <span>Inquire About {activeService.title}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 

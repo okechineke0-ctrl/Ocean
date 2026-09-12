@@ -224,15 +224,15 @@ export const Footer: React.FC<FooterProps> = ({
               </li>
               <li>
                 <button 
-                  onClick={() => onOpenQuote('Graphics Design & Branding')} 
+                  onClick={() => onNavigate('services')} 
                   className="hover:text-sky-300 transition-colors text-slate-400 hover:text-slate-200 flex items-center gap-1 cursor-pointer"
                 >
                   <span>Graphics Design & Brand Identity</span>
                 </button>
               </li>
               <li>
-                <button onClick={() => onOpenQuote()} className="hover:text-sky-300 transition-colors text-sky-400 font-semibold flex items-center gap-1">
-                  <span>Request Custom Price Quote</span>
+                <button onClick={() => onNavigate('contact')} className="hover:text-sky-300 transition-colors text-sky-400 font-medium flex items-center gap-1 cursor-pointer">
+                  <span>Direct Technical Inquiry</span>
                   <ExternalLink className="w-3 h-3" />
                 </button>
               </li>
@@ -353,15 +353,24 @@ export const Footer: React.FC<FooterProps> = ({
             </span>
             . All rights reserved. Agbani, Enugu State, Nigeria.
           </div>
-          <div className="flex items-center gap-6">
-            <button onClick={() => onNavigate('about')} className="hover:text-slate-200 transition-colors">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+            <button onClick={() => onNavigate('about')} className="hover:text-slate-200 transition-colors cursor-pointer">
               About Us
             </button>
-            <button onClick={() => onNavigate('services')} className="hover:text-slate-200 transition-colors">
+            <button onClick={() => onNavigate('services')} className="hover:text-slate-200 transition-colors cursor-pointer">
               Services
             </button>
-            <button onClick={() => onNavigate('contact')} className="hover:text-slate-200 transition-colors">
+            <button onClick={() => onNavigate('contact')} className="hover:text-slate-200 transition-colors cursor-pointer">
               Agbani Office
+            </button>
+            <button 
+              id="footer-admin-portal-link"
+              onClick={() => onNavigate('admin-inbox')} 
+              className="text-slate-500 hover:text-sky-400 transition-colors flex items-center gap-1.5 cursor-pointer py-1 px-2 rounded hover:bg-slate-800" 
+              title="Staff Administration Portal"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-sky-500" />
+              <span className="font-medium">Admin Portal</span>
             </button>
           </div>
         </div>

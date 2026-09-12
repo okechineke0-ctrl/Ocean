@@ -12,12 +12,13 @@ export type ServiceCategory =
   | 'All'
   | 'Website Development'
   | 'Mobile App Development'
-  | 'Software Engineering'
-  | 'Software Management'
+  | 'Software Development & Management'
   | 'Graphics Design & Branding'
   | 'Website Maintenance'
   | 'Software Troubleshooting'
-  | 'Custom Portals & APIs';
+  | 'Custom Portals & APIs'
+  | 'Software Engineering'
+  | 'Software Management';
 
 export interface ServiceItem {
   id: string;

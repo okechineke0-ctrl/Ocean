@@ -28,7 +28,8 @@ import {
   Layers,
   Clock,
   AlertTriangle,
-  Palette
+  Palette,
+  Wrench
 } from 'lucide-react';
 
 // Real high-resolution professional image assets
@@ -95,10 +96,10 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
               <div className="flex flex-wrap items-center gap-3 mb-6">
                 <button
                   id="hero-get-started-btn"
-                  onClick={() => onOpenQuote()}
+                  onClick={() => onNavigate('services')}
                   className="px-6 py-3.5 rounded-xl bg-[#0284C7] hover:bg-[#0369A1] text-white font-bold text-sm tracking-wide shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer"
                 >
-                  <span>Request a Project Quote</span>
+                  <span>Explore Our Services</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
 
@@ -216,51 +217,30 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
 
       </section>
 
-      {/* 2. Mature Dual Showcase: SOFTWARE ENGINEERING & SOFTWARE MANAGEMENT */}
+      {/* 2. Enterprise Unified Showcase: SOFTWARE DEVELOPMENT & MANAGEMENT */}
       <section className="py-10 bg-slate-900 text-white border-y border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          {/* Section Header with Enterprise Tabs */}
+          {/* Section Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/15 text-sky-400 text-xs font-bold uppercase tracking-wider mb-2 border border-sky-400/30">
                 <Code2 className="w-3.5 h-3.5" />
-                <span>Enterprise Disciplines</span>
+                <span>Unified Enterprise Service</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight font-display">
-                Software Engineering <span className="text-[#38BDF8]">& Management</span>
+                Software Development <span className="text-[#38BDF8]">& Management</span>
               </h2>
-              <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl">
-                Real software craftsmanship: from robust architecture and full-stack development to round-the-clock infrastructure management.
+              <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
+                End-to-end engineering excellence: combining custom full-stack software development with dedicated round-the-clock infrastructure SLA management.
               </p>
             </div>
 
-            {/* View Selector Tabs */}
-            <div className="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 self-start md:self-auto">
-              <button
-                onClick={() => setActiveShowcaseTab('both')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
-                  activeShowcaseTab === 'both' ? 'bg-[#0284C7] text-white shadow-sm' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Comprehensive View
-              </button>
-              <button
-                onClick={() => setActiveShowcaseTab('engineering')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
-                  activeShowcaseTab === 'engineering' ? 'bg-[#0284C7] text-white shadow-sm' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Software Engineering
-              </button>
-              <button
-                onClick={() => setActiveShowcaseTab('management')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
-                  activeShowcaseTab === 'management' ? 'bg-[#0284C7] text-white shadow-sm' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Software Management
-              </button>
+            <div className="flex items-center gap-2 self-start md:self-auto">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold text-slate-300">
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <span>99.9% Uptime SLA Guaranteed</span>
+              </span>
             </div>
           </div>
 
@@ -336,10 +316,10 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                       Sprint Cycles: 1–2 Weeks
                     </span>
                     <button
-                      onClick={() => onOpenQuote('Software Development')}
+                      onClick={() => onNavigate('services')}
                       className="px-4 py-2 rounded-xl bg-[#0284C7] hover:bg-[#0369A1] text-white font-bold text-xs uppercase tracking-wider transition-colors flex items-center gap-1.5 cursor-pointer"
                     >
-                      <span>Build With Us</span>
+                      <span>Explore Engineering</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -487,51 +467,30 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                   </div>
                 </div>
 
-                {/* 3. Software Development (Highlighted) */}
+                {/* 3. Software Development & Management (Merged & Highlighted) */}
                 <div 
-                  onClick={() => onOpenQuote('Software Development')}
-                  className="group p-4 rounded-2xl bg-white border-2 border-sky-300 hover:border-sky-500 hover:shadow-lg transition-all flex items-start gap-4 cursor-pointer relative"
+                  onClick={() => onNavigate('services')}
+                  className="group p-4 rounded-2xl bg-white border-2 border-sky-400 hover:border-sky-600 hover:shadow-lg transition-all flex items-start gap-4 cursor-pointer relative"
                 >
-                  <span className="absolute -top-2.5 right-4 px-2 py-0.5 rounded-full bg-[#0284C7] text-white text-[9px] font-black uppercase tracking-wider">
-                    Core Discipline
+                  <span className="absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-[#0284C7] text-white text-[9px] font-black uppercase tracking-wider">
+                    Core Engineering & SLA Ops
                   </span>
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-600 to-cyan-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-sky-500/25 group-hover:scale-105 transition-all">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-600 via-blue-600 to-indigo-700 text-white flex items-center justify-center shrink-0 shadow-md shadow-sky-500/25 group-hover:scale-105 transition-all">
                     <Code2 className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h3 className="text-sm font-black text-[#0B2545] group-hover:text-[#0284C7] uppercase tracking-wide transition-colors">
-                      SOFTWARE DEVELOPMENT
+                      SOFTWARE DEVELOPMENT & MANAGEMENT
                     </h3>
                     <p className="text-xs text-slate-600 leading-relaxed mt-1">
-                      Scalable and secure software solutions tailored to your business needs and workflow, including custom portals and automated backend engines.
+                      Full-cycle custom software engineering, scalable web & mobile apps, and automated backend portals paired with round-the-clock 24/7 proactive SLA system management, security patches, and performance optimization.
                     </p>
                   </div>
                 </div>
 
-                {/* 4. Software Management (Highlighted) */}
+                {/* 4. Graphics Design & Branding */}
                 <div 
-                  onClick={() => onOpenQuote('Software Management & Maintenance')}
-                  className="group p-4 rounded-2xl bg-white border-2 border-indigo-300 hover:border-indigo-500 hover:shadow-lg transition-all flex items-start gap-4 cursor-pointer relative"
-                >
-                  <span className="absolute -top-2.5 right-4 px-2 py-0.5 rounded-full bg-indigo-600 text-white text-[9px] font-black uppercase tracking-wider">
-                    24/7 SLA Protection
-                  </span>
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-900 to-indigo-800 text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-900/30 group-hover:scale-105 transition-all">
-                    <Settings className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black text-[#0B2545] group-hover:text-indigo-600 uppercase tracking-wide transition-colors">
-                      SOFTWARE MANAGEMENT
-                    </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed mt-1">
-                      System maintenance, security updates, performance monitoring, speed optimization, and support to keep your software running at its best.
-                    </p>
-                  </div>
-                </div>
-
-                {/* 5. Graphics Design & Branding */}
-                <div 
-                  onClick={() => onOpenQuote('Graphics Design & Branding')}
+                  onClick={() => onNavigate('services')}
                   className="group p-4 rounded-2xl bg-white border border-slate-200 hover:border-sky-400 hover:shadow-md transition-all flex items-start gap-4 cursor-pointer"
                 >
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-purple-500/20 group-hover:scale-105 transition-all">
@@ -750,15 +709,6 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                 <SocialLinks variant="compact" showLabels={true} />
               </div>
 
-              {onOpenCourseRegistration && (
-                <button
-                  onClick={onOpenCourseRegistration}
-                  className="w-full max-w-sm py-2 px-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
-                >
-                  <GraduationCap className="w-3.5 h-3.5" />
-                  <span>Register for a Tech Course</span>
-                </button>
-              )}
             </div>
 
           </div>
@@ -769,7 +719,7 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
       <section className="bg-[#071526] text-slate-300 py-3.5 px-4 border-t border-slate-800 text-xs">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
           
-          {/* 5 Service Badges in Ribbon */}
+          {/* 5 Updated Service Badges in Ribbon */}
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 font-semibold uppercase tracking-wider text-[11px] text-slate-200">
             <span className="flex items-center gap-1.5 hover:text-sky-300 transition-colors">
               <Monitor className="w-3.5 h-3.5 text-sky-400" />
@@ -783,17 +733,17 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
             <span className="text-slate-600 hidden sm:inline">•</span>
             <span className="flex items-center gap-1.5 hover:text-sky-300 transition-colors">
               <Code2 className="w-3.5 h-3.5 text-sky-400" />
-              <span>SOFTWARE SOLUTIONS</span>
+              <span>SOFTWARE DEVELOPMENT & MANAGEMENT</span>
             </span>
             <span className="text-slate-600 hidden sm:inline">•</span>
             <span className="flex items-center gap-1.5 hover:text-sky-300 transition-colors">
-              <Settings className="w-3.5 h-3.5 text-sky-400" />
-              <span>SOFTWARE MANAGEMENT</span>
+              <Palette className="w-3.5 h-3.5 text-pink-400" />
+              <span>GRAPHICS DESIGN & BRANDING</span>
             </span>
             <span className="text-slate-600 hidden sm:inline">•</span>
             <span className="flex items-center gap-1.5 hover:text-sky-300 transition-colors">
-              <Cloud className="w-3.5 h-3.5 text-sky-400" />
-              <span>IT CONSULTING & SUPPORT</span>
+              <Wrench className="w-3.5 h-3.5 text-emerald-400" />
+              <span>24/7 MAINTENANCE & REPAIRS</span>
             </span>
           </div>
 
