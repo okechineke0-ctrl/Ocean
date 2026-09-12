@@ -189,17 +189,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-semibold block">Starting From</span>
-                  <span className="text-sm font-bold text-slate-900 font-display">
-                    ₦{service.startingPriceNGN.toLocaleString()}
-                  </span>
-                </div>
-
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-end">
                 <button
                   onClick={() => onNavigate('services')}
-                  className="px-3 py-1.5 rounded-lg bg-sky-50 hover:bg-sky-600 text-sky-700 hover:text-white text-xs font-semibold transition-all flex items-center gap-1 cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-sky-50 hover:bg-sky-600 text-sky-700 hover:text-white text-xs font-semibold transition-all flex items-center gap-1 cursor-pointer ml-auto"
                 >
                   <span>Explore Service</span>
                   <ArrowRight className="w-3 h-3" />
