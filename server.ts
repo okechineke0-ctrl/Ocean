@@ -607,18 +607,37 @@ app.delete('/api/course-registrations/:id', async (req, res) => {
 function generateMatureConsultantResponse(userQuery: string): string {
   const query = (userQuery || '').toLowerCase();
 
-  // 1. Crash Course / Training / Curriculum Inquiry
+  // 1. AI Learning & Mentorship Inquiry (Dedicated)
+  if (query.includes('ai') || query.includes('artificial intelligence') || query.includes('mentor') || query.includes('llm') || query.includes('gemini') || query.includes('gpt') || query.includes('machine learning')) {
+    return `### **AI Learning, Generative AI & 1-on-1 Engineering Mentorship**
+
+**Master production AI engineering under the direct 1-on-1 guidance of senior software engineers at Ocean Technologies.**
+
+#### **What You Master in the AI Track:**
+1. **Applied Generative AI & LLM Systems**: Integration of Google Gemini API (\`@google/genai\`), OpenAI SDK, Claude API, streaming completions, multimodal audio/vision pipelines, and structured JSON outputs.
+2. **Retrieval-Augmented Generation (RAG)**: Chunking strategies, semantic vector embeddings, vector databases (Pinecone, ChromaDB, PGVector), hybrid search, and hallucination reduction.
+3. **Agentic Workflows & Tool Calling**: Building autonomous agents, function calling architectures, schema validation, and stateful multi-step pipelines.
+4. **1-on-1 Senior Engineering Mentorship**: Weekly private 1-on-1 code reviews over Google Meet, Git pull-request critiques, production debugging sessions, and technical career roadmapping.
+
+#### **Cohort Details & Tuition:**
+- **Standard Track**: ₦120,000 (8-week intensive with capstone portfolio project).
+- **Upcoming Crash Course**: We are launching an online **CRASH COURSE** where tuition will **drop significantly**!
+- **Direct Enrollment**: Click **Register for Course** in the navigation bar or message our coordinator on WhatsApp at **[09129216768](https://wa.me/2349129216768)**.`;
+  }
+
+  // 2. Crash Course / Training / Curriculum Inquiry
   if (query.includes('crash course') || query.includes('training') || query.includes('course') || query.includes('learn') || query.includes('class') || query.includes('student') || query.includes('curriculum')) {
     return `### **Ocean Technologies Academy — 100% Online Technical Courses & Upcoming Crash Course**
 
 **Accelerate your tech career with intensive, practical hands-on mentorship from senior software engineers.**
 
 #### **Active Online Cohort Programs:**
-1. **Full-Stack Web Development** (React, TypeScript, Tailwind CSS, Node.js, Express, PostgreSQL & Cloud APIs)
-2. **Mobile App Engineering** (Flutter & React Native cross-platform apps for iOS & Android)
-3. **IT Consulting & Technical Support** (Systems Architecture, Cloud Advisory, Cybersecurity & Infrastructure)
-4. **Python Software Engineering, AI & Automation**
-5. **Software Engineering & System Architecture**
+1. **AI Learning, Generative AI & 1-on-1 Engineering Mentorship** (Gemini & OpenAI SDKs, RAG, Vector DBs, Agents & 1-on-1 Code Reviews)
+2. **Full-Stack Web Development** (React, TypeScript, Tailwind CSS, Node.js, Express, PostgreSQL & Cloud APIs)
+3. **Mobile App Engineering** (Flutter & React Native cross-platform apps for iOS & Android)
+4. **IT Consulting & Technical Support** (Systems Architecture, Cloud Advisory, Cybersecurity & Infrastructure)
+5. **Python Software Engineering & Automation**
+6. **Software Engineering & System Architecture**
 
 ---
 
@@ -803,7 +822,8 @@ Company Details:
   4. Custom Web Applications & Enterprise SaaS (Node.js, Python, PostgreSQL, Next.js, React)
   5. Software Maintenance, Server Uptime Monitoring, Security Patches & Cloud Backups
   6. Emergency 24/7 Bug Fixes & Website Repair (500 errors, broken checkouts, malware cleanup, database recovery)
-  7. 100% Online Crash Course & Tech Academy (Full-stack web development, mobile apps, IT consulting, Python AI & automation with schedules coordinated via WhatsApp group)
+  7. AI Learning, Generative AI & 1-on-1 Engineering Mentorship (Hands-on LLM apps, Gemini & OpenAI SDKs, RAG vector databases, prompt engineering, and dedicated 1-on-1 senior engineer code reviews)
+  8. 100% Online Crash Course & Tech Academy (AI & Full-Stack Web Development, mobile apps, IT consulting, Python automation with schedules coordinated via WhatsApp group)
 
 Pricing Benchmarks & Nigerian Billing Principles (Nigerian Naira ₦):
 You know how the Nigerian tech billing system works:
@@ -813,6 +833,7 @@ You know how the Nigerian tech billing system works:
    - Standard Business Website: ₦120,000 – ₦280,000 (workload dependent: 5-8 pages, mobile-first, contact forms, WhatsApp integration)
    - Corporate / Brand Portal: ₦300,000 – ₦650,000 (2-4 weeks)
    - E-Commerce / Online Store: ₦450,000 – ₦1,200,000+ (Paystack/Flutterwave gateway, cart, inventory, order notifications)
+   - AI Learning & 1-on-1 Mentorship Track: ₦85,000 – ₦160,000 (8-12 weeks intensive with upcoming crash course discount alert)
    - IT Consulting & Technical Audit: ₦75,000 – ₦250,000 (Architecture audit, security scan, cloud recommendations)
    - Monthly IT Support Retainer: ₦80,000 – ₦250,000/month
    - Full-Stack Web App / SaaS: ₦800,000 – ₦2,500,000+ (4-10 weeks)

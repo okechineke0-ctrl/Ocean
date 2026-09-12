@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { SERVICES, MAINTENANCE_PLANS, CASE_STUDIES, FAQS } from '../data/companyData';
+import { COURSES_OFFERED } from '../data/coursesData';
 import { ViewMode } from '../types';
 import { 
   Search, 
@@ -9,7 +10,8 @@ import {
   Wrench, 
   Smartphone, 
   HelpCircle, 
-  FolderGit2 
+  FolderGit2,
+  GraduationCap
 } from 'lucide-react';
 
 interface SearchModalProps {
@@ -17,19 +19,36 @@ interface SearchModalProps {
   onClose: () => void;
   onNavigate: (view: ViewMode) => void;
   onSelectService: (serviceId: string) => void;
+  onOpenCourseRegistration?: (courseId?: string) => void;
 }
 
 export const SearchModal: React.FC<SearchModalProps> = ({
   isOpen,
   onClose,
   onNavigate,
-  onSelectService
+  onSelectService,
+  onOpenCourseRegistration
 }) => {
   const [query, setQuery] = useState('');
 
   const searchResults = useMemo(() => {
     if (!query.trim()) return [];
     const q = query.toLowerCase();
+
+    const courseMatches = COURSES_OFFERED.filter(
+      (c) =>
+        c.name.toLowerCase().includes(q) ||
+        c.description.toLowerCase().includes(q) ||
+        c.category.toLowerCase().includes(q) ||
+        c.technologies.some((t) => t.toLowerCase().includes(q))
+    ).map((c) => ({
+      type: 'course' as const,
+      id: c.id,
+      title: c.name,
+      subtitle: `${c.duration} • ${c.category}`,
+      view: 'services' as ViewMode,
+      icon: <GraduationCap className="w-4 h-4 text-indigo-600" />
+    }));
 
     const serviceMatches = SERVICES.filter(
       (s) =>
@@ -88,7 +107,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
       icon: <HelpCircle className="w-4 h-4 text-amber-600" />
     }));
 
-    return [...serviceMatches, ...planMatches, ...caseMatches, ...faqMatches];
+    return [...courseMatches, ...serviceMatches, ...planMatches, ...caseMatches, ...faqMatches];
   }, [query]);
 
   if (!isOpen) return null;
@@ -134,7 +153,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 Suggested Searches:
               </p>
               <div className="flex flex-wrap gap-2">
-                {['Website Development', 'Mobile App', 'Maintenance Retainers', 'Emergency Bug Fix', 'Paystack Integration', 'Agbani Office'].map((tag) => (
+                {['AI Learning & Mentorship', 'Website Development', 'Mobile App', 'Maintenance Retainers', 'Emergency Bug Fix', 'Paystack Integration'].map((tag) => (
                   <button
                     key={tag}
                     onClick={() => setQuery(tag)}
@@ -148,7 +167,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
           ) : searchResults.length === 0 ? (
             <div className="py-12 text-center text-slate-500 text-sm">
               <p>No matches found for "{query}"</p>
-              <p className="text-xs text-slate-400 mt-1">Try searching "website", "maintenance", or "apps"</p>
+              <p className="text-xs text-slate-400 mt-1">Try searching "AI", "mentorship", "website", or "courses"</p>
             </div>
           ) : (
             <div className="space-y-1">
@@ -156,9 +175,17 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 <button
                   key={`${item.type}-${item.id}`}
                   onClick={() => {
-                    onNavigate(item.view);
-                    if (item.type === 'service') {
-                      onSelectService(item.id);
+                    if (item.type === 'course') {
+                      if (onOpenCourseRegistration) {
+                        onOpenCourseRegistration(item.id);
+                      } else {
+                        onNavigate('services');
+                      }
+                    } else {
+                      onNavigate(item.view);
+                      if (item.type === 'service') {
+                        onSelectService(item.id);
+                      }
                     }
                     onClose();
                   }}

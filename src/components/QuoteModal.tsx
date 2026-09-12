@@ -220,6 +220,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                   className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 focus:bg-white focus:outline-hidden focus:border-sky-600 focus:ring-1 focus:ring-sky-600 transition-all cursor-pointer"
                 >
                   <option value="Website Development">Website Development (Corporate, E-Commerce, Blog)</option>
+                  <option value="AI Learning & Mentorship">AI Learning, Generative AI & 1-on-1 Engineering Mentorship</option>
                   <option value="Mobile App Development">Mobile App Development (Android & iOS)</option>
                   <option value="Website Maintenance">Website Maintenance & Speed Retainer</option>
                   <option value="Software Troubleshooting">Software Debugging & Issue Troubleshooting</option>

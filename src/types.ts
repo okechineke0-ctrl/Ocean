@@ -13,6 +13,7 @@ export type ServiceCategory =
   | 'Website Development'
   | 'Mobile App Development'
   | 'Software Development & Management'
+  | 'AI Learning & Mentorship'
   | 'Graphics Design & Branding'
   | 'Website Maintenance'
   | 'Software Troubleshooting'
@@ -32,7 +33,7 @@ export interface ServiceItem {
   deliveryTime: string;
   startingPriceNGN: number;
   startingPriceUSD: number;
-  iconName: 'Globe' | 'Smartphone' | 'Wrench' | 'Bug' | 'Server' | 'ShieldCheck' | 'Cpu' | 'Code' | 'Settings' | 'Palette';
+  iconName: 'Globe' | 'Smartphone' | 'Wrench' | 'Bug' | 'Server' | 'ShieldCheck' | 'Cpu' | 'Code' | 'Settings' | 'Palette' | 'Sparkles' | 'Brain';
   isPopular?: boolean;
 }
 

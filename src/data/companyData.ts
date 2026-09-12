@@ -213,6 +213,33 @@ export const SERVICES: ServiceItem[] = [
     startingPriceUSD: 30,
     iconName: 'Palette',
     isPopular: true,
+  },
+  {
+    id: 'ai-learning-mentorship',
+    title: 'AI Engineering & 1-on-1 Technical Mentorship',
+    category: 'AI Learning & Mentorship',
+    tagline: 'Practical Generative AI development, LLM systems, and personalized 1-on-1 software engineering career mentorship.',
+    description: 'Elevate your technical career or upskill your engineering organization with enterprise-grade AI capabilities. We deliver comprehensive hands-on instruction across Large Language Models (LLMs), Google Gemini & OpenAI API integrations, Retrieval-Augmented Generation (RAG), vector databases, and autonomous AI agents — paired with weekly 1-on-1 personalized mentorship, architecture reviews, and international tech portfolio guidance from senior engineers.',
+    keyBenefits: [
+      '1-on-1 dedicated senior engineer mentorship with weekly live code reviews & pair programming',
+      'Production-grade Generative AI engineering (Google Gemini, OpenAI, Claude, LangChain)',
+      'Building RAG systems with vector databases (pgvector, Chroma, Pinecone) for private business data',
+      'Autonomous agentic workflows, function calling, and multimodal vision/voice pipelines',
+      'Career roadmap counseling, international remote job portfolio audits, and technical interview prep'
+    ],
+    deliverables: [
+      'Custom AI Engineering Learning Plan tailored to your experience and goals',
+      'Production-grade Capstone AI Project deployed live on Cloud Infrastructure',
+      '1-on-1 Weekly Architecture Critiques & Code Review Sessions',
+      'Verified Ocean Technologies AI Engineering & Mentorship Certificate',
+      'Direct WhatsApp Mentorship Access & Senior Engineering Community'
+    ],
+    technologies: ['Google Gemini API', 'OpenAI & Claude SDKs', 'LangChain & LlamaIndex', 'Python & TypeScript', 'Vector DBs (pgvector, Chroma)', 'RAG Pipelines', 'Docker & FastAPIs'],
+    deliveryTime: '8 to 16 Weeks Structured Mentorship',
+    startingPriceNGN: 65000,
+    startingPriceUSD: 50,
+    iconName: 'Cpu',
+    isPopular: true,
   }
 ];
 
@@ -482,6 +509,12 @@ export const FAQS: FAQItem[] = [
     category: 'General',
     question: 'When is the upcoming Crash Course starting and will tuition drop?',
     answer: 'We are preparing to launch an intensive fast-track Online Tech Crash Course very soon! Tuition prices will drop significantly for this upcoming batch to welcome new virtual students. Please prepare your computers, stay tuned, and chat our coordinator on WhatsApp at 09129216768 to join the waiting list!'
+  },
+  {
+    id: '10',
+    category: 'General',
+    question: 'What is included in the AI Learning & 1-on-1 Engineering Mentorship track?',
+    answer: 'Our AI Learning & Mentorship program pairs students directly with senior software engineers. You learn modern Generative AI engineering, Large Language Models (LLMs), Google Gemini & OpenAI API integration, vector databases, RAG pipelines, and prompt engineering. Crucially, it includes weekly 1-on-1 live code reviews, GitHub architectural audits, and personalized guidance to help you land high-paying local or international remote software engineering roles.'
   }
 ];
 

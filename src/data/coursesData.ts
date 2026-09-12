@@ -2,6 +2,26 @@ import { CourseOption } from '../types';
 
 export const COURSES_OFFERED: CourseOption[] = [
   {
+    id: 'ai_learning_mentorship',
+    name: 'AI Learning, Generative AI & 1-on-1 Engineering Mentorship',
+    category: 'Artificial Intelligence & Career Mentorship',
+    duration: '8 Weeks Accelerator or 16 Weeks Immersive Track',
+    description: 'Master production-grade Artificial Intelligence and Generative AI systems. Build LLM-powered applications, autonomous agentic workflows, Retrieval-Augmented Generation (RAG) pipelines, and vector databases — backed by personalized 1-on-1 senior software engineering mentorship, weekly code reviews, architectural critiques, and career roadmapping.',
+    technologies: [
+      'Large Language Models (LLMs) & System Prompting',
+      'Google Gemini API & OpenAI SDKs',
+      'RAG Architecture & Vector DBs (pgvector, Chroma)',
+      'LangChain & LlamaIndex Agent Frameworks',
+      'Python & TypeScript AI Service Integration',
+      '1-on-1 Senior Engineer Mentorship & Pair Programming',
+      'Weekly Live Architecture Reviews & Git Audits',
+      'Career Portfolio & Remote Tech Job Strategy'
+    ],
+    onlineAvailable: true,
+    offlineAvailable: false,
+    highlight: 'Flagship Program • 1-on-1 Senior Industry Mentorship',
+  },
+  {
     id: 'web_dev',
     name: 'Full-Stack Web Development',
     category: 'Software Engineering',

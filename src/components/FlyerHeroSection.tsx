@@ -107,10 +107,10 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                   <button
                     id="hero-course-btn"
                     onClick={onOpenCourseRegistration}
-                    className="px-5 py-3.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 font-bold text-sm transition-colors flex items-center gap-2 cursor-pointer shadow-xs"
+                    className="px-5 py-3.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-900 border border-indigo-200 font-bold text-sm transition-colors flex items-center gap-2 cursor-pointer shadow-xs"
                   >
-                    <GraduationCap className="w-4 h-4 text-sky-600" />
-                    <span>Register for Online Course</span>
+                    <GraduationCap className="w-4 h-4 text-indigo-600" />
+                    <span>AI Learning & Mentorship Track</span>
                   </button>
                 )}
 
@@ -503,6 +503,34 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                     <p className="text-xs text-slate-600 leading-relaxed mt-1">
                       Professional logo design, brand identity, social media kits, and high-impact digital and print marketing materials.
                     </p>
+                  </div>
+                </div>
+
+                {/* 5. AI Learning & 1-on-1 Technical Mentorship */}
+                <div 
+                  onClick={() => onOpenCourseRegistration ? onOpenCourseRegistration() : onNavigate('services')}
+                  className="group p-4 rounded-2xl bg-gradient-to-r from-indigo-50/70 via-white to-sky-50/50 border-2 border-indigo-300 hover:border-indigo-500 hover:shadow-lg transition-all flex items-start gap-4 cursor-pointer relative"
+                >
+                  <span className="absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-indigo-600 to-sky-600 text-white text-[9px] font-black uppercase tracking-wider shadow-xs">
+                    New • 1-on-1 Senior Mentorship
+                  </span>
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-blue-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-500/25 group-hover:scale-105 transition-all">
+                    <Cpu className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black text-indigo-950 group-hover:text-indigo-700 uppercase tracking-wide transition-colors flex items-center gap-1.5">
+                      <span>AI LEARNING & TECHNICAL MENTORSHIP</span>
+                    </h3>
+                    <p className="text-xs text-slate-600 leading-relaxed mt-1">
+                      Production Generative AI development, Google Gemini & OpenAI SDK integrations, RAG vector architectures, and dedicated 1-on-1 code reviews with senior engineers.
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {['Generative AI', 'Gemini & OpenAI', 'RAG & Vector DBs', '1-on-1 Mentorship'].map((tag) => (
+                        <span key={tag} className="text-[10px] font-medium px-2 py-0.5 rounded bg-white/90 border border-indigo-200 text-indigo-800">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
 

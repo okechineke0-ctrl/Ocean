@@ -23,7 +23,8 @@ import {
   GraduationCap,
   Award,
   Building2,
-  Palette
+  Palette,
+  Cpu
 } from 'lucide-react';
 
 interface HomeViewProps {
@@ -39,10 +40,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
   onOpenIssueReport,
   onOpenCourseRegistration,
 }) => {
-  const [activeTab, setActiveTab] = useState<'all' | 'web' | 'app' | 'software' | 'maintenance'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'ai' | 'web' | 'app' | 'software' | 'maintenance'>('all');
 
   const filteredServices = SERVICES.filter((s) => {
     if (activeTab === 'all') return true;
+    if (activeTab === 'ai') return s.category === 'AI Learning & Mentorship';
     if (activeTab === 'web') return s.category === 'Website Development';
     if (activeTab === 'app') return s.category === 'Mobile App Development';
     if (activeTab === 'software') return s.category === 'Software Development & Management' || s.category === 'Software Engineering' || s.category === 'Software Management' || s.category === 'Custom Portals & APIs';
@@ -59,6 +61,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       case 'Server': return <Server className="w-6 h-6 text-cyan-600" />;
       case 'Settings': return <Wrench className="w-6 h-6 text-indigo-600" />;
       case 'Palette': return <Palette className="w-6 h-6 text-pink-600" />;
+      case 'Cpu': return <Cpu className="w-6 h-6 text-indigo-600" />;
       default: return <Code2 className="w-6 h-6 text-sky-600" />;
     }
   };
@@ -121,6 +124,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <div className="flex flex-wrap justify-center gap-2 mt-6">
             {[
               { id: 'all', label: 'All Capabilities' },
+              { id: 'ai', label: 'AI Learning & Mentorship' },
               { id: 'web', label: 'Website Development' },
               { id: 'app', label: 'Mobile Apps' },
               { id: 'software', label: 'Software Development & Management' },
@@ -581,8 +585,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
           {/* Quick Action Footer Strip */}
           <div className="p-6 rounded-2xl bg-slate-800/40 border border-slate-700/60 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-center sm:text-left">
-              <h4 className="text-sm font-bold text-white">Looking for dedicated software assistance or online training?</h4>
-              <p className="text-xs text-slate-400 mt-0.5">Direct phone and WhatsApp access: 09129216768 • Online enrollment active</p>
+              <h4 className="text-sm font-bold text-white">Looking for custom software engineering, AI learning, or 1-on-1 mentorship?</h4>
+              <p className="text-xs text-slate-400 mt-0.5">Direct phone & WhatsApp: 09129216768 • Online Academy & Mentorship tracks active</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               {onOpenCourseRegistration && (
@@ -591,7 +595,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   className="px-4 py-2.5 rounded-xl bg-sky-500/20 text-sky-300 border border-sky-400/30 hover:bg-sky-500/30 text-xs font-bold transition-colors flex items-center gap-2 cursor-pointer"
                 >
                   <GraduationCap className="w-4 h-4" />
-                  <span>Online Courses</span>
+                  <span>AI & Tech Courses</span>
                 </button>
               )}
               <a

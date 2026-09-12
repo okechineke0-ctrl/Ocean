@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, 
   GraduationCap, 
@@ -32,10 +32,16 @@ interface CourseRegistrationModalProps {
 export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = ({
   isOpen,
   onClose,
-  defaultCourseId = 'web_dev',
+  defaultCourseId = 'ai_learning_mentorship',
 }) => {
   const [selectedCourseId, setSelectedCourseId] = useState<string>(defaultCourseId);
   const [experienceLevel, setExperienceLevel] = useState<string>('Complete Beginner');
+
+  useEffect(() => {
+    if (defaultCourseId) {
+      setSelectedCourseId(defaultCourseId);
+    }
+  }, [defaultCourseId, isOpen]);
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -283,25 +289,30 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                   <span className="text-[11px] text-slate-500 font-normal">Choose your focus area</span>
                 </label>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1 border border-slate-200 rounded-xl p-2 bg-slate-50/50">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1 border border-slate-200 rounded-xl p-2 bg-slate-50/50">
                   {COURSES_OFFERED.map((course) => {
                     const isSelected = course.id === selectedCourseId;
+                    const isAiTrack = course.id === 'ai_learning_mentorship';
                     return (
                       <div
                         key={course.id}
                         onClick={() => setSelectedCourseId(course.id)}
-                        className={`p-2.5 rounded-lg border text-left cursor-pointer transition-all duration-150 ${
+                        className={`p-2.5 rounded-lg border text-left cursor-pointer transition-all duration-150 relative ${
                           isSelected
-                            ? 'border-sky-600 bg-white shadow-xs ring-1 ring-sky-600'
+                            ? isAiTrack
+                              ? 'border-indigo-600 bg-indigo-50/40 shadow-xs ring-2 ring-indigo-500/40'
+                              : 'border-sky-600 bg-sky-50/40 shadow-xs ring-1 ring-sky-600'
+                            : isAiTrack
+                            ? 'border-indigo-200 hover:border-indigo-400 bg-white'
                             : 'border-slate-200 hover:border-slate-300 bg-white'
                         }`}
                       >
                         <div className="flex items-center justify-between gap-1">
-                          <span className="text-xs font-bold text-slate-900 block truncate">
+                          <span className={`text-xs font-bold block truncate ${isAiTrack ? 'text-indigo-950 font-display' : 'text-slate-900'}`}>
                             {course.name}
                           </span>
                           {isSelected && (
-                            <span className="w-3.5 h-3.5 rounded-full bg-sky-600 text-white flex items-center justify-center shrink-0">
+                            <span className={`w-3.5 h-3.5 rounded-full ${isAiTrack ? 'bg-indigo-600' : 'bg-sky-600'} text-white flex items-center justify-center shrink-0`}>
                               <Check className="w-2.5 h-2.5" />
                             </span>
                           )}
@@ -310,7 +321,11 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
                           {course.description}
                         </p>
                         {course.highlight && (
-                          <span className="inline-block mt-1 text-[9px] font-semibold px-1.5 py-0.2 rounded bg-sky-50 text-sky-700 border border-sky-200/60">
+                          <span className={`inline-block mt-1 text-[9px] font-semibold px-1.5 py-0.2 rounded border ${
+                            isAiTrack 
+                              ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                              : 'bg-sky-50 text-sky-700 border-sky-200/60'
+                          }`}>
                             {course.highlight}
                           </span>
                         )}

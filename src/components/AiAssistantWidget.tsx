@@ -23,7 +23,7 @@ export const AiAssistantWidget: React.FC = () => {
     {
       id: 'welcome-1',
       role: 'model',
-      text: "Hello! I'm the **Ocean Technologies AI Consultant**. How can I assist you today with custom software development, website maintenance, strategic IT consulting, or our 100% online crash course?",
+      text: "Hello! I'm the **Ocean Technologies AI Consultant**. How can I assist you today with custom software engineering, AI learning & 1-on-1 mentorship, website maintenance, or our upcoming online courses?",
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);

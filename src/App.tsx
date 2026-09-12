@@ -21,6 +21,7 @@ export default function App() {
   const [currentView, setCurrentView] = useState<ViewMode>('home');
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
   const [selectedServiceForQuote, setSelectedServiceForQuote] = useState<string | undefined>(undefined);
+  const [selectedCourseForRegistration, setSelectedCourseForRegistration] = useState<string | undefined>(undefined);
   const [issueReportModalOpen, setIssueReportModalOpen] = useState(false);
   const [courseRegistrationModalOpen, setCourseRegistrationModalOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
@@ -52,7 +53,8 @@ export default function App() {
     setIssueReportModalOpen(true);
   };
 
-  const handleOpenCourseRegistration = () => {
+  const handleOpenCourseRegistration = (courseId?: string) => {
+    setSelectedCourseForRegistration(courseId);
     setCourseRegistrationModalOpen(true);
   };
 
@@ -150,7 +152,11 @@ export default function App() {
       {/* Interactive Modals */}
       <CourseRegistrationModal
         isOpen={courseRegistrationModalOpen}
-        onClose={() => setCourseRegistrationModalOpen(false)}
+        onClose={() => {
+          setCourseRegistrationModalOpen(false);
+          setSelectedCourseForRegistration(undefined);
+        }}
+        defaultCourseId={selectedCourseForRegistration}
       />
 
       <QuoteModal
@@ -174,6 +180,10 @@ export default function App() {
         onSelectService={(sId) => {
           setSearchModalOpen(false);
           handleOpenQuote(sId);
+        }}
+        onOpenCourseRegistration={(courseId) => {
+          setSearchModalOpen(false);
+          handleOpenCourseRegistration(courseId);
         }}
       />
 

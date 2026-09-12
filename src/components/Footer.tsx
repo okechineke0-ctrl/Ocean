@@ -132,6 +132,15 @@ export const Footer: React.FC<FooterProps> = ({
               <li>
                 <button 
                   onClick={() => onNavigate('services')} 
+                  className="hover:text-sky-300 transition-colors text-left text-sky-400 hover:text-sky-300 font-semibold flex items-center gap-1"
+                >
+                  <span>AI Learning & Mentorship</span>
+                  <span className="text-[9px] px-1 py-0.2 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/60">New</span>
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => onNavigate('services')} 
                   className="hover:text-sky-300 transition-colors text-left text-slate-400 hover:text-slate-200"
                 >
                   Website Development
@@ -218,8 +227,8 @@ export const Footer: React.FC<FooterProps> = ({
                   className="hover:text-sky-300 transition-colors text-sky-400 font-semibold flex items-center gap-1.5 cursor-pointer"
                 >
                   <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
-                  <span>Register for a Course</span>
-                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-sky-950 text-sky-300 border border-sky-800/60 uppercase">New</span>
+                  <span>AI Learning & Tech Courses</span>
+                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/60 uppercase">Flagship</span>
                 </button>
               </li>
               <li>
