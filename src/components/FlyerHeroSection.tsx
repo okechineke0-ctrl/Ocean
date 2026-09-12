@@ -433,7 +433,7 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                 
                 {/* 1. Website Design & Development */}
                 <div 
-                  onClick={() => onOpenQuote('Website Design & Development')}
+                  onClick={() => onNavigate('services')}
                   className="group p-4 rounded-2xl bg-white border border-slate-200 hover:border-sky-400 hover:shadow-md transition-all flex items-start gap-4 cursor-pointer"
                 >
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-sky-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-sky-500/20 group-hover:scale-105 transition-all">
@@ -451,7 +451,7 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
 
                 {/* 2. Mobile App Development */}
                 <div 
-                  onClick={() => onOpenQuote('Mobile App Development')}
+                  onClick={() => onNavigate('services')}
                   className="group p-4 rounded-2xl bg-white border border-slate-200 hover:border-sky-400 hover:shadow-md transition-all flex items-start gap-4 cursor-pointer"
                 >
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-all">

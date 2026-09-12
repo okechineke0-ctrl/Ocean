@@ -17,18 +17,19 @@ import {
   Phone,
   MessageCircle,
   Palette,
-  Cpu
+  Cpu,
+  Calculator,
+  Mail
 } from 'lucide-react';
 
 interface ServicesViewProps {
   onNavigate: (view: ViewMode) => void;
-  onOpenQuote: (serviceId?: string) => void;
+  onOpenQuote?: (serviceId?: string) => void;
   onOpenIssueReport: () => void;
 }
 
 export const ServicesView: React.FC<ServicesViewProps> = ({
   onNavigate,
-  onOpenQuote,
   onOpenIssueReport
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory>('All');
@@ -111,7 +112,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
           {/* Services List (Left 5 Cols) */}
           <div className="lg:col-span-5 space-y-3">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">
-              Select a service to view full specifications:
+              Select a service to view scope and details:
             </p>
             {filteredServices.map((service) => {
               const isSelected = service.id === activeService.id;
@@ -144,9 +145,9 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
                         {service.tagline}
                       </p>
                       <div className="flex items-center justify-between mt-3 text-[11px]">
-                        <span className="text-slate-400 font-medium">From ₦{service.startingPriceNGN.toLocaleString()}</span>
+                        <span className="text-slate-500 font-medium">Custom Project Scope</span>
                         <span className="text-sky-600 font-semibold flex items-center gap-1">
-                          <span>View Spec</span>
+                          <span>Details</span>
                           <ArrowRight className="w-3 h-3" />
                         </span>
                       </div>
@@ -159,7 +160,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
 
           {/* Active Service Detailed Panel (Right 7 Cols) */}
           <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 mb-6">
               <div className="flex items-center gap-3">
                 <div className="p-3 bg-sky-50 text-sky-600 rounded-xl">
                   {getServiceIcon(activeService.iconName)}
@@ -174,11 +175,46 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
                 </div>
               </div>
 
-              <div className="text-right hidden sm:block">
-                <span className="text-[11px] text-slate-400 block font-medium">Starting From</span>
-                <span className="text-xl font-bold text-slate-900 font-display">
-                  ₦{activeService.startingPriceNGN.toLocaleString()}
+              <div className="bg-sky-50/80 border border-sky-200/80 rounded-xl px-3.5 py-2 sm:text-right">
+                <span className="text-[10px] font-bold text-sky-800 uppercase tracking-wider block">Billing Policy</span>
+                <span className="text-xs font-semibold text-slate-700 block mt-0.5">
+                  Calculated per project scope
                 </span>
+              </div>
+            </div>
+
+            {/* Prominent Billing Advisory Callout */}
+            <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-slate-900 to-sky-950 border border-slate-800 text-white shadow-xs">
+              <div className="flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-sky-500/20 text-sky-300 shrink-0 mt-0.5">
+                  <Calculator className="w-5 h-5 text-sky-400" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-white font-display">
+                    Project Costing & Billing Structure
+                  </h4>
+                  <p className="text-xs text-slate-300 leading-relaxed mt-1">
+                    The bill for your service is calculated based on your project requirements and technical scope. Contact management directly to evaluate your requirements and receive an itemized development breakdown.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-3 mt-3">
+                    <button
+                      onClick={() => onNavigate('contact')}
+                      className="px-3.5 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs tracking-wide transition-colors flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Mail className="w-3.5 h-3.5" />
+                      <span>Contact Management</span>
+                    </button>
+                    <a
+                      href={COMPANY_INFO.whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-colors flex items-center gap-1.5"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" />
+                      <span>WhatsApp Direct</span>
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -244,7 +280,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
                 onClick={() => onNavigate('contact')}
                 className="w-full sm:flex-1 py-3 px-5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs tracking-wide shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>Inquire About {activeService.title}</span>
+                <span>Contact Management for {activeService.title}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
@@ -255,7 +291,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
                 className="w-full sm:w-auto py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2"
               >
                 <MessageCircle className="w-4 h-4" />
-                <span>WhatsApp Hotline</span>
+                <span>WhatsApp Management Hotline</span>
               </a>
             </div>
           </div>

@@ -293,14 +293,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </div>
 
                 <button
-                  onClick={() => onOpenQuote(plan.id)}
+                  onClick={() => onNavigate('contact')}
                   className={`w-full py-2.5 rounded-xl font-semibold text-xs tracking-wide transition-all cursor-pointer ${
                     plan.isPopular
                       ? 'bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold'
                       : 'bg-white hover:bg-slate-100 border border-slate-300 text-slate-800'
                   }`}
                 >
-                  Select {plan.name}
+                  Contact Management for {plan.name}
                 </button>
               </div>
             ))}

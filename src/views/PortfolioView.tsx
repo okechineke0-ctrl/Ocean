@@ -10,7 +10,8 @@ import {
   Code, 
   Star,
   Layers,
-  Sparkles
+  Sparkles,
+  MessageCircle
 } from 'lucide-react';
 
 interface PortfolioViewProps {
@@ -170,10 +171,10 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                 </div>
 
                 <button
-                  onClick={() => onOpenQuote()}
+                  onClick={() => onNavigate('contact')}
                   className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
                 >
-                  <span>Build Similar System</span>
+                  <span>Inquire for Similar Project</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -187,21 +188,24 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
             Have a Specific Project Idea in Mind?
           </h3>
           <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto">
-            Whether you need a custom web portal, high-speed mobile app, or software maintenance agreement, we offer free engineering consultations in Agbani or remotely.
+            The bill for your service is calculated based on your project requirements and technical scope. Contact management directly to evaluate your requirements and receive an itemized development breakdown.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <button
-              onClick={() => onOpenQuote()}
+              onClick={() => onNavigate('contact')}
               className="px-6 py-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs transition-colors flex items-center gap-2 cursor-pointer"
             >
-              <span>Request Free Consultation & Quote</span>
+              <span>Contact Management</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
             <a
-              href={COMPANY_INFO.phoneTel}
-              className="px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors"
+              href={COMPANY_INFO.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-colors flex items-center gap-1.5"
             >
-              Call Hotline: {COMPANY_INFO.phone}
+              <MessageCircle className="w-3.5 h-3.5" />
+              <span>WhatsApp Management</span>
             </a>
           </div>
         </div>

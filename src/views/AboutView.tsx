@@ -140,10 +140,10 @@ export const AboutView: React.FC<AboutViewProps> = ({
 
               <div className="pt-2 flex flex-col sm:flex-row gap-3">
                 <button
-                  onClick={() => onOpenQuote()}
+                  onClick={() => onNavigate('contact')}
                   className="flex-1 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs tracking-wide text-center transition-colors cursor-pointer shadow-xs"
                 >
-                  Request a Consultation
+                  Contact Management
                 </button>
                 <a
                   href={COMPANY_INFO.whatsappUrl}
@@ -222,10 +222,10 @@ export const AboutView: React.FC<AboutViewProps> = ({
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <button
-                onClick={() => onOpenQuote('Graphics Design & Branding')}
+                onClick={() => onNavigate('contact')}
                 className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-sm cursor-pointer"
               >
-                Request Design Quote
+                Contact Design Management
               </button>
               <a
                 href={COMPANY_INFO.whatsappUrl}

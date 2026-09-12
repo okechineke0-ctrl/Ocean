@@ -202,14 +202,14 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                 </p>
 
                 <button
-                  onClick={() => onOpenQuote(plan.id)}
+                  onClick={() => onNavigate('contact')}
                   className={`w-full py-2.5 rounded-xl font-semibold text-xs tracking-wide transition-all cursor-pointer ${
                     plan.isPopular
                       ? 'bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold'
                       : 'bg-slate-900 hover:bg-slate-800 text-white'
                   }`}
                 >
-                  Enroll in {plan.name}
+                  Contact Management for {plan.name}
                 </button>
               </div>
             </div>
