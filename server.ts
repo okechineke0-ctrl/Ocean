@@ -2,6 +2,8 @@ import 'dotenv/config';
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
+import crypto from 'crypto';
+import rateLimit from 'express-rate-limit';
 import { GoogleGenAI } from '@google/genai';
 import { 
   createInquiry, 
@@ -10,6 +12,7 @@ import {
   getEmergencyTickets,
   updateInquiryRecord,
   deleteInquiryRecord,
+  deleteEmergencyTicketRecord,
   createInternship,
   getInternships,
   updateInternshipRecord,
@@ -23,7 +26,173 @@ import {
 const app = express();
 const PORT = 3000;
 
-app.use(express.json({ limit: '10mb' }));
+// ==========================================
+// SECURITY HEADERS & DEFENSIVE HARDENING
+// ==========================================
+app.disable('x-powered-by');
+
+app.use((req, res, next) => {
+  // Enforce defensive security headers across all responses
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  
+  // Content Security Policy allowing necessary scripts and Google APIs
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https://* wss://*; frame-src 'self' https:; object-src 'none'; base-uri 'self';"
+  );
+  next();
+});
+
+// Enforce strict JSON body size (200kb max to block resource exhaustion attacks)
+app.use(express.json({ limit: '200kb' }));
+
+// ==========================================
+// RATE LIMITING & ABUSE PREVENTION
+// ==========================================
+// General API Rate Limiter
+const apiLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 180,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/', apiLimiter);
+
+// Strict Rate Limiter for Admin Authentication (Anti-Brute Force)
+const adminLoginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 8, // Max 8 attempts per 15 minutes per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many administration login attempts. Rate limit triggered. Please wait 15 minutes.' },
+});
+
+// Public Submissions Rate Limiter (Anti-Spam / Flood Protection)
+const publicSubmissionLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 25,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many submissions received from this network. Please wait a moment.' },
+});
+
+// AI Diagnostic & Consultation Rate Limiter (DoS and Quota Protection)
+const aiLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 30, // 30 requests per 5 minutes per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'AI consultation rate limit reached. Please wait a few moments before submitting further requests.' },
+});
+app.use('/api/ai/', aiLimiter);
+
+// ==========================================
+// INPUT SANITIZATION & DEFENSIVE VALIDATION
+// ==========================================
+function sanitizeText(str: unknown, maxLen = 5000): string {
+  if (typeof str !== 'string') return '';
+  return str
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '')
+    .trim()
+    .slice(0, maxLen);
+}
+
+function isValidEmail(email: string): boolean {
+  if (!email || email.length > 200) return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidPhone(phone: string): boolean {
+  if (!phone || phone.length > 50) return false;
+  return /^[+0-9\s\-()]{7,30}$/.test(phone);
+}
+
+// ==========================================
+// CRYPTOGRAPHIC ADMIN AUTHENTICATION
+// ==========================================
+const ADMIN_SESSION_SECRET = process.env.ADMIN_SESSION_SECRET || 'ocean-tech-hmac-sec-09129216768-2026';
+const MASTER_ADMIN_PASSCODE = process.env.ADMIN_PASSCODE || 'okechineke';
+
+function generateAdminToken(): string {
+  const timestamp = Date.now();
+  const payload = `ocean_admin:${timestamp}`;
+  const signature = crypto.createHmac('sha256', ADMIN_SESSION_SECRET).update(payload).digest('hex');
+  return Buffer.from(`${payload}:${signature}`).toString('base64url');
+}
+
+function verifyAdminToken(token: string): boolean {
+  try {
+    const decoded = Buffer.from(token, 'base64url').toString('utf8');
+    const [prefix, timeStr, sig] = decoded.split(':');
+    if (prefix !== 'ocean_admin' || !timeStr || !sig) return false;
+    const timestamp = parseInt(timeStr, 10);
+    if (isNaN(timestamp)) return false;
+    // 24 hour session expiration
+    if (Date.now() - timestamp > 24 * 60 * 60 * 1000) return false;
+    
+    const expectedSig = crypto.createHmac('sha256', ADMIN_SESSION_SECRET).update(`ocean_admin:${timestamp}`).digest('hex');
+    const sigBuf = Buffer.from(sig, 'hex');
+    const expectedSigBuf = Buffer.from(expectedSig, 'hex');
+    
+    if (sigBuf.length !== expectedSigBuf.length) return false;
+    return crypto.timingSafeEqual(sigBuf, expectedSigBuf);
+  } catch {
+    return false;
+  }
+}
+
+function requireAdminAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : (req.headers['x-admin-token'] as string);
+
+  if (!token || !verifyAdminToken(token)) {
+    return res.status(401).json({ error: 'Unauthorized: Valid administrator authorization token required.' });
+  }
+  next();
+}
+
+// POST /api/admin/login (Anti-Timing-Attack & Anti-Brute-Force Protected)
+app.post('/api/admin/login', adminLoginLimiter, (req, res) => {
+  try {
+    const { passcode } = req.body;
+    if (!passcode || typeof passcode !== 'string') {
+      return res.status(400).json({ error: 'Passcode is required.' });
+    }
+
+    const cleanInput = passcode.trim().toLowerCase();
+    const expected = MASTER_ADMIN_PASSCODE.trim().toLowerCase();
+
+    // Constant-time comparison using fixed-length SHA-256 digests eliminates any length-dependent timing leakage
+    const inputHash = crypto.createHash('sha256').update(cleanInput).digest();
+    const expectedHash = crypto.createHash('sha256').update(expected).digest();
+
+    const isMatch = crypto.timingSafeEqual(inputHash, expectedHash);
+
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Invalid master administrator passcode.' });
+    }
+
+    const token = generateAdminToken();
+    res.json({ success: true, token, expiresIn: '24h' });
+  } catch (error: any) {
+    console.error('Admin login error:', error);
+    res.status(500).json({ error: 'Authentication processing failed.' });
+  }
+});
+
+// GET /api/admin/verify
+app.get('/api/admin/verify', (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : (req.headers['x-admin-token'] as string);
+  if (token && verifyAdminToken(token)) {
+    return res.json({ authenticated: true });
+  }
+  return res.status(401).json({ authenticated: false });
+});
 
 // ==========================================
 // SITE ANNOUNCEMENT PERSISTENCE & API (OPay Ticker)
@@ -105,8 +274,8 @@ app.get('/api/announcement', (req, res) => {
   });
 });
 
-// POST /api/announcement
-app.post('/api/announcement', (req, res) => {
+// POST /api/announcement (Requires administrator authentication)
+app.post('/api/announcement', requireAdminAuth, (req, res) => {
   try {
     const { message, badge, isActive, expiresAt, theme, speed } = req.body;
 
@@ -171,8 +340,8 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// PostgreSQL Inquiries API Endpoint
-app.post('/api/inquiries', async (req, res) => {
+// PostgreSQL Inquiries API Endpoint (Public submissions protected by rate limiting & validation)
+app.post('/api/inquiries', publicSubmissionLimiter, async (req, res) => {
   try {
     const {
       clientName,
@@ -189,24 +358,37 @@ app.post('/api/inquiries', async (req, res) => {
       source,
     } = req.body;
 
-    const safeClientName = (clientName || '').trim() || 'Prospective Client';
-    const safeEmail = (email || '').trim() || 'client@oceantechnologies.ng';
-    const safePhone = (phone || '').trim() || 'Not specified';
-    const safeDescription = (projectDescription || '').trim() || `Inquiry for ${serviceType || 'software services'}`;
+    // Strict input bounds & sanitization
+    const safeClientName = sanitizeText(clientName, 150) || 'Prospective Client';
+    const safeEmail = sanitizeText(email, 200);
+    const safePhone = sanitizeText(phone, 50);
+    const safeDescription = sanitizeText(projectDescription, 5000) || `Inquiry for ${sanitizeText(serviceType, 100) || 'software services'}`;
+
+    if (!safeClientName || !safeEmail || !safePhone) {
+      return res.status(400).json({ error: 'Name, email, and phone contact are required.' });
+    }
+
+    if (!isValidEmail(safeEmail)) {
+      return res.status(400).json({ error: 'Please provide a valid email address.' });
+    }
+
+    if (!isValidPhone(safePhone)) {
+      return res.status(400).json({ error: 'Please provide a valid phone or WhatsApp number.' });
+    }
 
     const newInquiry = await createInquiry({
       clientName: safeClientName,
       email: safeEmail,
       phone: safePhone,
-      company: (company || '').trim() || undefined,
-      serviceType: serviceType || 'web_development',
-      projectType: projectType || 'quote',
-      budgetRange: budgetRange || undefined,
-      timeline: timeline || undefined,
-      urgency: urgency || undefined,
+      company: company ? sanitizeText(company, 200) : undefined,
+      serviceType: serviceType ? sanitizeText(serviceType, 100) : 'web_development',
+      projectType: projectType ? sanitizeText(projectType, 50) : 'quote',
+      budgetRange: budgetRange ? sanitizeText(budgetRange, 100) : undefined,
+      timeline: timeline ? sanitizeText(timeline, 100) : undefined,
+      urgency: urgency ? sanitizeText(urgency, 50) : undefined,
       projectDescription: safeDescription,
-      preferredContactMethod: preferredContactMethod || 'whatsapp',
-      source: source || 'website',
+      preferredContactMethod: preferredContactMethod ? sanitizeText(preferredContactMethod, 50) : 'whatsapp',
+      source: source ? sanitizeText(source, 50) : 'website',
     });
 
     res.status(201).json({
@@ -222,8 +404,8 @@ app.post('/api/inquiries', async (req, res) => {
   }
 });
 
-// PostgreSQL Emergency Bug / Incident Tickets API Endpoint
-app.post('/api/emergency-tickets', async (req, res) => {
+// PostgreSQL Emergency Bug / Incident Tickets API Endpoint (Protected by rate limiting & validation)
+app.post('/api/emergency-tickets', publicSubmissionLimiter, async (req, res) => {
   try {
     const { clientName, email, phone, systemUrl, severity, errorDescription } = req.body;
 
@@ -233,13 +415,27 @@ app.post('/api/emergency-tickets', async (req, res) => {
       });
     }
 
+    const safeName = sanitizeText(clientName, 150);
+    const safeEmail = sanitizeText(email, 200);
+    const safePhone = sanitizeText(phone, 50);
+    const safeUrl = systemUrl ? sanitizeText(systemUrl, 500) : undefined;
+    const safeDescription = sanitizeText(errorDescription, 6000);
+
+    if (!isValidEmail(safeEmail)) {
+      return res.status(400).json({ error: 'Please provide a valid email address.' });
+    }
+
+    if (!isValidPhone(safePhone)) {
+      return res.status(400).json({ error: 'Please provide a valid phone or WhatsApp number.' });
+    }
+
     const newTicket = await createEmergencyTicket({
-      clientName,
-      email,
-      phone,
-      systemUrl,
-      severity: severity || 'critical',
-      errorDescription,
+      clientName: safeName,
+      email: safeEmail,
+      phone: safePhone,
+      systemUrl: safeUrl,
+      severity: severity ? sanitizeText(severity, 50) : 'critical',
+      errorDescription: safeDescription,
     });
 
     res.status(201).json({
@@ -255,10 +451,11 @@ app.post('/api/emergency-tickets', async (req, res) => {
   }
 });
 
-// GET /api/inquiries (Recent inquiries from PostgreSQL)
-app.get('/api/inquiries', async (req, res) => {
+// GET /api/inquiries (Recent inquiries from PostgreSQL - Requires Admin)
+app.get('/api/inquiries', requireAdminAuth, async (req, res) => {
   try {
-    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 50;
+    const rawLimit = req.query.limit ? parseInt(req.query.limit as string, 10) : 50;
+    const limit = Math.min(Math.max(1, isNaN(rawLimit) ? 50 : rawLimit), 100);
     const records = await getInquiries(limit);
     res.json({ inquiries: records });
   } catch (error: any) {
@@ -267,15 +464,17 @@ app.get('/api/inquiries', async (req, res) => {
   }
 });
 
-// PATCH /api/inquiries/:id (Update status and admin notes)
-app.patch('/api/inquiries/:id', async (req, res) => {
+// PATCH /api/inquiries/:id (Update status and admin notes - Requires Admin)
+app.patch('/api/inquiries/:id', requireAdminAuth, async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
     const { status, adminNotes } = req.body;
     if (isNaN(id)) {
       return res.status(400).json({ error: 'Invalid inquiry ID' });
     }
-    const updated = await updateInquiryRecord(id, status || 'pending', adminNotes);
+    const safeStatus = status ? String(status).slice(0, 50) : 'pending';
+    const safeNotes = adminNotes ? String(adminNotes).slice(0, 5000) : undefined;
+    const updated = await updateInquiryRecord(id, safeStatus, safeNotes);
     res.json({ success: true, inquiry: updated });
   } catch (error: any) {
     console.error(`API PATCH /api/inquiries/${req.params.id} failed:`, error);
@@ -283,8 +482,8 @@ app.patch('/api/inquiries/:id', async (req, res) => {
   }
 });
 
-// DELETE /api/inquiries/:id
-app.delete('/api/inquiries/:id', async (req, res) => {
+// DELETE /api/inquiries/:id (Requires Admin)
+app.delete('/api/inquiries/:id', requireAdminAuth, async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) {
@@ -298,10 +497,26 @@ app.delete('/api/inquiries/:id', async (req, res) => {
   }
 });
 
-// GET /api/emergency-tickets (Recent emergency tickets from PostgreSQL)
-app.get('/api/emergency-tickets', async (req, res) => {
+// DELETE /api/emergency-tickets/:id (Requires Admin)
+app.delete('/api/emergency-tickets/:id', requireAdminAuth, async (req, res) => {
   try {
-    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 50;
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid emergency ticket ID' });
+    }
+    await deleteEmergencyTicketRecord(id);
+    res.json({ success: true, message: `Emergency ticket ${id} deleted` });
+  } catch (error: any) {
+    console.error(`API DELETE /api/emergency-tickets/${req.params.id} failed:`, error);
+    res.status(500).json({ error: error.message || 'Failed to delete emergency ticket' });
+  }
+});
+
+// GET /api/emergency-tickets (Recent emergency tickets from PostgreSQL - Requires Admin)
+app.get('/api/emergency-tickets', requireAdminAuth, async (req, res) => {
+  try {
+    const rawLimit = req.query.limit ? parseInt(req.query.limit as string, 10) : 50;
+    const limit = Math.min(Math.max(1, isNaN(rawLimit) ? 50 : rawLimit), 100);
     const records = await getEmergencyTickets(limit);
     res.json({ tickets: records });
   } catch (error: any) {
@@ -310,8 +525,8 @@ app.get('/api/emergency-tickets', async (req, res) => {
   }
 });
 
-// POST /api/internships (Student Internship / IT & SIWES Registration)
-app.post('/api/internships', async (req, res) => {
+// POST /api/internships (Student Internship / IT & SIWES Registration - Protected by rate limiting)
+app.post('/api/internships', publicSubmissionLimiter, async (req, res) => {
   try {
     const {
       fullName,
@@ -333,21 +548,33 @@ app.post('/api/internships', async (req, res) => {
       });
     }
 
+    const safeFullName = sanitizeText(fullName, 150);
+    const safeEmail = sanitizeText(email, 200);
+    const safePhone = sanitizeText(phone, 50);
+
+    if (!isValidEmail(safeEmail)) {
+      return res.status(400).json({ error: 'Please provide a valid email address.' });
+    }
+
+    if (!isValidPhone(safePhone)) {
+      return res.status(400).json({ error: 'Please provide a valid phone or WhatsApp number.' });
+    }
+
     const regNumber = `OCT-INT-2026-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const newRecord = await createInternship({
       registrationNumber: regNumber,
-      fullName: fullName.trim(),
-      email: email.trim(),
-      phone: phone.trim(),
-      school: school.trim(),
-      department: (department || 'Computer Science / Engineering').trim(),
-      level: (level || '300 Level').trim(),
-      studentId: studentId.trim(),
-      programType: programType || '6-Month SIWES',
-      techTrack: techTrack || 'Full-Stack Web Development',
-      preferredStartDate: preferredStartDate || 'Immediate',
-      statementOfPurpose: statementOfPurpose || '',
+      fullName: safeFullName,
+      email: safeEmail,
+      phone: safePhone,
+      school: sanitizeText(school, 200),
+      department: sanitizeText(department || 'Computer Science / Engineering', 150),
+      level: sanitizeText(level || '300 Level', 50),
+      studentId: sanitizeText(studentId, 100),
+      programType: programType ? sanitizeText(programType, 100) : '6-Month SIWES',
+      techTrack: techTrack ? sanitizeText(techTrack, 150) : 'Full-Stack Web Development',
+      preferredStartDate: preferredStartDate ? sanitizeText(preferredStartDate, 100) : 'Immediate',
+      statementOfPurpose: statementOfPurpose ? sanitizeText(statementOfPurpose, 3000) : '',
     });
 
     res.status(201).json({
@@ -364,10 +591,11 @@ app.post('/api/internships', async (req, res) => {
   }
 });
 
-// GET /api/internships (List student registrations)
-app.get('/api/internships', async (req, res) => {
+// GET /api/internships (List student registrations - Requires Admin)
+app.get('/api/internships', requireAdminAuth, async (req, res) => {
   try {
-    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 100;
+    const rawLimit = req.query.limit ? parseInt(req.query.limit as string, 10) : 100;
+    const limit = Math.min(Math.max(1, isNaN(rawLimit) ? 100 : rawLimit), 200);
     const records = await getInternships(limit);
     res.json({ internships: records });
   } catch (error: any) {
@@ -376,15 +604,17 @@ app.get('/api/internships', async (req, res) => {
   }
 });
 
-// PATCH /api/internships/:id (Update status and admin notes)
-app.patch('/api/internships/:id', async (req, res) => {
+// PATCH /api/internships/:id (Update status and admin notes - Requires Admin)
+app.patch('/api/internships/:id', requireAdminAuth, async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
     const { status, adminNotes } = req.body;
     if (isNaN(id)) {
       return res.status(400).json({ error: 'Invalid internship ID' });
     }
-    const updated = await updateInternshipRecord(id, status || 'pending', adminNotes);
+    const safeStatus = status ? String(status).slice(0, 50) : 'pending';
+    const safeNotes = adminNotes ? String(adminNotes).slice(0, 5000) : undefined;
+    const updated = await updateInternshipRecord(id, safeStatus, safeNotes);
     res.json({ success: true, internship: updated });
   } catch (error: any) {
     console.error(`API PATCH /api/internships/${req.params.id} failed:`, error);
@@ -392,8 +622,8 @@ app.patch('/api/internships/:id', async (req, res) => {
   }
 });
 
-// POST /api/internships/:id/accept (Accept request and generate official commencement email)
-app.post('/api/internships/:id/accept', async (req, res) => {
+// POST /api/internships/:id/accept (Accept request and generate official commencement email - Requires Admin)
+app.post('/api/internships/:id/accept', requireAdminAuth, async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
     const { studentName, email, techTrack, school, regNumber, preferredStartDate } = req.body;
@@ -405,10 +635,10 @@ app.post('/api/internships/:id/accept', async (req, res) => {
     const note = `Accepted by Admin on ${new Date().toLocaleString('en-GB')}. Official admission and commencement instructions issued.`;
     const updated = await updateInternshipRecord(id, 'admitted', note);
 
-    const safeName = studentName || 'Applicant';
-    const safeTrack = techTrack || 'Software Engineering / Full-Stack Track';
-    const safeRef = regNumber || `OCT-INT-2026-${id}`;
-    const safeStart = preferredStartDate || 'Immediate commencement';
+    const safeName = studentName ? String(studentName).slice(0, 150) : 'Applicant';
+    const safeTrack = techTrack ? String(techTrack).slice(0, 150) : 'Software Engineering / Full-Stack Track';
+    const safeRef = regNumber ? String(regNumber).slice(0, 50) : `OCT-INT-2026-${id}`;
+    const safeStart = preferredStartDate ? String(preferredStartDate).slice(0, 100) : 'Immediate commencement';
 
     const subject = `Official Offer of IT / SIWES Placement – Ocean Technologies Institute (Ref: ${safeRef})`;
     const body = `OFFICIAL NOTIFICATION OF ADMISSION & COMMENCEMENT
@@ -477,8 +707,8 @@ Direct Contact: +234 912 921 6768 | okechineke0@gmail.com`;
   }
 });
 
-// DELETE /api/internships/:id
-app.delete('/api/internships/:id', async (req, res) => {
+// DELETE /api/internships/:id (Requires Admin)
+app.delete('/api/internships/:id', requireAdminAuth, async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) {
@@ -496,8 +726,8 @@ app.delete('/api/internships/:id', async (req, res) => {
 // COURSE REGISTRATIONS (ONLINE & OFFLINE)
 // ==========================================
 
-// POST /api/course-registrations (Student registration for courses)
-app.post('/api/course-registrations', async (req, res) => {
+// POST /api/course-registrations (Student registration for courses - Protected by rate limiting)
+app.post('/api/course-registrations', publicSubmissionLimiter, async (req, res) => {
   try {
     const {
       fullName,
@@ -521,6 +751,18 @@ app.post('/api/course-registrations', async (req, res) => {
       });
     }
 
+    const safeFullName = sanitizeText(fullName, 150);
+    const safeEmail = sanitizeText(email, 200);
+    const safePhone = sanitizeText(phone, 50);
+
+    if (!isValidEmail(safeEmail)) {
+      return res.status(400).json({ error: 'Please provide a valid email address.' });
+    }
+
+    if (!isValidPhone(safePhone)) {
+      return res.status(400).json({ error: 'Please provide a valid phone or WhatsApp number.' });
+    }
+
     const regNumber = `OCT-CRS-2026-${Math.floor(1000 + Math.random() * 9000)}`;
     const formattedDate = registrationDate || new Date().toLocaleDateString('en-US', {
       month: 'short',
@@ -530,19 +772,19 @@ app.post('/api/course-registrations', async (req, res) => {
 
     const newRecord = await createCourseRegistration({
       registrationNumber: regNumber,
-      fullName: fullName.trim(),
-      email: email.trim(),
-      phone: phone.trim(),
-      course: course.trim(),
-      courseTitle: (courseTitle || course).trim(),
-      classFormat: (classFormat || 'online').trim(),
-      schedule: schedule || 'Coordinated in WhatsApp Group',
-      duration: duration || 'Online Cohort',
-      experienceLevel: experienceLevel || 'Beginner',
-      preferredStartDate: preferredStartDate || 'Immediate Cohort (Coordinated via WhatsApp)',
+      fullName: safeFullName,
+      email: safeEmail,
+      phone: safePhone,
+      course: sanitizeText(course, 100),
+      courseTitle: sanitizeText(courseTitle || course, 150),
+      classFormat: sanitizeText(classFormat || 'online', 50),
+      schedule: schedule ? sanitizeText(schedule, 100) : 'Coordinated in WhatsApp Group',
+      duration: duration ? sanitizeText(duration, 50) : 'Online Cohort',
+      experienceLevel: experienceLevel ? sanitizeText(experienceLevel, 50) : 'Beginner',
+      preferredStartDate: preferredStartDate ? sanitizeText(preferredStartDate, 100) : 'Immediate Cohort (Coordinated via WhatsApp)',
       registrationDate: formattedDate,
-      cityState: cityState ? cityState.trim() : 'Candidate',
-      notes: notes || '',
+      cityState: cityState ? sanitizeText(cityState, 100) : 'Candidate',
+      notes: notes ? sanitizeText(notes, 3000) : '',
     });
 
     res.status(201).json({
@@ -559,10 +801,11 @@ app.post('/api/course-registrations', async (req, res) => {
   }
 });
 
-// GET /api/course-registrations (List all student course registrations)
-app.get('/api/course-registrations', async (req, res) => {
+// GET /api/course-registrations (List all student course registrations - Requires Admin)
+app.get('/api/course-registrations', requireAdminAuth, async (req, res) => {
   try {
-    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 100;
+    const rawLimit = req.query.limit ? parseInt(req.query.limit as string, 10) : 100;
+    const limit = Math.min(Math.max(1, isNaN(rawLimit) ? 100 : rawLimit), 200);
     const records = await getCourseRegistrations(limit);
     res.json({ registrations: records });
   } catch (error: any) {
@@ -571,15 +814,17 @@ app.get('/api/course-registrations', async (req, res) => {
   }
 });
 
-// PATCH /api/course-registrations/:id (Update status and admin notes)
-app.patch('/api/course-registrations/:id', async (req, res) => {
+// PATCH /api/course-registrations/:id (Update status and admin notes - Requires Admin)
+app.patch('/api/course-registrations/:id', requireAdminAuth, async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
     const { status, adminNotes } = req.body;
     if (isNaN(id)) {
       return res.status(400).json({ error: 'Invalid course registration ID' });
     }
-    const updated = await updateCourseRegistrationRecord(id, status, adminNotes);
+    const safeStatus = status ? String(status).slice(0, 50) : 'pending';
+    const safeNotes = adminNotes ? String(adminNotes).slice(0, 5000) : undefined;
+    const updated = await updateCourseRegistrationRecord(id, safeStatus, safeNotes);
     res.json({ success: true, registration: updated });
   } catch (error: any) {
     console.error(`API PATCH /api/course-registrations/${req.params.id} failed:`, error);
@@ -587,8 +832,8 @@ app.patch('/api/course-registrations/:id', async (req, res) => {
   }
 });
 
-// DELETE /api/course-registrations/:id (Delete course registration)
-app.delete('/api/course-registrations/:id', async (req, res) => {
+// DELETE /api/course-registrations/:id (Delete course registration - Requires Admin)
+app.delete('/api/course-registrations/:id', requireAdminAuth, async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) {
@@ -857,10 +1102,11 @@ Guidelines for your responses:
 
 const DEFAULT_GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
 
-// AI Chat Endpoint
+// AI Chat Endpoint (Protected by aiLimiter)
 app.post('/api/ai/chat', async (req, res) => {
   const { messages, userMessage } = req.body;
-  const lastUserText = userMessage || (messages && messages.length > 0 ? messages[messages.length - 1].text : '') || '';
+  const rawText = userMessage || (messages && messages.length > 0 ? messages[messages.length - 1].text : '') || '';
+  const lastUserText = sanitizeText(rawText, 4000);
 
   try {
     const ai = getGenAI();

@@ -51,6 +51,7 @@ import {
 import { Logo } from '../components/Logo';
 import { AdminAnnouncementManager } from '../components/AdminAnnouncementManager';
 import { getSiteAnnouncement, isAnnouncementActive } from '../lib/announcementService';
+import { loginAdmin, verifyAdminSession, logoutAdmin, getAdminToken } from '../lib/adminAuth';
 
 interface AdminInboxViewProps {
   onNavigate: (view: ViewMode) => void;
@@ -109,30 +110,70 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
     copied: false,
   });
 
-  // Authenticate admin access - requires master password: okechineke
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return sessionStorage.getItem('ocean_tech_admin_auth') === 'okechineke';
+  // Safe In-App Delete Confirmation Modal State (Reliable across all browsers and sandboxed iframes)
+  const [deleteConfirmState, setDeleteConfirmState] = useState<{
+    isOpen: boolean;
+    id: string;
+    type: 'course' | 'inquiry';
+    label: string;
+    isDeleting: boolean;
+  }>({
+    isOpen: false,
+    id: '',
+    type: 'inquiry',
+    label: '',
+    isDeleting: false,
+  });
+
+  const [actionSuccessNotice, setActionSuccessNotice] = useState<string | null>(null);
+
+  // Authenticate admin access via cryptographic server HMAC session tokens
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return Boolean(getAdminToken());
   });
   const [passcode, setPasscode] = useState('');
-  const [passcodeError, setPasscodeError] = useState(false);
+  const [isSubmittingLogin, setIsSubmittingLogin] = useState(false);
+  const [loginErrorMessage, setLoginErrorMessage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleAdminLogin = (e: React.FormEvent) => {
+  // Verify server token on mount
+  useEffect(() => {
+    const existingToken = getAdminToken();
+    if (existingToken) {
+      verifyAdminSession().then((isValid) => {
+        setIsAuthenticated(isValid);
+        if (isValid) {
+          handleRefreshAll();
+        }
+      });
+    }
+  }, []);
+
+  const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanPass = passcode.trim().toLowerCase();
-    if (cleanPass === 'okechineke') {
-      sessionStorage.setItem('ocean_tech_admin_auth', 'okechineke');
+    if (!passcode.trim()) return;
+
+    setIsSubmittingLogin(true);
+    setLoginErrorMessage(null);
+
+    const res = await loginAdmin(passcode.trim());
+    setIsSubmittingLogin(false);
+
+    if (res.success) {
       setIsAuthenticated(true);
-      setPasscodeError(false);
+      setPasscode('');
+      setLoginErrorMessage(null);
+      handleRefreshAll();
     } else {
-      setPasscodeError(true);
+      setLoginErrorMessage(res.error || 'Authentication denied. Invalid credentials.');
     }
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem('ocean_tech_admin_auth');
+    logoutAdmin();
     setIsAuthenticated(false);
     setPasscode('');
+    setLoginErrorMessage(null);
   };
 
   // Real-time Firestore & PostgreSQL sync listeners
@@ -240,13 +281,43 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
     }
   };
 
-  const handleDeleteCourseRegItem = async (id: string) => {
-    if (window.confirm('Are you sure you want to permanently remove this course registration record?')) {
-      await deleteCourseRegistration(id);
-      setCourseRegistrations((prev) => prev.filter((c) => c.id !== id));
-      if (selectedCourseReg?.id === id) {
-        setSelectedCourseReg(null);
+  const triggerDeleteConfirm = (id: string, type: 'course' | 'inquiry', label: string) => {
+    setDeleteConfirmState({
+      isOpen: true,
+      id,
+      type,
+      label,
+      isDeleting: false,
+    });
+  };
+
+  const handleExecuteDelete = async () => {
+    const { id, type, label } = deleteConfirmState;
+    if (!id) return;
+
+    setDeleteConfirmState((prev) => ({ ...prev, isDeleting: true }));
+
+    try {
+      if (type === 'course') {
+        await deleteCourseRegistration(id);
+        setCourseRegistrations((prev) => prev.filter((c) => c.id !== id));
+        if (selectedCourseReg?.id === id) {
+          setSelectedCourseReg(null);
+        }
+      } else {
+        await deleteInquiry(id);
+        setInquiries((prev) => prev.filter((i) => i.id !== id));
+        if (selectedInquiry?.id === id) {
+          setSelectedInquiry(null);
+        }
       }
+
+      setDeleteConfirmState({ isOpen: false, id: '', type: 'inquiry', label: '', isDeleting: false });
+      setActionSuccessNotice(`Record "${label}" deleted successfully.`);
+      setTimeout(() => setActionSuccessNotice(null), 4000);
+    } catch (err) {
+      console.error('Delete execution error:', err);
+      setDeleteConfirmState((prev) => ({ ...prev, isDeleting: false }));
     }
   };
 
@@ -259,15 +330,6 @@ export const AdminInboxView: React.FC<AdminInboxViewProps> = ({ onNavigate }) =>
       await updateInquiryStatus(selectedInquiry.id, selectedInquiry.status, notesInput);
     }
     setSavingNote(false);
-  };
-
-  const handleDeleteInquiryItem = async (id: string) => {
-    if (window.confirm('Are you sure you want to permanently remove this inquiry record?')) {
-      await deleteInquiry(id);
-      if (selectedInquiry?.id === id) {
-        setSelectedInquiry(null);
-      }
-    }
   };
 
   // Helper links for replies
@@ -463,11 +525,12 @@ Email: oceantechnologies62@gmail.com`;
                   value={passcode}
                   onChange={(e) => {
                     setPasscode(e.target.value);
-                    setPasscodeError(false);
+                    if (loginErrorMessage) setLoginErrorMessage(null);
                   }}
-                  placeholder="Enter admin password"
+                  disabled={isSubmittingLogin}
+                  placeholder="Enter master admin passcode"
                   autoFocus
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 pr-11 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-sky-500 font-mono text-center tracking-widest text-base"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 pr-11 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-sky-500 font-mono text-center tracking-widest text-base disabled:opacity-60"
                 />
                 <button
                   type="button"
@@ -478,19 +541,30 @@ Email: oceantechnologies62@gmail.com`;
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              {passcodeError && (
-                <p className="text-xs text-rose-400 mt-2 text-center font-medium">
-                  Incorrect password. The authorized administrator password is required.
-                </p>
+              {loginErrorMessage && (
+                <div className="mt-2.5 p-2.5 rounded-lg bg-rose-950/60 border border-rose-800/80 text-rose-300 text-xs flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+                  <span>{loginErrorMessage}</span>
+                </div>
               )}
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-lg cursor-pointer flex items-center justify-center gap-2"
+              disabled={isSubmittingLogin || !passcode.trim()}
+              className="w-full py-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-lg cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Lock className="w-4 h-4" />
-              <span>Unlock Administration</span>
+              {isSubmittingLogin ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Verifying Credentials...</span>
+                </>
+              ) : (
+                <>
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>Unlock Administration</span>
+                </>
+              )}
             </button>
           </form>
 
@@ -542,7 +616,7 @@ Email: oceantechnologies62@gmail.com`;
               }`}
             >
               <Megaphone className="w-3.5 h-3.5" />
-              <span>Site Ticker</span>
+              <span>Broadcast Banner</span>
               {tickerStatus.active ? (
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               ) : (
@@ -591,7 +665,7 @@ Email: oceantechnologies62@gmail.com`;
             <p className="text-[11px] text-slate-500 mt-0.5">Database Synced</p>
           </div>
 
-          {/* Card 2: Course Registrations & Date Store */}
+          {/* Card 2: Course Registrations */}
           <div 
             onClick={() => setActiveTab('courses')}
             className={`cursor-pointer rounded-xl p-4 transition-all border ${
@@ -603,7 +677,7 @@ Email: oceantechnologies62@gmail.com`;
             <div className="flex items-center justify-between">
               <p className="text-xs text-emerald-400 font-medium flex items-center gap-1">
                 <BookOpen className="w-3.5 h-3.5" />
-                <span>Course Store</span>
+                <span>Course Enrollments</span>
               </p>
               {counts.pendingCourses > 0 && (
                 <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
@@ -612,10 +686,10 @@ Email: oceantechnologies62@gmail.com`;
               )}
             </div>
             <p className="text-2xl font-bold font-display text-emerald-300 mt-1">{counts.courses}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Online Cohort Store</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Academic Admissions</p>
           </div>
 
-          {/* Card 3: Project Quotes */}
+          {/* Card 3: Project Inquiries & Quotes */}
           <div 
             onClick={() => setActiveTab('quotes')}
             className={`cursor-pointer rounded-xl p-4 transition-all border ${
@@ -624,12 +698,12 @@ Email: oceantechnologies62@gmail.com`;
                 : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
             }`}
           >
-            <p className="text-xs text-sky-400 font-medium">Project Quotes</p>
+            <p className="text-xs text-sky-400 font-medium">Project Inquiries</p>
             <p className="text-2xl font-bold font-display text-sky-300 mt-1">{counts.quotes}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Web & Mobile Apps</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Custom Engineering</p>
           </div>
 
-          {/* Card 4: Emergency Fixes */}
+          {/* Card 4: Incident Reports */}
           <div 
             onClick={() => setActiveTab('emergency')}
             className={`cursor-pointer rounded-xl p-4 transition-all border ${
@@ -638,12 +712,12 @@ Email: oceantechnologies62@gmail.com`;
                 : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
             }`}
           >
-            <p className="text-xs text-rose-400 font-medium">Emergency Bugs</p>
+            <p className="text-xs text-rose-400 font-medium">Incident Reports</p>
             <p className="text-2xl font-bold font-display text-rose-300 mt-1">{counts.emergency}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Urgent Triage</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Critical Triage</p>
           </div>
 
-          {/* Card 5: Site Announcement (OPay Marquee Ticker) */}
+          {/* Card 5: Site Announcement Broadcast Banner */}
           <div 
             onClick={() => setActiveTab('announcement')}
             className={`cursor-pointer rounded-xl p-4 transition-all border ${
@@ -655,7 +729,7 @@ Email: oceantechnologies62@gmail.com`;
             <div className="flex items-center justify-between">
               <p className="text-xs text-amber-400 font-medium flex items-center gap-1">
                 <Megaphone className="w-3.5 h-3.5" />
-                <span>Site Ticker</span>
+                <span>Broadcast Banner</span>
               </p>
               <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full border ${
                 tickerStatus.active
@@ -665,8 +739,8 @@ Email: oceantechnologies62@gmail.com`;
                 {tickerStatus.active ? 'LIVE' : 'OFF'}
               </span>
             </div>
-            <p className="text-2xl font-bold font-display text-amber-300 mt-1">OPay Bar</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Auto-Expiry Timer</p>
+            <p className="text-2xl font-bold font-display text-amber-300 mt-1">Broadcast</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Automated Schedule</p>
           </div>
         </div>
 
@@ -678,7 +752,7 @@ Email: oceantechnologies62@gmail.com`;
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search by student name, course, registration date, start date, email, phone, ref..."
+              placeholder="Search records by candidate name, course, registration reference, email, contact..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-sky-500"
@@ -706,7 +780,7 @@ Email: oceantechnologies62@gmail.com`;
               }`}
             >
               <BookOpen className="w-3.5 h-3.5" />
-              <span>Course Store ({counts.courses})</span>
+              <span>Course Enrollments ({counts.courses})</span>
             </button>
             <button
               onClick={() => setActiveTab('quotes')}
@@ -716,7 +790,7 @@ Email: oceantechnologies62@gmail.com`;
                   : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
               }`}
             >
-              Quotes ({counts.quotes})
+              Client Inquiries ({counts.quotes})
             </button>
             <button
               onClick={() => setActiveTab('emergency')}
@@ -726,7 +800,7 @@ Email: oceantechnologies62@gmail.com`;
                   : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
               }`}
             >
-              Emergency ({counts.emergency})
+              Incident Reports ({counts.emergency})
             </button>
             <button
               onClick={() => setActiveTab('announcement')}
@@ -737,7 +811,7 @@ Email: oceantechnologies62@gmail.com`;
               }`}
             >
               <Megaphone className="w-3.5 h-3.5" />
-              <span>Site Ticker (OPay)</span>
+              <span>Broadcast Banner</span>
               {tickerStatus.active && (
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
               )}
@@ -759,11 +833,11 @@ Email: oceantechnologies62@gmail.com`;
                 <Inbox className="w-4 h-4 text-sky-400" />
                 <span>
                   {activeTab === 'courses'
-                    ? `Course Registration Date Store (${filteredCourseRegistrations.length})`
+                    ? `Course Enrollments (${filteredCourseRegistrations.length})`
                     : activeTab === 'quotes'
-                    ? `Project Quotes (${filteredInquiries.length})`
+                    ? `Project Inquiries (${filteredInquiries.length})`
                     : activeTab === 'emergency'
-                    ? `Emergency Tickets (${filteredInquiries.length})`
+                    ? `Incident Reports (${filteredInquiries.length})`
                     : `All Submissions (${filteredCourseRegistrations.length + filteredInquiries.length})`}
                 </span>
               </h2>
@@ -969,7 +1043,7 @@ Email: oceantechnologies62@gmail.com`;
                   </div>
                 </div>
 
-                {/* DEDICATED: Course Registration Date Store Card */}
+                {/* Course Registration Datastore Card */}
                 <div className="bg-gradient-to-br from-emerald-950/70 via-slate-900 to-sky-950/70 border-2 border-emerald-500/40 rounded-2xl p-5 shadow-xl relative overflow-hidden">
                   <div className="flex items-center justify-between pb-3 border-b border-emerald-500/20 mb-4">
                     <div className="flex items-center gap-2">
@@ -978,12 +1052,12 @@ Email: oceantechnologies62@gmail.com`;
                       </div>
                       <div>
                         <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
-                          <span>Course Registration Date Store</span>
+                          <span>Enrollment Database Record</span>
                           <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                            Persistent Cloud Store
+                            Persistent Cloud Record
                           </span>
                         </h3>
-                        <p className="text-[11px] text-slate-400">Stored and synchronized across Firestore & PostgreSQL database</p>
+                        <p className="text-[11px] text-slate-400">Synchronized across persistent database layers</p>
                       </div>
                     </div>
                   </div>
@@ -991,12 +1065,12 @@ Email: oceantechnologies62@gmail.com`;
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 text-xs">
                     <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
                       <p className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider mb-1 flex items-center gap-1">
-                        <Calendar className="w-3 h-3" /> Official Date Stored
+                        <Calendar className="w-3 h-3" /> Registration Timestamp
                       </p>
                       <p className="text-white font-mono font-bold text-sm">
                         {selectedCourseReg.registrationDate || formatTimestamp(selectedCourseReg.createdAt)}
                       </p>
-                      <p className="text-[10px] text-slate-500 mt-0.5">Database Registration Store</p>
+                      <p className="text-[10px] text-slate-500 mt-0.5">Ingestion Record</p>
                     </div>
 
                     <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
@@ -1011,28 +1085,28 @@ Email: oceantechnologies62@gmail.com`;
 
                     <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
                       <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-wider mb-1 flex items-center gap-1">
-                        <Calendar className="w-3 h-3" /> System Timestamp
+                        <Calendar className="w-3 h-3" /> System Audit Clock
                       </p>
                       <p className="text-white font-mono text-xs truncate">
                         {formatTimestamp(selectedCourseReg.createdAt)}
                       </p>
-                      <p className="text-[10px] text-slate-500 mt-0.5">Server Ingestion Clock</p>
+                      <p className="text-[10px] text-slate-500 mt-0.5">Server Timestamp</p>
                     </div>
                   </div>
                 </div>
 
-                {/* Instant Student Communication & Official Admission Dispatch Bar */}
+                {/* Candidate Communication & Official Admission Dispatch Bar */}
                 <div className="bg-emerald-950/40 border border-emerald-900/60 rounded-xl p-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-2">
-                      <p className="text-xs font-bold text-emerald-300">Direct Student Admissions & Payment Gateway</p>
+                      <p className="text-xs font-bold text-emerald-300">Candidate Admissions & Enrollment Dispatch</p>
                       {selectedCourseReg.status === 'admitted' && (
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                           Admitted & Notice Sent
                         </span>
                       )}
                     </div>
-                    <p className="text-[11px] text-slate-400">Accept student and automatically dispatch email instructing them to chat 09129216768 for future enquiry & payment:</p>
+                    <p className="text-[11px] text-slate-400">Approve admission and dispatch formal notification with enrollment contact details (WhatsApp: 09129216768):</p>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
                     <button
@@ -1041,7 +1115,7 @@ Email: oceantechnologies62@gmail.com`;
                     >
                       <CheckCircle2 className="w-4 h-4 text-emerald-200" />
                       <Mail className="w-4 h-4" />
-                      <span>{selectedCourseReg.status === 'admitted' ? 'Re-send Admission Email (09129216768)' : 'Accept & Send Admission Email'}</span>
+                      <span>{selectedCourseReg.status === 'admitted' ? 'Re-send Admission Notice' : 'Approve & Send Admission Notice'}</span>
                     </button>
 
                     {selectedCourseReg.status === 'admitted' && (
@@ -1071,7 +1145,7 @@ Email: oceantechnologies62@gmail.com`;
                       className="px-3 py-2 rounded-lg bg-emerald-700/80 hover:bg-emerald-600 text-white font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-md cursor-pointer"
                     >
                       <MessageCircle className="w-4 h-4" />
-                      <span>WhatsApp Student</span>
+                      <span>Contact via WhatsApp</span>
                     </a>
                   </div>
                 </div>
@@ -1161,8 +1235,9 @@ Email: oceantechnologies62@gmail.com`;
                     </button>
 
                     <button
-                      onClick={() => handleDeleteCourseRegItem(selectedCourseReg.id)}
-                      className="text-rose-400 hover:text-rose-300 text-xs flex items-center gap-1 transition-colors cursor-pointer"
+                      onClick={() => triggerDeleteConfirm(selectedCourseReg.id, 'course', selectedCourseReg.fullName || selectedCourseReg.courseTitle)}
+                      className="text-rose-400 hover:text-rose-300 text-xs flex items-center gap-1.5 transition-colors cursor-pointer px-2.5 py-1.5 rounded-lg hover:bg-rose-950/40 border border-transparent hover:border-rose-800/50"
+                      title="Permanently remove record"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                       <span>Delete Record</span>
@@ -1217,11 +1292,11 @@ Email: oceantechnologies62@gmail.com`;
                   </div>
                 </div>
 
-                {/* Instant Reply Bar (WhatsApp & Email) */}
+                {/* Client Communication Dispatch (WhatsApp & Email) */}
                 <div className="bg-sky-950/30 border border-sky-900/50 rounded-xl p-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                   <div>
-                    <p className="text-xs font-bold text-sky-300">Instant Client Reply Options</p>
-                    <p className="text-[11px] text-slate-400">Click to launch WhatsApp with pre-filled message or email reply:</p>
+                    <p className="text-xs font-bold text-sky-300">Client Communication Dispatch</p>
+                    <p className="text-[11px] text-slate-400">Initiate outbound consultation directly via WhatsApp or official engineering email:</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <a
@@ -1231,14 +1306,14 @@ Email: oceantechnologies62@gmail.com`;
                       className="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-md"
                     >
                       <MessageCircle className="w-4 h-4" />
-                      <span>Reply on WhatsApp</span>
+                      <span>Contact on WhatsApp</span>
                     </a>
                     <a
                       href={`mailto:${selectedInquiry.email}`}
                       className="px-3.5 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-md"
                     >
                       <Mail className="w-4 h-4" />
-                      <span>Reply via Email</span>
+                      <span>Send Corporate Email</span>
                     </a>
                   </div>
                 </div>
@@ -1344,8 +1419,9 @@ Email: oceantechnologies62@gmail.com`;
                     </button>
 
                     <button
-                      onClick={() => handleDeleteInquiryItem(selectedInquiry.id)}
-                      className="text-rose-400 hover:text-rose-300 text-xs flex items-center gap-1 transition-colors cursor-pointer"
+                      onClick={() => triggerDeleteConfirm(selectedInquiry.id, 'inquiry', selectedInquiry.fullName || selectedInquiry.serviceType || 'Inquiry Record')}
+                      className="text-rose-400 hover:text-rose-300 text-xs flex items-center gap-1.5 transition-colors cursor-pointer px-2.5 py-1.5 rounded-lg hover:bg-rose-950/40 border border-transparent hover:border-rose-800/50"
+                      title="Permanently remove record"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                       <span>Delete Record</span>
@@ -1358,9 +1434,9 @@ Email: oceantechnologies62@gmail.com`;
               /* Blank state when no item is selected */
               <div className="py-24 text-center text-slate-500">
                 <Inbox className="w-12 h-12 text-slate-700 mx-auto mb-3 opacity-50" />
-                <h3 className="text-sm font-bold text-slate-300">Select a Record</h3>
+                <h3 className="text-sm font-bold text-slate-300">Select a Record from Directory</h3>
                 <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-                  Click on any course registration (with stored registration date), student internship application, or client quote from the list to inspect full details, update statuses, or reply directly.
+                  Select any candidate registration, technical proposal inquiry, or incident ticket from the directory to review comprehensive telemetry, update statuses, or execute direct client outreach.
                 </p>
               </div>
             )}
@@ -1495,6 +1571,74 @@ Email: oceantechnologies62@gmail.com`;
             </div>
 
           </div>
+        </div>
+      )}
+
+      {/* Robust In-App Record Deletion Confirmation Modal */}
+      {deleteConfirmState.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl max-w-md w-full p-6 relative">
+            <div className="flex items-center gap-3.5 mb-4">
+              <div className="w-12 h-12 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center shrink-0">
+                <Trash2 className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white font-display">
+                  Delete Database Record
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Permanent removal from cloud datastore & local cache
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-slate-950 border border-slate-800 rounded-xl p-3.5 mb-5 text-xs">
+              <span className="text-slate-400 block font-medium mb-1">Target Record:</span>
+              <p className="text-rose-300 font-bold font-mono truncate">
+                {deleteConfirmState.label || 'Selected Record'}
+              </p>
+              <p className="text-[11px] text-slate-500 mt-2">
+                This operation will delete this entry across PostgreSQL, Cloud Firestore, and cached application storage. This action cannot be reversed.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-end gap-3">
+              <button
+                type="button"
+                disabled={deleteConfirmState.isDeleting}
+                onClick={() => setDeleteConfirmState({ isOpen: false, id: '', type: 'inquiry', label: '', isDeleting: false })}
+                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold cursor-pointer transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={deleteConfirmState.isDeleting}
+                onClick={handleExecuteDelete}
+                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-lg shadow-rose-900/40 flex items-center gap-2 cursor-pointer transition-all disabled:opacity-50"
+              >
+                {deleteConfirmState.isDeleting ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Confirm Delete</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Action Success Toast */}
+      {actionSuccessNotice && (
+        <div className="fixed bottom-6 right-6 z-50 bg-emerald-950 border border-emerald-500/60 text-emerald-200 text-xs px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 animate-in slide-in-from-bottom duration-200">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+          <span className="font-medium">{actionSuccessNotice}</span>
         </div>
       )}
     </div>

@@ -16,6 +16,7 @@ import {
   CourseRegistrationRecord,
   CourseRegistrationFormData
 } from '../types';
+import { getAdminAuthHeaders } from './adminAuth';
 
 const LOCAL_STORAGE_KEY = 'ocean_tech_inquiries_cache';
 const LOCAL_STORAGE_COURSES_KEY = 'ocean_tech_course_registrations_cache';
@@ -267,7 +268,11 @@ export async function saveEmergencyTicket(ticket: {
  */
 export async function fetchInquiriesFromPostgres(): Promise<InquiryRecord[]> {
   try {
-    const res = await fetch('/api/inquiries');
+    const res = await fetch('/api/inquiries', {
+      headers: {
+        ...getAdminAuthHeaders(),
+      },
+    });
     if (!res.ok) return [];
     const data = await res.json();
     return (data.inquiries || []).map((row: any) => ({
@@ -428,7 +433,10 @@ export async function updateInquiryStatus(
     if (!isNaN(numericId)) {
       await fetch(`/api/inquiries/${numericId}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...getAdminAuthHeaders(),
+        },
         body: JSON.stringify({ status, adminNotes }),
       });
     }
@@ -441,28 +449,41 @@ export async function updateInquiryStatus(
  * Delete an inquiry
  */
 export async function deleteInquiry(id: string): Promise<void> {
-  // Delete from local cache
+  // 1. Delete from local cache immediately
   const current = getLocalInquiries();
   const updated = current.filter((item) => item.id !== id);
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
 
-  // Delete from Firestore
-  try {
-    if (!id.startsWith('pg-') && !id.startsWith('quote-')) {
+  // 2. Delete from Firestore if it is a Firestore document
+  if (!id.startsWith('pg-')) {
+    try {
       const docRef = doc(db, 'inquiries', id);
       await deleteDoc(docRef);
+    } catch (err) {
+      console.warn(`Firestore delete doc inquiries/${id}:`, err);
     }
-  } catch (err) {
-    handleFirestoreError(err, OperationType.DELETE, `inquiries/${id}`);
   }
 
-  // Delete from PostgreSQL
+  // 3. Delete from PostgreSQL if numeric or prefixed
   try {
     const numericId = parseInt(id.replace('pg-', ''), 10);
     if (!isNaN(numericId)) {
-      await fetch(`/api/inquiries/${numericId}`, {
+      const authHeaders = getAdminAuthHeaders();
+      const resInq = await fetch(`/api/inquiries/${numericId}`, {
         method: 'DELETE',
+        headers: {
+          ...authHeaders,
+        },
       });
+      if (!resInq.ok && resInq.status === 404) {
+        // Might be an emergency ticket
+        await fetch(`/api/emergency-tickets/${numericId}`, {
+          method: 'DELETE',
+          headers: {
+            ...authHeaders,
+          },
+        });
+      }
     }
   } catch (error) {
     console.error(`Failed to delete inquiry ${id} from PostgreSQL:`, error);
@@ -613,7 +634,11 @@ export async function submitCourseRegistration(
  */
 export async function fetchCourseRegistrationsFromPostgres(): Promise<CourseRegistrationRecord[]> {
   try {
-    const res = await fetch('/api/course-registrations');
+    const res = await fetch('/api/course-registrations', {
+      headers: {
+        ...getAdminAuthHeaders(),
+      },
+    });
     if (!res.ok) return [];
     const data = await res.json();
     return (data.registrations || []).map((row: any) => ({
@@ -648,33 +673,47 @@ export async function fetchCourseRegistrationsFromPostgres(): Promise<CourseRegi
 export function subscribeToCourseRegistrations(
   callback: (records: CourseRegistrationRecord[]) => void
 ): () => void {
+  let isMounted = true;
   // Initial callback with local cache
   const localCache = getLocalCourseRegistrations();
   callback(localCache);
 
-  // Attempt to fetch from PostgreSQL
-  fetchCourseRegistrationsFromPostgres().then((pgRecords) => {
-    if (pgRecords.length > 0) {
-      const mergedMap = new Map<string, CourseRegistrationRecord>();
-      pgRecords.forEach((r) => mergedMap.set(r.registrationNumber, r));
-      localCache.forEach((r) => {
-        if (!mergedMap.has(r.registrationNumber)) {
-          mergedMap.set(r.registrationNumber, r);
-        }
-      });
-      const merged = Array.from(mergedMap.values()).sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-      callback(merged);
+  // Function to pull latest course registrations from PostgreSQL
+  const syncPg = async () => {
+    try {
+      const pgRecords = await fetchCourseRegistrationsFromPostgres();
+      if (!isMounted) return;
+      if (pgRecords.length > 0) {
+        const mergedMap = new Map<string, CourseRegistrationRecord>();
+        pgRecords.forEach((r) => mergedMap.set(r.registrationNumber, r));
+        const currentLocal = getLocalCourseRegistrations();
+        currentLocal.forEach((r) => {
+          if (!mergedMap.has(r.registrationNumber)) {
+            mergedMap.set(r.registrationNumber, r);
+          }
+        });
+        const merged = Array.from(mergedMap.values()).sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        localStorage.setItem(LOCAL_STORAGE_COURSES_KEY, JSON.stringify(merged));
+        callback(merged);
+      }
+    } catch {
+      // Ignored
     }
-  });
+  };
+
+  syncPg();
+  const pgInterval = setInterval(syncPg, 6000);
 
   // Subscribe to Cloud Firestore
+  let unsubscribe = () => {};
   try {
     const q = query(collection(db, 'course_registrations'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(
+    unsubscribe = onSnapshot(
       q,
       (snapshot) => {
+        if (!isMounted) return;
         const firestoreRecords: CourseRegistrationRecord[] = [];
         snapshot.forEach((docSnap) => {
           const data = docSnap.data();
@@ -720,12 +759,15 @@ export function subscribeToCourseRegistrations(
         handleFirestoreError(error, OperationType.LIST, 'course_registrations');
       }
     );
-
-    return unsubscribe;
   } catch (error) {
     handleFirestoreError(error, OperationType.LIST, 'course_registrations');
-    return () => {};
   }
+
+  return () => {
+    isMounted = false;
+    clearInterval(pgInterval);
+    unsubscribe();
+  };
 }
 
 /**
@@ -766,7 +808,10 @@ export async function updateCourseRegistrationStatus(
     if (!isNaN(numericId)) {
       await fetch(`/api/course-registrations/${numericId}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...getAdminAuthHeaders(),
+        },
         body: JSON.stringify({ status, adminNotes }),
       });
     }
@@ -785,13 +830,13 @@ export async function deleteCourseRegistration(id: string): Promise<void> {
   localStorage.setItem(LOCAL_STORAGE_COURSES_KEY, JSON.stringify(updated));
 
   // Delete from Firestore
-  try {
-    if (!id.startsWith('pg-') && !id.startsWith('crs-')) {
+  if (!id.startsWith('pg-')) {
+    try {
       const docRef = doc(db, 'course_registrations', id);
       await deleteDoc(docRef);
+    } catch (err) {
+      console.warn(`Firestore delete doc course_registrations/${id}:`, err);
     }
-  } catch (err) {
-    handleFirestoreError(err, OperationType.DELETE, `course_registrations/${id}`);
   }
 
   // Delete from PostgreSQL
@@ -800,6 +845,9 @@ export async function deleteCourseRegistration(id: string): Promise<void> {
     if (!isNaN(numericId)) {
       await fetch(`/api/course-registrations/${numericId}`, {
         method: 'DELETE',
+        headers: {
+          ...getAdminAuthHeaders(),
+        },
       });
     }
   } catch (error) {

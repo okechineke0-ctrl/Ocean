@@ -62,7 +62,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-sky-100 selection:text-sky-900">
-      {/* Top Announcement Bar (OPay style continuous moving marquee write-up) */}
+      {/* Global Top Announcement Broadcast Ticker */}
       {!isAdminView && <TopAnnouncementTicker />}
 
       {/* Top Navbar - hidden in dedicated administration portal */}

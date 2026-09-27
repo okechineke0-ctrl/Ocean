@@ -150,6 +150,19 @@ export async function getEmergencyTickets(limitCount = 50) {
   }
 }
 
+/**
+ * Deletes an emergency ticket from PostgreSQL
+ */
+export async function deleteEmergencyTicketRecord(id: number) {
+  try {
+    await db.delete(emergencyTickets).where(eq(emergencyTickets.id, id));
+    return true;
+  } catch (error) {
+    console.error(`Failed to delete emergency ticket ${id} in PostgreSQL:`, error);
+    throw new Error('Failed to delete emergency ticket.', { cause: error });
+  }
+}
+
 export interface CreateInternshipInput {
   registrationNumber?: string;
   fullName: string;

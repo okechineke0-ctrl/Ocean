@@ -1,4 +1,5 @@
 import { SiteAnnouncement } from '../types';
+import { getAdminAuthHeaders } from './adminAuth';
 
 const STORAGE_KEY = 'ocean_tech_site_announcement_v1';
 
@@ -150,7 +151,10 @@ export async function saveSiteAnnouncement(ann: Partial<SiteAnnouncement>): Prom
   try {
     const res = await fetch('/api/announcement', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        ...getAdminAuthHeaders(),
+      },
       body: JSON.stringify(updated),
     });
     if (res.ok) {

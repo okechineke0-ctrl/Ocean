@@ -61,7 +61,7 @@
   background: #0284c7;
 }
 
-/* OPay-Style Smooth Moving Write-up / Ticker Marquee */
+/* Continuous Broadcast Marquee Ticker */
 @keyframes oceanTickerMarquee {
   0% {
     transform: translate3d(0, 0, 0);

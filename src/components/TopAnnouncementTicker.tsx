@@ -78,7 +78,7 @@ export const TopAnnouncementTicker: React.FC = () => {
         ? 'animate-ticker-fast' 
         : 'animate-ticker-normal';
 
-  // Theme styling (OPay default: deep emerald with bright accents, or deep navy)
+  // Theme styling (default: deep emerald with bright accents, or deep navy)
   const themeStyles = {
     opay: 'bg-[#042f2e] border-emerald-700/80 text-emerald-100 shadow-xs',
     navy: 'bg-[#07192f] border-sky-800/80 text-sky-100 shadow-xs',
@@ -97,11 +97,11 @@ export const TopAnnouncementTicker: React.FC = () => {
 
   return (
     <aside 
-      aria-label="Important Notice"
+      aria-label="Global Announcement Broadcast"
       className={`relative z-40 border-b overflow-hidden transition-all duration-300 py-1.5 sm:py-2 select-none ${themeStyles}`}
     >
       <div className="max-w-7xl mx-auto px-3 sm:px-6 flex items-center justify-between gap-3">
-        {/* Left Badge: OPay-style high visibility notice tag */}
+        {/* Left Badge: High visibility notice tag */}
         <div className="flex items-center gap-2 shrink-0 z-10 pr-2">
           <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs tracking-wider uppercase font-display ${badgeStyles}`}>
             <span className="relative flex h-2 w-2">
@@ -113,8 +113,8 @@ export const TopAnnouncementTicker: React.FC = () => {
           </span>
         </div>
 
-        {/* Center: Smooth Moving Write-up / Marquee Ticker */}
-        <div className="flex-1 overflow-hidden relative cursor-pointer group mask-gradient" title="Hover to pause ticker">
+        {/* Center: Continuous Marquee Broadcast */}
+        <div className="flex-1 overflow-hidden relative cursor-pointer group mask-gradient" title="Hover to pause marquee movement">
           <div className={`${speedClass} flex items-center gap-8 text-xs sm:text-sm font-medium tracking-wide`}>
             {/* Repeated 3 times for completely seamless continuous endless loop */}
             <span className="flex items-center gap-3">

@@ -3,35 +3,50 @@ service cloud.firestore {
   match /databases/{database}/documents {
     
     // Inquiries Collection:
-    // Any prospective client can submit quotes, contact inquiries, or emergency tickets.
-    // Read and update access is permitted for management of client inquiries.
+    // Public clients can submit inquiries, quotes, or emergency bug tickets with schema validation.
+    // Reading, modifying, or deleting other people's records is strictly prohibited (Zero-Trust Privacy & Anti-Tampering).
     match /inquiries/{inquiryId} {
       allow create: if request.resource.data.type in ['quote', 'contact', 'emergency_issue', 'internship']
                     && request.resource.data.fullName is string
                     && request.resource.data.fullName.size() > 0
+                    && request.resource.data.fullName.size() <= 150
                     && request.resource.data.email is string
-                    && request.resource.data.phone is string;
-      allow read, update, delete: if true;
+                    && request.resource.data.email.size() > 0
+                    && request.resource.data.email.size() <= 200
+                    && request.resource.data.phone is string
+                    && request.resource.data.phone.size() > 0
+                    && request.resource.data.phone.size() <= 50;
+      allow read, update, delete: if false;
     }
 
     // Internships, IT & SIWES Registrations Collection:
-    // Students can submit internship applications. Read/write permitted for admin portal.
+    // Students can submit internship applications. Public read/delete is forbidden to protect student PII.
     match /internships/{internshipId} {
       allow create: if request.resource.data.fullName is string
                     && request.resource.data.fullName.size() > 0
+                    && request.resource.data.fullName.size() <= 150
                     && request.resource.data.email is string
-                    && request.resource.data.phone is string;
-      allow read, update, delete: if true;
+                    && request.resource.data.email.size() > 0
+                    && request.resource.data.email.size() <= 200
+                    && request.resource.data.phone is string
+                    && request.resource.data.phone.size() > 0
+                    && request.resource.data.phone.size() <= 50;
+      allow read, update, delete: if false;
     }
 
     // Course Registrations Collection (Online & Offline Classes):
-    // Students can submit course registrations. Read/write permitted for admin portal.
+    // Prospective students can enroll in courses. Public read/delete is forbidden to prevent data scraping.
     match /course_registrations/{registrationId} {
       allow create: if request.resource.data.fullName is string
                     && request.resource.data.fullName.size() > 0
+                    && request.resource.data.fullName.size() <= 150
                     && request.resource.data.email is string
-                    && request.resource.data.phone is string;
-      allow read, update, delete: if true;
+                    && request.resource.data.email.size() > 0
+                    && request.resource.data.email.size() <= 200
+                    && request.resource.data.phone is string
+                    && request.resource.data.phone.size() > 0
+                    && request.resource.data.phone.size() <= 50;
+      allow read, update, delete: if false;
     }
   }
 }
