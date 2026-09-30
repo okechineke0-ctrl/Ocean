@@ -19,18 +19,24 @@ import {
   Palette,
   Cpu,
   Calculator,
-  Mail
+  Mail,
+  GraduationCap,
+  Sparkles
 } from 'lucide-react';
+import { ProjectCostCalculator } from '../components/ProjectCostCalculator';
 
 interface ServicesViewProps {
   onNavigate: (view: ViewMode) => void;
-  onOpenQuote?: (serviceId?: string) => void;
+  onOpenQuote?: (serviceId?: string, customScope?: string) => void;
   onOpenIssueReport: () => void;
+  onOpenCourseRegistration?: () => void;
 }
 
 export const ServicesView: React.FC<ServicesViewProps> = ({
   onNavigate,
-  onOpenIssueReport
+  onOpenQuote,
+  onOpenIssueReport,
+  onOpenCourseRegistration
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory>('All');
   const [activeServiceId, setActiveServiceId] = useState<string>(SERVICES[0].id);
@@ -276,13 +282,25 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center gap-3">
-              <button
-                onClick={() => onNavigate('contact')}
-                className="w-full sm:flex-1 py-3 px-5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs tracking-wide shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <span>Contact Management for {activeService.title}</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              {activeService.category === 'AI Learning & Mentorship' && onOpenCourseRegistration ? (
+                <button
+                  type="button"
+                  onClick={onOpenCourseRegistration}
+                  className="w-full sm:flex-1 py-3 px-5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs tracking-wide shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <GraduationCap className="w-4 h-4" />
+                  <span>Register for Online Course Track</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => onOpenQuote ? onOpenQuote(activeService.title) : onNavigate('contact')}
+                  className="w-full sm:flex-1 py-3 px-5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs tracking-wide shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4 text-sky-200" />
+                  <span>Request Custom Quote for {activeService.title}</span>
+                </button>
+              )}
 
               <a
                 href={COMPANY_INFO.whatsappUrl}
@@ -291,11 +309,29 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
                 className="w-full sm:w-auto py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2"
               >
                 <MessageCircle className="w-4 h-4" />
-                <span>WhatsApp Management Hotline</span>
+                <span>WhatsApp Hotline</span>
               </a>
+
+              <button
+                type="button"
+                onClick={() => onNavigate('contact')}
+                className="w-full sm:w-auto py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <span>Direct Contact</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
 
+        </div>
+
+        {/* Embedded Interactive Project Scope & Cost Estimator */}
+        <div className="mt-16 pt-8 border-t border-slate-200">
+          <ProjectCostCalculator 
+            onOpenQuote={onOpenQuote}
+            onOpenCourseRegistration={onOpenCourseRegistration}
+            variant="embedded"
+          />
         </div>
       </section>
 

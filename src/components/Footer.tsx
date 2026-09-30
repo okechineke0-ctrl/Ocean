@@ -13,7 +13,8 @@ import {
   AlertTriangle,
   Clock,
   ExternalLink,
-  GraduationCap
+  GraduationCap,
+  FileSearch
 } from 'lucide-react';
 import { SocialLinks } from './SocialLinks';
 
@@ -22,6 +23,7 @@ interface FooterProps {
   onOpenQuote: (serviceId?: string) => void;
   onOpenIssueReport: () => void;
   onOpenCourseRegistration?: () => void;
+  onOpenTracker?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -29,6 +31,7 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenQuote,
   onOpenIssueReport,
   onOpenCourseRegistration,
+  onOpenTracker,
 }) => {
   const [subscribedEmail, setSubscribedEmail] = useState('');
   const [subscribedSuccess, setSubscribedSuccess] = useState(false);
@@ -297,7 +300,7 @@ export const Footer: React.FC<FooterProps> = ({
                   rel="noopener noreferrer"
                   className="text-teal-300 hover:text-white transition-colors font-mono text-[11px]"
                 >
-                  www.ocean-f4gj.orrender.com
+                  www.ocean-f4gj.onrender.com
                 </a>
               </div>
               
@@ -319,6 +322,16 @@ export const Footer: React.FC<FooterProps> = ({
                   <AlertTriangle className="w-3.5 h-3.5" />
                   <span>Report Broken Site / Bug</span>
                 </button>
+
+                {onOpenTracker && (
+                  <button
+                    onClick={onOpenTracker}
+                    className="w-full py-1.5 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-sky-400 text-xs font-semibold text-center transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <FileSearch className="w-3.5 h-3.5" />
+                    <span>Track Ticket / Course Status</span>
+                  </button>
+                )}
               </div>
             </div>
           </div>

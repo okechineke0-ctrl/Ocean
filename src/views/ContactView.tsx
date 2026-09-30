@@ -202,7 +202,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
                     rel="noopener noreferrer"
                     className="text-xs font-mono font-bold text-teal-700 hover:underline flex items-center gap-1"
                   >
-                    <span>www.ocean-f4gj.orrender.com</span>
+                    <span>www.ocean-f4gj.onrender.com</span>
                     <ExternalLink className="w-3 h-3" />
                   </a>
                   <p className="text-[11px] text-slate-500 mt-0.5">

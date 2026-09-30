@@ -196,21 +196,35 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-                <p className={`text-[11px] mb-3 ${plan.isPopular ? 'text-slate-400' : 'text-slate-500'}`}>
+              <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                <p className={`text-[11px] ${plan.isPopular ? 'text-slate-400' : 'text-slate-500'}`}>
                   <strong>Best for:</strong> {plan.bestFor}
                 </p>
 
                 <button
-                  onClick={() => onNavigate('contact')}
-                  className={`w-full py-2.5 rounded-xl font-semibold text-xs tracking-wide transition-all cursor-pointer ${
+                  type="button"
+                  onClick={() => onOpenQuote ? onOpenQuote(plan.name) : onNavigate('contact')}
+                  className={`w-full py-2.5 rounded-xl font-bold text-xs tracking-wide transition-all cursor-pointer shadow-xs flex items-center justify-center gap-1.5 ${
                     plan.isPopular
-                      ? 'bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold'
+                      ? 'bg-sky-400 hover:bg-sky-300 text-slate-950 font-black'
                       : 'bg-slate-900 hover:bg-slate-800 text-white'
                   }`}
                 >
-                  Contact Management for {plan.name}
+                  <span>Select & Request {plan.name}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
+
+                <a
+                  href={`https://wa.me/2349129216768?text=${encodeURIComponent(`Hello Ocean Technologies!\nI am interested in subscribing to the *${plan.name}* (${plan.priceNGN}). Please provide setup details.`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`w-full py-1.5 text-center text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors ${
+                    plan.isPopular ? 'text-emerald-300 hover:text-white' : 'text-emerald-700 hover:text-emerald-800'
+                  }`}
+                >
+                  <MessageCircle className="w-3 h-3" />
+                  <span>Inquire via WhatsApp</span>
+                </a>
               </div>
             </div>
           ))}

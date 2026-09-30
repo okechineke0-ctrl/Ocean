@@ -708,7 +708,7 @@ export const FlyerHeroSection: React.FC<FlyerHeroSectionProps> = ({
                 </div>
                 <div className="flex flex-col min-w-0">
                   <span className="text-[10px] text-teal-300 font-semibold uppercase tracking-wider">Official Web</span>
-                  <span className="font-mono text-[11px] text-slate-200 truncate">www.ocean-f4gj.orrender.com</span>
+                  <span className="font-mono text-[11px] text-slate-200 truncate">www.ocean-f4gj.onrender.com</span>
                 </div>
               </a>
 

@@ -16,23 +16,35 @@ import { CourseRegistrationModal } from './components/CourseRegistrationModal';
 import { SearchModal } from './components/SearchModal';
 import { AiAssistantWidget } from './components/AiAssistantWidget';
 import { TopAnnouncementTicker } from './components/TopAnnouncementTicker';
+import { TicketStatusTrackerModal } from './components/TicketStatusTrackerModal';
+import { BackToTop } from './components/BackToTop';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<ViewMode>('home');
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
   const [selectedServiceForQuote, setSelectedServiceForQuote] = useState<string | undefined>(undefined);
+  const [customQuoteScope, setCustomQuoteScope] = useState<string | undefined>(undefined);
   const [selectedCourseForRegistration, setSelectedCourseForRegistration] = useState<string | undefined>(undefined);
   const [issueReportModalOpen, setIssueReportModalOpen] = useState(false);
   const [courseRegistrationModalOpen, setCourseRegistrationModalOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
+  const [trackerModalOpen, setTrackerModalOpen] = useState(false);
+  const [trackerDefaultQuery, setTrackerDefaultQuery] = useState('');
 
   // Listen for open-admin-portal event (triggered solely by triple-clicking the Ocean Tech logo)
   useEffect(() => {
     const handleOpenAdmin = () => {
       setCurrentView('admin-inbox');
     };
+    const handleOpenTrackerEvent = (e: any) => {
+      handleOpenTracker(e.detail?.query);
+    };
     window.addEventListener('open-admin-portal', handleOpenAdmin);
-    return () => window.removeEventListener('open-admin-portal', handleOpenAdmin);
+    window.addEventListener('open-ticket-tracker', handleOpenTrackerEvent);
+    return () => {
+      window.removeEventListener('open-admin-portal', handleOpenAdmin);
+      window.removeEventListener('open-ticket-tracker', handleOpenTrackerEvent);
+    };
   }, []);
 
   // Scroll to top whenever view changes
@@ -44,8 +56,9 @@ export default function App() {
     setCurrentView(view);
   };
 
-  const handleOpenQuote = (serviceId?: string) => {
+  const handleOpenQuote = (serviceId?: string, customScope?: string) => {
     setSelectedServiceForQuote(serviceId);
+    setCustomQuoteScope(customScope);
     setQuoteModalOpen(true);
   };
 
@@ -56,6 +69,11 @@ export default function App() {
   const handleOpenCourseRegistration = (courseId?: string) => {
     setSelectedCourseForRegistration(courseId);
     setCourseRegistrationModalOpen(true);
+  };
+
+  const handleOpenTracker = (query?: string) => {
+    setTrackerDefaultQuery(query || '');
+    setTrackerModalOpen(true);
   };
 
   const isAdminView = currentView === 'admin-inbox';
@@ -74,6 +92,7 @@ export default function App() {
           onOpenIssueReport={handleOpenIssueReport}
           onOpenSearch={() => setSearchModalOpen(true)}
           onOpenCourseRegistration={handleOpenCourseRegistration}
+          onOpenTracker={() => handleOpenTracker()}
         />
       )}
 
@@ -85,6 +104,7 @@ export default function App() {
             onOpenQuote={handleOpenQuote}
             onOpenIssueReport={handleOpenIssueReport}
             onOpenCourseRegistration={handleOpenCourseRegistration}
+            onOpenTracker={() => handleOpenTracker()}
           />
         )}
 
@@ -93,6 +113,7 @@ export default function App() {
             onNavigate={handleNavigate}
             onOpenQuote={handleOpenQuote}
             onOpenIssueReport={handleOpenIssueReport}
+            onOpenCourseRegistration={handleOpenCourseRegistration}
           />
         )}
 
@@ -115,6 +136,7 @@ export default function App() {
           <EmergencyFixView
             onNavigate={handleNavigate}
             onOpenIssueReport={handleOpenIssueReport}
+            onOpenTracker={() => handleOpenTracker()}
           />
         )}
 
@@ -146,6 +168,7 @@ export default function App() {
           onOpenQuote={handleOpenQuote}
           onOpenIssueReport={handleOpenIssueReport}
           onOpenCourseRegistration={handleOpenCourseRegistration}
+          onOpenTracker={() => handleOpenTracker()}
         />
       )}
 
@@ -161,13 +184,23 @@ export default function App() {
 
       <QuoteModal
         isOpen={quoteModalOpen}
-        onClose={() => setQuoteModalOpen(false)}
+        onClose={() => {
+          setQuoteModalOpen(false);
+          setCustomQuoteScope(undefined);
+        }}
         selectedServiceId={selectedServiceForQuote}
+        customScope={customQuoteScope}
       />
 
       <IssueReportModal
         isOpen={issueReportModalOpen}
         onClose={() => setIssueReportModalOpen(false)}
+      />
+
+      <TicketStatusTrackerModal
+        isOpen={trackerModalOpen}
+        onClose={() => setTrackerModalOpen(false)}
+        defaultQuery={trackerDefaultQuery}
       />
 
       <SearchModal
@@ -189,7 +222,10 @@ export default function App() {
 
       {/* Floating widgets - hidden in administration portal */}
       {!isAdminView && (
-        <AiAssistantWidget />
+        <>
+          <AiAssistantWidget />
+          <BackToTop />
+        </>
       )}
     </div>
   );

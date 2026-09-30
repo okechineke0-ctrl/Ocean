@@ -138,21 +138,29 @@ export const AboutView: React.FC<AboutViewProps> = ({
                 </div>
               </div>
 
-              <div className="pt-2 flex flex-col sm:flex-row gap-3">
+              <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
                 <button
-                  onClick={() => onNavigate('contact')}
-                  className="flex-1 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs tracking-wide text-center transition-colors cursor-pointer shadow-xs"
+                  type="button"
+                  onClick={() => onOpenQuote ? onOpenQuote('Custom Software & Web Engineering') : onNavigate('contact')}
+                  className="flex-1 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs tracking-wide text-center transition-colors cursor-pointer shadow-xs"
                 >
-                  Contact Management
+                  Request Project Quote
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onNavigate('contact')}
+                  className="py-2.5 px-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs tracking-wide text-center transition-colors cursor-pointer border border-slate-200"
+                >
+                  Contact Desk
                 </button>
                 <a
                   href={COMPANY_INFO.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
+                  className="py-2.5 px-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
-                  <span>WhatsApp Us</span>
+                  <span>WhatsApp</span>
                 </a>
               </div>
             </div>
@@ -222,10 +230,16 @@ export const AboutView: React.FC<AboutViewProps> = ({
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <button
-                onClick={() => onNavigate('contact')}
+                onClick={() => onOpenQuote ? onOpenQuote('Graphics Design & Brand Identity') : onNavigate('contact')}
                 className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-sm cursor-pointer"
               >
-                Contact Design Management
+                Request Design Quote
+              </button>
+              <button
+                onClick={() => onNavigate('contact')}
+                className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs transition-colors cursor-pointer border border-slate-700"
+              >
+                Contact Management
               </button>
               <a
                 href={COMPANY_INFO.whatsappUrl}

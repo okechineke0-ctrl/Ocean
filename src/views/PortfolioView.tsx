@@ -171,7 +171,8 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
                 </div>
 
                 <button
-                  onClick={() => onNavigate('contact')}
+                  type="button"
+                  onClick={() => onOpenQuote ? onOpenQuote(project.title) : onNavigate('contact')}
                   className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
                 >
                   <span>Inquire for Similar Project</span>

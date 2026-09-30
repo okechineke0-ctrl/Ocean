@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SERVICES, COMPANY_INFO } from '../data/companyData';
 import { 
   X, 
@@ -17,12 +17,14 @@ interface QuoteModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedServiceId?: string;
+  customScope?: string;
 }
 
 export const QuoteModal: React.FC<QuoteModalProps> = ({
   isOpen,
   onClose,
-  selectedServiceId
+  selectedServiceId,
+  customScope
 }) => {
   const [formData, setFormData] = useState<QuoteRequestFormData>({
     fullName: '',
@@ -32,13 +34,23 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
     serviceType: selectedServiceId || 'Website Development',
     timeline: 'Within 2 to 4 Weeks',
     budgetRange: '₦150,000 – ₦400,000',
-    description: '',
+    description: customScope || '',
     currentWebsiteOrAppUrl: '',
     contactMethod: 'WhatsApp'
   });
 
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setFormData((prev) => ({
+        ...prev,
+        serviceType: selectedServiceId || prev.serviceType || 'Website Development',
+        description: customScope ? customScope : prev.description
+      }));
+    }
+  }, [isOpen, selectedServiceId, customScope]);
 
   if (!isOpen) return null;
 

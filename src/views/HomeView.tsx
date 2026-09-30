@@ -26,12 +26,15 @@ import {
   Palette,
   Cpu
 } from 'lucide-react';
+import { EnterpriseTrustBar } from '../components/EnterpriseTrustBar';
+import { ProjectCostCalculator } from '../components/ProjectCostCalculator';
 
 interface HomeViewProps {
   onNavigate: (view: ViewMode) => void;
   onOpenQuote: (serviceId?: string) => void;
   onOpenIssueReport: () => void;
   onOpenCourseRegistration?: () => void;
+  onOpenTracker?: () => void;
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({
@@ -39,6 +42,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   onOpenQuote,
   onOpenIssueReport,
   onOpenCourseRegistration,
+  onOpenTracker,
 }) => {
   const [activeTab, setActiveTab] = useState<'all' | 'ai' | 'web' | 'app' | 'software' | 'maintenance'>('all');
 
@@ -75,6 +79,12 @@ export const HomeView: React.FC<HomeViewProps> = ({
         onOpenQuote={onOpenQuote}
         onOpenIssueReport={onOpenIssueReport}
         onOpenCourseRegistration={onOpenCourseRegistration}
+      />
+
+      {/* Enterprise Trust & Verification Bar */}
+      <EnterpriseTrustBar
+        onOpenTracker={onOpenTracker}
+        onOpenQuote={() => onOpenQuote()}
       />
 
       {/* 2. AI Assistant Feature Strip */}
@@ -211,6 +221,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
+
+        {/* Interactive Scope & Pricing Calculator */}
+        <div className="mt-16 pt-8 border-t border-slate-200">
+          <ProjectCostCalculator
+            onOpenQuote={onOpenQuote}
+            onOpenCourseRegistration={onOpenCourseRegistration}
+            variant="embedded"
+          />
+        </div>
       </section>
 
       {/* 4. Dedicated Maintenance & Support Retainers Section */}
@@ -285,16 +304,31 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   </ul>
                 </div>
 
-                <button
-                  onClick={() => onNavigate('contact')}
-                  className={`w-full py-2.5 rounded-xl font-semibold text-xs tracking-wide transition-all cursor-pointer ${
-                    plan.isPopular
-                      ? 'bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold'
-                      : 'bg-white hover:bg-slate-100 border border-slate-300 text-slate-800'
-                  }`}
-                >
-                  Contact Management for {plan.name}
-                </button>
+                <div className="space-y-2">
+                  <button
+                    type="button"
+                    onClick={() => onOpenQuote(plan.name)}
+                    className={`w-full py-2.5 rounded-xl font-bold text-xs tracking-wide transition-all cursor-pointer shadow-xs flex items-center justify-center gap-1.5 ${
+                      plan.isPopular
+                        ? 'bg-sky-400 hover:bg-sky-300 text-slate-950 font-black'
+                        : 'bg-white hover:bg-slate-100 border border-slate-300 text-slate-800'
+                    }`}
+                  >
+                    <span>Select & Request {plan.name}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                  <a
+                    href={`https://wa.me/2349129216768?text=${encodeURIComponent(`Hello Ocean Technologies!\nI am interested in subscribing to the *${plan.name}* (${plan.priceNGN}). Please provide setup details.`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`w-full py-1 text-center text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors ${
+                      plan.isPopular ? 'text-emerald-300 hover:text-white' : 'text-emerald-700 hover:text-emerald-800'
+                    }`}
+                  >
+                    <MessageCircle className="w-3 h-3" />
+                    <span>Inquire via WhatsApp</span>
+                  </a>
+                </div>
               </div>
             ))}
           </div>

@@ -13,18 +13,21 @@ import {
   Send,
   Database,
   CreditCard,
-  Server
+  Server,
+  FileSearch
 } from 'lucide-react';
 import { saveInquiry } from '../lib/inquiriesService';
 
 interface EmergencyFixViewProps {
   onNavigate: (view: ViewMode) => void;
   onOpenIssueReport: () => void;
+  onOpenTracker?: () => void;
 }
 
 export const EmergencyFixView: React.FC<EmergencyFixViewProps> = ({
   onNavigate,
-  onOpenIssueReport
+  onOpenIssueReport,
+  onOpenTracker
 }) => {
   const [ticketSubmitted, setTicketSubmitted] = useState(false);
   const [form, setForm] = useState({
@@ -116,6 +119,17 @@ export const EmergencyFixView: React.FC<EmergencyFixViewProps> = ({
             >
               Dispatch Incident Ticket
             </button>
+
+            {onOpenTracker && (
+              <button
+                type="button"
+                onClick={onOpenTracker}
+                className="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-300 hover:text-white font-semibold text-xs border border-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer"
+              >
+                <FileSearch className="w-4 h-4 text-sky-400" />
+                <span>Track Existing Ticket</span>
+              </button>
+            )}
           </div>
         </div>
       </section>
