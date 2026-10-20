@@ -855,3 +855,223 @@ export async function deleteCourseRegistration(id: string): Promise<void> {
   }
 }
 
+export interface CrashCourseFormData {
+  fullName: string;
+  email: string;
+  phone: string;
+  experienceLevel?: string;
+  githubUsername?: string;
+  preferredSchedule?: string;
+  notes?: string;
+}
+
+/**
+ * Register student specifically for the 1-Month Frontend Website Engineering Crash Course
+ */
+export async function submitCrashCourseRegistration(
+  data: CrashCourseFormData
+): Promise<{ success: boolean; registrationNumber: string; error?: string }> {
+  const localRegNumber = `OCT-CRASH-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+  const nowIso = new Date().toISOString();
+  const formattedDate = new Date().toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
+  const fullNotes = [
+    data.notes?.trim() || '',
+    data.githubUsername?.trim() ? `GitHub: ${data.githubUsername.trim()}` : '',
+  ].filter(Boolean).join(' | ');
+
+  // 1. Immediately store in local cache
+  const localRecord: CourseRegistrationRecord = {
+    id: `local-crash-${Date.now()}`,
+    registrationNumber: localRegNumber,
+    fullName: data.fullName.trim(),
+    email: data.email.trim(),
+    phone: data.phone.trim(),
+    course: 'frontend_crash_course',
+    courseTitle: '1-Month Frontend Website Engineering Crash Course (HTML, CSS, JS, React & GitHub)',
+    classFormat: 'online',
+    schedule: data.preferredSchedule || 'Live Online & Coordinated in WhatsApp Group',
+    duration: '1 Month Intensive',
+    experienceLevel: data.experienceLevel || 'Beginner',
+    preferredStartDate: 'Upcoming Special Cohort (Immediate Notification via WhatsApp)',
+    registrationDate: formattedDate,
+    cityState: 'Crash Course Candidate',
+    notes: fullNotes,
+    status: 'pending',
+    createdAt: nowIso,
+  };
+  saveLocalCourseRegistration(localRecord);
+
+  // 2. Submit to backend API
+  let returnedRegNumber = localRegNumber;
+  try {
+    const res = await fetch('/api/crash-course/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        fullName: data.fullName,
+        email: data.email,
+        phone: data.phone,
+        experienceLevel: data.experienceLevel,
+        githubUsername: data.githubUsername,
+        preferredSchedule: data.preferredSchedule,
+        notes: data.notes,
+      }),
+    });
+
+    if (res.ok) {
+      const respData = await res.json();
+      if (respData.registrationNumber) {
+        returnedRegNumber = respData.registrationNumber;
+        localRecord.registrationNumber = returnedRegNumber;
+        saveLocalCourseRegistration(localRecord);
+      }
+    }
+  } catch (err) {
+    console.warn('Crash course backend submission note:', err);
+  }
+
+  // 3. Sync to Cloud Firestore if available
+  try {
+    await addDoc(collection(db, 'course_registrations'), {
+      registrationNumber: returnedRegNumber,
+      fullName: data.fullName,
+      email: data.email,
+      phone: data.phone,
+      course: 'frontend_crash_course',
+      courseTitle: '1-Month Frontend Website Engineering Crash Course (HTML, CSS, JS, React & GitHub)',
+      classFormat: 'online',
+      schedule: data.preferredSchedule || 'WhatsApp Coordinated',
+      duration: '1 Month Intensive',
+      experienceLevel: data.experienceLevel || 'Beginner',
+      registrationDate: formattedDate,
+      status: 'pending',
+      notes: fullNotes,
+      createdAt: nowIso,
+      submittedAt: serverTimestamp(),
+    });
+  } catch (err) {
+    handleFirestoreError(err, OperationType.CREATE, 'course_registrations');
+  }
+
+  return {
+    success: true,
+    registrationNumber: returnedRegNumber,
+  };
+}
+
+export interface AdmissionStatusResult {
+  found: boolean;
+  registrationNumber?: string;
+  fullName?: string;
+  courseTitle?: string;
+  duration?: string;
+  classFormat?: string;
+  schedule?: string;
+  registrationDate?: string;
+  status?: string;
+  isAdmitted: boolean;
+  admissionStatus: 'ADMITTED' | 'NOT ADMITTED';
+  statusLabel: string;
+  adminNotes?: string;
+  message?: string;
+}
+
+/**
+ * Checks admission status against backend API and local cached submissions
+ */
+export async function checkAdmissionStatus(query: string): Promise<AdmissionStatusResult> {
+  const clean = (query || '').trim();
+  if (!clean) {
+    return {
+      found: false,
+      isAdmitted: false,
+      admissionStatus: 'NOT ADMITTED',
+      statusLabel: 'Invalid Query',
+      message: 'Please enter a valid registration number, email, or telephone number.',
+    };
+  }
+
+  // 1. First attempt backend PostgreSQL verification
+  try {
+    const res = await fetch(`/api/admission-status?query=${encodeURIComponent(clean)}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.found) {
+        return {
+          found: true,
+          registrationNumber: data.registrationNumber,
+          fullName: data.fullName,
+          courseTitle: data.courseTitle,
+          duration: data.duration,
+          classFormat: data.classFormat,
+          schedule: data.schedule,
+          registrationDate: data.registrationDate,
+          status: data.status,
+          isAdmitted: !!data.isAdmitted,
+          admissionStatus: data.isAdmitted ? 'ADMITTED' : 'NOT ADMITTED',
+          statusLabel: data.statusLabel || (data.isAdmitted ? 'Admitted' : 'Not Admitted (Under Review)'),
+          adminNotes: data.adminNotes,
+        };
+      }
+    }
+  } catch (err) {
+    console.warn('Backend admission status check note:', err);
+  }
+
+  // 2. Check local course registrations cache
+  const cleanLower = clean.toLowerCase();
+  const cleanDigits = clean.replace(/[^0-9]/g, '');
+  const localCourses = getLocalCourseRegistrations();
+  const localMatch = localCourses.find((item) => {
+    const reg = (item.registrationNumber || '').toLowerCase();
+    const email = (item.email || '').toLowerCase();
+    const phone = (item.phone || '').toLowerCase();
+    const phoneDigits = phone.replace(/[^0-9]/g, '');
+    const name = (item.fullName || '').toLowerCase();
+
+    return (
+      reg === cleanLower ||
+      email === cleanLower ||
+      (cleanDigits.length >= 7 && phoneDigits.includes(cleanDigits)) ||
+      reg.includes(cleanLower) ||
+      name.includes(cleanLower)
+    );
+  });
+
+  if (localMatch) {
+    const currentStatus = String(localMatch.status || '');
+    const isAdmitted = currentStatus === 'admitted' || currentStatus === 'enrolled' || currentStatus === 'accepted' || currentStatus === 'approved';
+    return {
+      found: true,
+      registrationNumber: localMatch.registrationNumber,
+      fullName: localMatch.fullName,
+      courseTitle: localMatch.courseTitle,
+      duration: localMatch.duration,
+      classFormat: localMatch.classFormat,
+      schedule: localMatch.schedule,
+      registrationDate: localMatch.registrationDate || localMatch.createdAt,
+      status: localMatch.status,
+      isAdmitted,
+      admissionStatus: isAdmitted ? 'ADMITTED' : 'NOT ADMITTED',
+      statusLabel: isAdmitted ? 'Admitted' : 'Not Admitted (Under Review)',
+      adminNotes: localMatch.adminNotes || (isAdmitted ? 'Congratulations! Your application has been approved. Join the student WhatsApp group.' : 'Your registration has been received and is currently under coordinator review.'),
+    };
+  }
+
+  // 3. Fallback: Not found
+  return {
+    found: false,
+    isAdmitted: false,
+    admissionStatus: 'NOT ADMITTED',
+    statusLabel: 'Not Admitted / Not Found',
+    message: `No active admission record found matching "${clean}". If you registered recently, please confirm your registration number (e.g. OCT-CRASH-2026-XXXX) or reach out directly on WhatsApp at 09129216768.`,
+  };
+}
+

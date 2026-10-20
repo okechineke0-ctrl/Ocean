@@ -437,3 +437,77 @@ export async function deleteCourseRegistrationRecord(id: number) {
   }
 }
 
+/**
+ * Searches for a course registration by registration number, email, or telephone
+ */
+export async function findCourseRegistrationByQuery(searchTerm: string) {
+  try {
+    await ensureCourseRegistrationsTable();
+    const clean = (searchTerm || '').trim().toLowerCase();
+    if (!clean) return null;
+
+    const all = await getCourseRegistrations(200);
+    const cleanDigits = clean.replace(/[^0-9]/g, '');
+
+    const match = all.find((item) => {
+      const reg = (item.registrationNumber || '').toLowerCase();
+      const email = (item.email || '').toLowerCase();
+      const phone = (item.phone || '').toLowerCase();
+      const phoneDigits = phone.replace(/[^0-9]/g, '');
+      const name = (item.fullName || '').toLowerCase();
+      const idStr = String(item.id);
+
+      return (
+        reg === clean ||
+        email === clean ||
+        (cleanDigits.length >= 7 && phoneDigits.includes(cleanDigits)) ||
+        idStr === clean ||
+        reg.includes(clean) ||
+        name.includes(clean)
+      );
+    });
+
+    return match || null;
+  } catch (error) {
+    console.error('Error finding course registration by query in PostgreSQL:', error);
+    return null;
+  }
+}
+
+/**
+ * Searches for an internship registration by registration number, email, or telephone
+ */
+export async function findInternshipByQuery(searchTerm: string) {
+  try {
+    await ensureInternshipsTable();
+    const clean = (searchTerm || '').trim().toLowerCase();
+    if (!clean) return null;
+
+    const all = await getInternships(150);
+    const cleanDigits = clean.replace(/[^0-9]/g, '');
+
+    const match = all.find((item) => {
+      const reg = (item.registrationNumber || '').toLowerCase();
+      const email = (item.email || '').toLowerCase();
+      const phone = (item.phone || '').toLowerCase();
+      const phoneDigits = phone.replace(/[^0-9]/g, '');
+      const name = (item.fullName || '').toLowerCase();
+      const idStr = String(item.id);
+
+      return (
+        reg === clean ||
+        email === clean ||
+        (cleanDigits.length >= 7 && phoneDigits.includes(cleanDigits)) ||
+        idStr === clean ||
+        reg.includes(clean) ||
+        name.includes(clean)
+      );
+    });
+
+    return match || null;
+  } catch (error) {
+    console.error('Error finding internship by query in PostgreSQL:', error);
+    return null;
+  }
+}
+

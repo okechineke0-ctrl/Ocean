@@ -26,8 +26,9 @@ interface HeaderProps {
   onOpenQuote: (serviceId?: string) => void;
   onOpenIssueReport: () => void;
   onOpenSearch: () => void;
-  onOpenCourseRegistration?: () => void;
+  onOpenCourseRegistration?: (courseId?: string) => void;
   onOpenTracker?: () => void;
+  onOpenAdmissionStatus?: (query?: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -38,6 +39,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenSearch,
   onOpenCourseRegistration,
   onOpenTracker,
+  onOpenAdmissionStatus,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -99,13 +101,22 @@ export const Header: React.FC<HeaderProps> = ({
               </span>
               Software Engineering & Professional Tech Academy
             </span>
+            <button
+              id="topbar-crash-course-btn"
+              onClick={() => onOpenCourseRegistration ? onOpenCourseRegistration('frontend_crash_course') : onOpenQuote('Crash Course')}
+              className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500/20 to-sky-500/20 text-amber-300 border border-amber-400/40 hover:bg-amber-500/30 transition-colors font-medium text-[11px] cursor-pointer"
+            >
+              <span className="text-amber-400 font-bold">🔥</span>
+              <span>1-Month Frontend Crash Course</span>
+            </button>
             <span className="text-slate-600 hidden md:inline">•</span>
             <button
-              onClick={() => onOpenCourseRegistration ? onOpenCourseRegistration() : onOpenQuote('Course Registration')}
-              className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30 hover:bg-sky-500/30 transition-colors font-medium text-[11px] cursor-pointer"
+              id="topbar-check-admission-btn"
+              onClick={() => onOpenAdmissionStatus ? onOpenAdmissionStatus() : (onOpenTracker ? onOpenTracker() : null)}
+              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 hover:bg-emerald-500/30 transition-colors font-medium text-[11px] cursor-pointer"
             >
-              <GraduationCap className="w-3.5 h-3.5 text-sky-300" />
-              <span>Register for Online Course</span>
+              <GraduationCap className="w-3.5 h-3.5 text-emerald-300" />
+              <span>Check Admission Status</span>
             </button>
             {onOpenTracker && (
               <>
@@ -115,7 +126,7 @@ export const Header: React.FC<HeaderProps> = ({
                   className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 hover:text-white hover:bg-slate-700 transition-colors font-medium text-[11px] cursor-pointer"
                 >
                   <FileSearch className="w-3 h-3 text-sky-400" />
-                  <span>Track Ticket / Status</span>
+                  <span>Track Ticket</span>
                 </button>
               </>
             )}
@@ -201,26 +212,25 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
 
             {/* Track Status CTA */}
-            {onOpenTracker && (
-              <button
-                id="header-track-btn"
-                onClick={onOpenTracker}
-                className="px-2.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
-                title="Track ticket or registration status"
-              >
-                <FileSearch className="w-3.5 h-3.5 text-sky-600" />
-                <span className="hidden xl:inline">Track Status</span>
-              </button>
-            )}
+            {/* Check Admission Status CTA */}
+            <button
+              id="header-admission-status-btn"
+              onClick={() => onOpenAdmissionStatus ? onOpenAdmissionStatus() : (onOpenTracker ? onOpenTracker() : null)}
+              className="px-2.5 py-2 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              title="Check course admission status"
+            >
+              <FileSearch className="w-3.5 h-3.5 text-emerald-600" />
+              <span className="hidden xl:inline">Check Admission Status</span>
+            </button>
 
-            {/* Register for Course CTA */}
+            {/* Register for Crash Course CTA */}
             <button
               id="header-register-course-btn"
-              onClick={() => onOpenCourseRegistration ? onOpenCourseRegistration() : onOpenQuote('Course Registration')}
-              className="px-3 py-2 rounded-lg bg-sky-50 hover:bg-sky-100 border border-sky-200 text-sky-800 font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+              onClick={() => onOpenCourseRegistration ? onOpenCourseRegistration('frontend_crash_course') : onOpenQuote('Course Registration')}
+              className="px-3 py-2 rounded-lg bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-white font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
             >
-              <GraduationCap className="w-3.5 h-3.5 text-sky-600" />
-              <span>Register for Course</span>
+              <GraduationCap className="w-3.5 h-3.5 text-sky-200" />
+              <span>Register for Crash Course</span>
             </button>
 
             {/* Emergency Fix CTA */}
@@ -295,16 +305,31 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 onClick={() => {
                   if (onOpenCourseRegistration) {
-                    onOpenCourseRegistration();
+                    onOpenCourseRegistration('frontend_crash_course');
                   } else {
                     onNavigate('contact');
                   }
                   setMobileMenuOpen(false);
                 }}
-                className="w-full py-2.5 px-4 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs tracking-wide text-center flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-white font-bold text-xs tracking-wide text-center flex items-center justify-center gap-2 cursor-pointer shadow-xs"
               >
-                <GraduationCap className="w-4 h-4" />
-                <span>Register for Tech Training Course</span>
+                <span>🔥</span>
+                <span>Register for 1-Month Frontend Crash Course</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  if (onOpenAdmissionStatus) {
+                    onOpenAdmissionStatus();
+                  } else if (onOpenTracker) {
+                    onOpenTracker();
+                  }
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full py-2 px-4 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-bold text-center flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+              >
+                <FileSearch className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Check Admission Status</span>
               </button>
 
               <button

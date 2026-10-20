@@ -17,6 +17,7 @@ import { SearchModal } from './components/SearchModal';
 import { AiAssistantWidget } from './components/AiAssistantWidget';
 import { TopAnnouncementTicker } from './components/TopAnnouncementTicker';
 import { TicketStatusTrackerModal } from './components/TicketStatusTrackerModal';
+import { AdmissionStatusModal } from './components/AdmissionStatusModal';
 import { BackToTop } from './components/BackToTop';
 
 export default function App() {
@@ -30,8 +31,10 @@ export default function App() {
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [trackerModalOpen, setTrackerModalOpen] = useState(false);
   const [trackerDefaultQuery, setTrackerDefaultQuery] = useState('');
+  const [admissionStatusModalOpen, setAdmissionStatusModalOpen] = useState(false);
+  const [admissionDefaultQuery, setAdmissionDefaultQuery] = useState('');
 
-  // Listen for open-admin-portal event (triggered solely by triple-clicking the Ocean Tech logo)
+  // Listen for global modal open events
   useEffect(() => {
     const handleOpenAdmin = () => {
       setCurrentView('admin-inbox');
@@ -39,11 +42,17 @@ export default function App() {
     const handleOpenTrackerEvent = (e: any) => {
       handleOpenTracker(e.detail?.query);
     };
+    const handleOpenAdmissionStatusEvent = (e: any) => {
+      handleOpenAdmissionStatus(e.detail?.query);
+    };
+
     window.addEventListener('open-admin-portal', handleOpenAdmin);
     window.addEventListener('open-ticket-tracker', handleOpenTrackerEvent);
+    window.addEventListener('open-admission-status', handleOpenAdmissionStatusEvent);
     return () => {
       window.removeEventListener('open-admin-portal', handleOpenAdmin);
       window.removeEventListener('open-ticket-tracker', handleOpenTrackerEvent);
+      window.removeEventListener('open-admission-status', handleOpenAdmissionStatusEvent);
     };
   }, []);
 
@@ -76,6 +85,11 @@ export default function App() {
     setTrackerModalOpen(true);
   };
 
+  const handleOpenAdmissionStatus = (query?: string) => {
+    setAdmissionDefaultQuery(query || '');
+    setAdmissionStatusModalOpen(true);
+  };
+
   const isAdminView = currentView === 'admin-inbox';
 
   return (
@@ -93,6 +107,7 @@ export default function App() {
           onOpenSearch={() => setSearchModalOpen(true)}
           onOpenCourseRegistration={handleOpenCourseRegistration}
           onOpenTracker={() => handleOpenTracker()}
+          onOpenAdmissionStatus={handleOpenAdmissionStatus}
         />
       )}
 
@@ -105,6 +120,7 @@ export default function App() {
             onOpenIssueReport={handleOpenIssueReport}
             onOpenCourseRegistration={handleOpenCourseRegistration}
             onOpenTracker={() => handleOpenTracker()}
+            onOpenAdmissionStatus={handleOpenAdmissionStatus}
           />
         )}
 
@@ -205,6 +221,13 @@ export default function App() {
         defaultQuery={trackerDefaultQuery}
       />
 
+      <AdmissionStatusModal
+        isOpen={admissionStatusModalOpen}
+        onClose={() => setAdmissionStatusModalOpen(false)}
+        defaultQuery={admissionDefaultQuery}
+        onOpenRegister={() => handleOpenCourseRegistration('frontend_crash_course')}
+      />
+
       <SearchModal
         isOpen={searchModalOpen}
         onClose={() => setSearchModalOpen(false)}
@@ -223,6 +246,10 @@ export default function App() {
         onOpenTracker={(q) => {
           setSearchModalOpen(false);
           handleOpenTracker(q);
+        }}
+        onOpenAdmissionStatus={(q) => {
+          setSearchModalOpen(false);
+          handleOpenAdmissionStatus(q);
         }}
       />
 

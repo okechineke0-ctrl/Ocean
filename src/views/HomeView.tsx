@@ -33,8 +33,9 @@ interface HomeViewProps {
   onNavigate: (view: ViewMode) => void;
   onOpenQuote: (serviceId?: string) => void;
   onOpenIssueReport: () => void;
-  onOpenCourseRegistration?: () => void;
+  onOpenCourseRegistration?: (courseId?: string) => void;
   onOpenTracker?: () => void;
+  onOpenAdmissionStatus?: (query?: string) => void;
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({
@@ -43,6 +44,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   onOpenIssueReport,
   onOpenCourseRegistration,
   onOpenTracker,
+  onOpenAdmissionStatus,
 }) => {
   const [activeTab, setActiveTab] = useState<'all' | 'ai' | 'web' | 'app' | 'software' | 'maintenance'>('all');
 
@@ -86,6 +88,65 @@ export const HomeView: React.FC<HomeViewProps> = ({
         onOpenTracker={onOpenTracker}
         onOpenQuote={() => onOpenQuote()}
       />
+
+      {/* 1.5 UPCOMING 1-MONTH FRONTEND WEBSITE CRASH COURSE BANNER */}
+      <section className="bg-gradient-to-r from-slate-950 via-[#07192f] to-slate-900 text-white border-y border-sky-900/60 py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none"></div>
+        <div className="max-w-7xl mx-auto relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6">
+          <div className="max-w-2xl space-y-2.5">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-slate-950 text-xs font-black uppercase tracking-wider font-display shadow-xs">
+                🔥 Upcoming Cohort • 1-Month Intensive
+              </span>
+              <span className="text-xs text-sky-300 font-semibold bg-sky-950/80 px-2.5 py-0.5 rounded-full border border-sky-500/30">
+                Tuition Price Drop • 100% Online
+              </span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-white font-display uppercase tracking-tight">
+              Frontend Website Engineering Crash Course
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Our recurring 1-month fast-track engineering bootcamp. Master practical, modern website development from scratch touching <strong>HTML5</strong>, <strong>CSS3/Tailwind</strong>, <strong>Modern JavaScript (ES6+)</strong>, <strong>React.js</strong>, and <strong>Git & GitHub Version Control</strong>. Build real production websites, receive 1-on-1 code reviews from senior engineers, and join live sessions coordinated in our official WhatsApp community.
+            </p>
+            <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px] text-slate-300">
+              <span className="px-2.5 py-1 rounded-lg bg-white/10 text-sky-300 font-semibold border border-white/10 flex items-center gap-1">
+                <span>🌐</span> HTML5 Semantic
+              </span>
+              <span className="px-2.5 py-1 rounded-lg bg-white/10 text-sky-300 font-semibold border border-white/10 flex items-center gap-1">
+                <span>🎨</span> CSS3 & Tailwind
+              </span>
+              <span className="px-2.5 py-1 rounded-lg bg-white/10 text-sky-300 font-semibold border border-white/10 flex items-center gap-1">
+                <span>⚡</span> Modern JS (ES6+)
+              </span>
+              <span className="px-2.5 py-1 rounded-lg bg-white/10 text-sky-300 font-semibold border border-white/10 flex items-center gap-1">
+                <span>⚛️</span> React.js & Hooks
+              </span>
+              <span className="px-2.5 py-1 rounded-lg bg-white/10 text-sky-300 font-semibold border border-white/10 flex items-center gap-1">
+                <span>🐙</span> Git & GitHub
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row lg:flex-col gap-3 w-full lg:w-auto shrink-0">
+            <button
+              id="crash-course-register-cta-btn"
+              onClick={() => onOpenCourseRegistration ? onOpenCourseRegistration('frontend_crash_course') : onOpenQuote('Crash Course')}
+              className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-sky-500 via-sky-600 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-sky-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+            >
+              <GraduationCap className="w-4 h-4 text-white" />
+              <span>Register for Crash Course</span>
+            </button>
+            <button
+              id="crash-course-check-admission-btn"
+              onClick={() => onOpenAdmissionStatus ? onOpenAdmissionStatus() : (onOpenTracker ? onOpenTracker() : null)}
+              className="px-6 py-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-emerald-300 border border-emerald-500/40 font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+            >
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <span>Check Admission Status</span>
+            </button>
+          </div>
+        </div>
+      </section>
 
       {/* 2. AI Assistant Feature Strip */}
       <section className="bg-gradient-to-r from-sky-900 via-slate-900 to-blue-950 text-white py-6 px-4">

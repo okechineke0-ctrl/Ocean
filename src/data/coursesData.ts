@@ -2,6 +2,23 @@ import { CourseOption } from '../types';
 
 export const COURSES_OFFERED: CourseOption[] = [
   {
+    id: 'frontend_crash_course',
+    name: '1-Month Frontend Website Engineering Crash Course',
+    category: 'Intensive Frontend Bootcamp',
+    duration: '1 Month Intensive (Upcoming Special Cohort)',
+    description: 'Our premier, fast-track 1-month intensive frontend web engineering crash course. Specifically designed to take you from foundational code to production-ready responsive websites — exclusively touching HTML5 semantic markup, CSS3 styling & Tailwind, modern JavaScript (ES6+), React.js component architecture & hooks, and Git & GitHub version control collaboration.',
+    technologies: [
+      'HTML5 Semantic Architecture & Accessibility',
+      'CSS3 Modern Layouts (Flexbox, CSS Grid & Tailwind CSS)',
+      'Modern JavaScript (ES6+, DOM Manipulation, Events & Async/Fetch)',
+      'React.js Component Architecture, Hooks (useState, useEffect) & State',
+      'Git & GitHub Version Control, Branching, Pull Requests & Deployments'
+    ],
+    onlineAvailable: true,
+    offlineAvailable: false,
+    highlight: '🔥 Upcoming 1-Month Special Crash Course • Massive Tuition Drop',
+  },
+  {
     id: 'ai_learning_mentorship',
     name: 'AI Learning, Generative AI & 1-on-1 Engineering Mentorship',
     category: 'Artificial Intelligence & Career Mentorship',

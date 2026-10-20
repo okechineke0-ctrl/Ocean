@@ -22,6 +22,7 @@ interface SearchModalProps {
   onSelectService: (serviceId: string) => void;
   onOpenCourseRegistration?: (courseId?: string) => void;
   onOpenTracker?: (query?: string) => void;
+  onOpenAdmissionStatus?: (query?: string) => void;
 }
 
 export const SearchModal: React.FC<SearchModalProps> = ({
@@ -30,7 +31,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   onNavigate,
   onSelectService,
   onOpenCourseRegistration,
-  onOpenTracker
+  onOpenTracker,
+  onOpenAdmissionStatus,
 }) => {
   const [query, setQuery] = useState('');
 
@@ -166,18 +168,38 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 Suggested Searches:
               </p>
               <div className="flex flex-wrap gap-2">
-                {['Track Ticket Status', 'AI Learning & Mentorship', 'Website Development', 'Mobile App', 'Maintenance Retainers', 'Emergency Bug Fix', 'Paystack Integration'].map((tag) => (
+                {[
+                  '1-Month Crash Course', 
+                  'Check Admission Status', 
+                  'Track Ticket Status', 
+                  'AI Learning & Mentorship', 
+                  'Website Development', 
+                  'Mobile App', 
+                  'Emergency Bug Fix'
+                ].map((tag) => (
                   <button
                     key={tag}
                     onClick={() => {
-                      if (tag === 'Track Ticket Status' && onOpenTracker) {
+                      if (tag === 'Check Admission Status' && onOpenAdmissionStatus) {
+                        onClose();
+                        onOpenAdmissionStatus();
+                      } else if (tag === '1-Month Crash Course' && onOpenCourseRegistration) {
+                        onClose();
+                        onOpenCourseRegistration('frontend_crash_course');
+                      } else if (tag === 'Track Ticket Status' && onOpenTracker) {
                         onClose();
                         onOpenTracker();
                       } else {
                         setQuery(tag);
                       }
                     }}
-                    className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-sky-50 hover:text-sky-700 text-slate-700 font-medium transition-colors cursor-pointer"
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                      tag === '1-Month Crash Course'
+                        ? 'bg-amber-100/80 text-amber-900 border border-amber-300 font-bold'
+                        : tag === 'Check Admission Status'
+                        ? 'bg-emerald-100/80 text-emerald-900 border border-emerald-300 font-bold'
+                        : 'bg-slate-100 hover:bg-sky-50 hover:text-sky-700 text-slate-700'
+                    }`}
                   >
                     {tag}
                   </button>

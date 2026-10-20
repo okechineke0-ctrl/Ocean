@@ -21,6 +21,8 @@ import {
   getCourseRegistrations,
   updateCourseRegistrationRecord,
   deleteCourseRegistrationRecord,
+  findCourseRegistrationByQuery,
+  findInternshipByQuery,
 } from './src/db/queries.ts';
 
 const app = express();
@@ -844,6 +846,179 @@ app.delete('/api/course-registrations/:id', requireAdminAuth, async (req, res) =
   } catch (error: any) {
     console.error(`API DELETE /api/course-registrations/${req.params.id} failed:`, error);
     res.status(500).json({ error: error.message || 'Failed to delete course registration' });
+  }
+});
+
+// POST /api/course-registrations/:id/admit (Accept student registration and generate status update - Requires Admin)
+app.post('/api/course-registrations/:id/admit', requireAdminAuth, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid course registration ID' });
+    }
+    const { adminNotes } = req.body;
+    const note = adminNotes || `Officially ADMITTED on ${new Date().toLocaleDateString('en-GB')}. Welcome to the upcoming cohort! Coordinated via WhatsApp group.`;
+    const updated = await updateCourseRegistrationRecord(id, 'admitted', note);
+    res.json({ success: true, message: 'Student officially admitted.', registration: updated });
+  } catch (error: any) {
+    console.error(`API POST /api/course-registrations/${req.params.id}/admit failed:`, error);
+    res.status(500).json({ error: error.message || 'Failed to admit student' });
+  }
+});
+
+// POST /api/crash-course/register (Dedicated 1-Month Frontend Website Engineering Crash Course)
+app.post('/api/crash-course/register', publicSubmissionLimiter, async (req, res) => {
+  try {
+    const {
+      fullName,
+      email,
+      phone,
+      experienceLevel,
+      githubUsername,
+      preferredSchedule,
+      notes,
+    } = req.body;
+
+    if (!fullName || !email || !phone) {
+      return res.status(400).json({
+        error: 'Missing required fields: fullName, email, and phone are required for crash course registration.',
+      });
+    }
+
+    const safeFullName = sanitizeText(fullName, 150);
+    const safeEmail = sanitizeText(email, 200);
+    const safePhone = sanitizeText(phone, 50);
+
+    if (!isValidEmail(safeEmail)) {
+      return res.status(400).json({ error: 'Please provide a valid email address.' });
+    }
+
+    if (!isValidPhone(safePhone)) {
+      return res.status(400).json({ error: 'Please provide a valid phone or WhatsApp number.' });
+    }
+
+    const regNumber = `OCT-CRASH-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const formattedDate = new Date().toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+
+    const studentNotes = [
+      notes ? sanitizeText(notes, 2000) : '',
+      githubUsername ? `GitHub: ${sanitizeText(githubUsername, 100)}` : '',
+    ].filter(Boolean).join(' | ');
+
+    const newRecord = await createCourseRegistration({
+      registrationNumber: regNumber,
+      fullName: safeFullName,
+      email: safeEmail,
+      phone: safePhone,
+      course: 'frontend_crash_course',
+      courseTitle: '1-Month Frontend Website Engineering Crash Course (HTML, CSS, JS, React & GitHub)',
+      classFormat: 'online',
+      schedule: preferredSchedule ? sanitizeText(preferredSchedule, 100) : 'Live Online & Coordinated in WhatsApp Group',
+      duration: '1 Month Intensive',
+      experienceLevel: experienceLevel ? sanitizeText(experienceLevel, 50) : 'Beginner',
+      preferredStartDate: 'Upcoming Special Cohort (Immediate Notification via WhatsApp)',
+      registrationDate: formattedDate,
+      cityState: 'Crash Course Candidate',
+      notes: studentNotes,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: '1-Month Frontend Website Crash Course registration successfully recorded in database.',
+      registrationNumber: regNumber,
+      registration: newRecord,
+      course: {
+        id: 'frontend_crash_course',
+        title: '1-Month Frontend Website Engineering Crash Course',
+        curriculum: ['HTML5 Semantic Markup', 'CSS3 & Tailwind Layouts', 'Modern JavaScript (ES6+)', 'React.js Component Architecture', 'Git & GitHub Version Control'],
+        duration: '1 Month Intensive',
+      }
+    });
+  } catch (error: any) {
+    console.error('API /api/crash-course/register failed:', error);
+    res.status(500).json({
+      error: error.message || 'Failed to submit crash course registration.',
+    });
+  }
+});
+
+// GET /api/admission-status (Public lookup for admission verification by registration number, phone, or email)
+app.get('/api/admission-status', async (req, res) => {
+  try {
+    const rawQuery = (req.query.query || req.query.regNumber || req.query.q || '') as string;
+    const cleanQuery = sanitizeText(rawQuery, 200).trim();
+
+    if (!cleanQuery) {
+      return res.status(400).json({
+        found: false,
+        error: 'Please provide a registration number, email, or telephone number to check admission status.',
+      });
+    }
+
+    // 1. Check Course Registrations table first
+    const courseMatch = await findCourseRegistrationByQuery(cleanQuery);
+    if (courseMatch) {
+      const isAdmitted = courseMatch.status === 'admitted' || courseMatch.status === 'accepted' || courseMatch.status === 'approved';
+      return res.json({
+        found: true,
+        type: 'course',
+        registrationNumber: courseMatch.registrationNumber,
+        fullName: courseMatch.fullName,
+        course: courseMatch.course,
+        courseTitle: courseMatch.courseTitle,
+        duration: courseMatch.duration,
+        classFormat: courseMatch.classFormat,
+        schedule: courseMatch.schedule,
+        registrationDate: courseMatch.registrationDate || courseMatch.createdAt,
+        status: courseMatch.status,
+        isAdmitted,
+        admissionStatus: isAdmitted ? 'ADMITTED' : 'NOT ADMITTED',
+        statusLabel: isAdmitted ? 'Admitted' : 'Not Admitted (Under Review)',
+        adminNotes: courseMatch.adminNotes || (isAdmitted ? 'Your application is accepted! Join the student WhatsApp group for live cohort timetable.' : 'Your registration has been received and is currently under coordinator review.'),
+      });
+    }
+
+    // 2. Check Internship registrations table
+    const internshipMatch = await findInternshipByQuery(cleanQuery);
+    if (internshipMatch) {
+      const isAdmitted = internshipMatch.status === 'admitted' || internshipMatch.status === 'accepted';
+      return res.json({
+        found: true,
+        type: 'internship',
+        registrationNumber: internshipMatch.registrationNumber,
+        fullName: internshipMatch.fullName,
+        course: internshipMatch.techTrack,
+        courseTitle: `SIWES / IT Internship • ${internshipMatch.techTrack}`,
+        duration: internshipMatch.programType,
+        classFormat: 'In-Hub / Hybrid Placement',
+        schedule: internshipMatch.preferredStartDate || 'Immediate',
+        registrationDate: internshipMatch.createdAt,
+        status: internshipMatch.status,
+        isAdmitted,
+        admissionStatus: isAdmitted ? 'ADMITTED' : 'NOT ADMITTED',
+        statusLabel: isAdmitted ? 'Admitted' : 'Not Admitted (Under Review)',
+        adminNotes: internshipMatch.adminNotes || (isAdmitted ? 'Your IT/SIWES placement is confirmed. Please report to the technical hub.' : 'Your application is currently pending faculty coordinator verification.'),
+      });
+    }
+
+    // Not found
+    return res.status(404).json({
+      found: false,
+      isAdmitted: false,
+      admissionStatus: 'NOT ADMITTED',
+      statusLabel: 'Not Found / Not Admitted',
+      message: `No active admission record found matching "${cleanQuery}". Please verify your registration number or contact our admissions coordinator on WhatsApp at 09129216768.`,
+    });
+  } catch (error: any) {
+    console.error('API GET /api/admission-status failed:', error);
+    res.status(500).json({
+      found: false,
+      error: error.message || 'Failed to verify admission status.',
+    });
   }
 });
 
