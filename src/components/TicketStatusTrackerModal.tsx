@@ -46,96 +46,172 @@ export const TicketStatusTrackerModal: React.FC<TicketStatusTrackerModalProps> =
   const [result, setResult] = useState<LookupResult | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
 
+  // If defaultQuery changes when opened, update query state
+  React.useEffect(() => {
+    if (defaultQuery) {
+      setQuery(defaultQuery);
+      // Automatically trigger search for prefilled query
+      performSearch(defaultQuery);
+    }
+  }, [defaultQuery, isOpen]);
+
   if (!isOpen) return null;
 
-  const handleLookup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const clean = query.trim();
+  const performSearch = async (rawQuery: string) => {
+    const clean = rawQuery.trim();
     if (!clean) return;
 
     setIsSearching(true);
     setHasSearched(true);
 
     try {
-      // Check emergency ticket pattern or course registration pattern
-      const isCourseCode = clean.toUpperCase().includes('CRS') || clean.toUpperCase().includes('OCT-');
-      const isTicketCode = clean.toUpperCase().includes('FIX') || clean.toUpperCase().includes('OCEAN-');
+      const cleanLower = clean.toLowerCase();
 
-      // Attempt quick verification against server
+      // 1. Check local inquiries cache (Quotes, Emergency Bug Fixes, Contact messages)
       let foundRecord: any = null;
       try {
-        const res = await fetch(`/api/inquiries?limit=25`);
-        if (res.ok) {
-          const list = await res.json();
-          if (Array.isArray(list)) {
-            foundRecord = list.find((item: any) => 
-              (item.message && item.message.toLowerCase().includes(clean.toLowerCase())) ||
-              (item.fullName && item.fullName.toLowerCase().includes(clean.toLowerCase())) ||
-              (item.email && item.email.toLowerCase() === clean.toLowerCase()) ||
+        const localInquiriesRaw = localStorage.getItem('ocean_tech_inquiries_cache');
+        if (localInquiriesRaw) {
+          const inquiries = JSON.parse(localInquiriesRaw);
+          if (Array.isArray(inquiries)) {
+            foundRecord = inquiries.find((item: any) =>
+              (item.id && item.id.toLowerCase() === cleanLower) ||
+              (item.message && item.message.toLowerCase().includes(cleanLower)) ||
+              (item.fullName && item.fullName.toLowerCase().includes(cleanLower)) ||
+              (item.email && item.email.toLowerCase() === cleanLower) ||
               (item.phone && item.phone.includes(clean))
             );
           }
         }
-      } catch {
-        // Fallback for sandboxed preview environments
+      } catch (err) {
+        console.warn('Local inquiries parse error:', err);
+      }
+
+      // 2. Check local course registrations cache
+      let foundCourse: any = null;
+      if (!foundRecord) {
+        try {
+          const localCoursesRaw = localStorage.getItem('ocean_tech_course_registrations_cache');
+          if (localCoursesRaw) {
+            const courses = JSON.parse(localCoursesRaw);
+            if (Array.isArray(courses)) {
+              foundCourse = courses.find((item: any) =>
+                (item.registrationNumber && item.registrationNumber.toLowerCase() === cleanLower) ||
+                (item.id && item.id.toLowerCase() === cleanLower) ||
+                (item.fullName && item.fullName.toLowerCase().includes(cleanLower)) ||
+                (item.email && item.email.toLowerCase() === cleanLower) ||
+                (item.phone && item.phone.includes(clean))
+              );
+            }
+          }
+        } catch (err) {
+          console.warn('Local courses parse error:', err);
+        }
+      }
+
+      // 3. Fallback to server inquiries API if still not found
+      if (!foundRecord && !foundCourse) {
+        try {
+          const res = await fetch(`/api/inquiries?limit=25`);
+          if (res.ok) {
+            const list = await res.json();
+            if (Array.isArray(list)) {
+              foundRecord = list.find((item: any) => 
+                (item.message && item.message.toLowerCase().includes(cleanLower)) ||
+                (item.fullName && item.fullName.toLowerCase().includes(cleanLower)) ||
+                (item.email && item.email.toLowerCase() === cleanLower) ||
+                (item.phone && item.phone.includes(clean))
+              );
+            }
+          }
+        } catch {
+          // Fallback for sandboxed preview environments
+        }
       }
 
       if (foundRecord) {
+        const isEmergency = foundRecord.type === 'emergency_issue' || (foundRecord.message && foundRecord.message.includes('OCEAN-FIX'));
         setResult({
           found: true,
-          type: foundRecord.type === 'course_registration' ? 'course' : 'ticket',
-          referenceCode: clean.toUpperCase(),
+          type: isEmergency ? 'ticket' : 'inquiry',
+          referenceCode: isEmergency ? (foundRecord.message?.match(/OCEAN-FIX-\d+/)?.[0] || foundRecord.id) : foundRecord.id,
           clientName: foundRecord.fullName || 'Valued Client',
-          title: foundRecord.serviceType || 'Software Engineering / Triage Request',
-          status: foundRecord.status === 'completed' ? 'Completed' : 'In Progress',
+          title: foundRecord.serviceType || (isEmergency ? 'Emergency Bug / Software Repair Dispatch' : 'Software Engineering Quote Request'),
+          status: foundRecord.status === 'completed' ? 'Completed' : (isEmergency ? 'In Triage' : 'In Progress'),
           date: new Date(foundRecord.createdAt || Date.now()).toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',
             year: 'numeric'
           }),
-          notes: foundRecord.message || 'Ticket logged in Agbani system.',
-          assignedEngineer: 'Ocean Technologies Lead Systems Engineer'
+          notes: foundRecord.message || 'Ticket logged in Ocean Technologies engineering system.',
+          assignedEngineer: isEmergency ? 'On-Duty Emergency Systems Specialist' : 'Lead Solutions Architect'
         });
-      } else if (isCourseCode) {
+      } else if (foundCourse) {
         setResult({
           found: true,
           type: 'course',
-          referenceCode: clean.toUpperCase(),
-          clientName: 'Registered Student',
-          title: 'AI Learning & Professional Tech Academy',
-          status: 'In Progress',
-          date: 'Active 2026 Cohort',
-          notes: 'Your course registration is recorded in our system. You are scheduled for onboarding in our online WhatsApp cohort.',
+          referenceCode: foundCourse.registrationNumber || foundCourse.id,
+          clientName: foundCourse.fullName || 'Registered Student',
+          title: `${foundCourse.courseName || 'AI Learning & Mentorship'} (${foundCourse.duration || 'Online Cohort'})`,
+          status: foundCourse.status === 'approved' ? 'Approved' : 'In Progress',
+          date: new Date(foundCourse.createdAt || Date.now()).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+          }),
+          notes: `Registration registered under format: ${foundCourse.classFormat || '100% Online'}. Mentorship & schedule coordinated via official student WhatsApp group.`,
           assignedEngineer: 'Admissions & Academic Mentorship Team'
         });
-      } else if (isTicketCode || clean.length >= 5) {
-        setResult({
-          found: true,
-          type: 'ticket',
-          referenceCode: clean.toUpperCase(),
-          clientName: 'Ocean Tech Client',
-          title: 'Emergency Bug / Software Repair Dispatch',
-          status: 'In Triage',
-          date: 'Active Incident Window',
-          notes: 'Our duty software engineer in Agbani has logged this reference. Active triage and root-cause inspection is underway.',
-          assignedEngineer: 'On-Duty Emergency Systems Specialist'
-        });
       } else {
-        setResult({
-          found: false,
-          type: 'ticket',
-          referenceCode: clean,
-          clientName: '',
-          title: '',
-          status: 'Received',
-          date: '',
-          notes: '',
-          assignedEngineer: ''
-        });
+        const isCourseCode = clean.toUpperCase().includes('CRS') || clean.toUpperCase().includes('OCT-');
+        const isTicketCode = clean.toUpperCase().includes('FIX') || clean.toUpperCase().includes('OCEAN-');
+
+        if (isCourseCode) {
+          setResult({
+            found: true,
+            type: 'course',
+            referenceCode: clean.toUpperCase(),
+            clientName: 'Registered Student',
+            title: 'AI Learning & Professional Tech Academy',
+            status: 'In Progress',
+            date: 'Active 2026 Cohort',
+            notes: 'Your course registration is recorded in our system. You are scheduled for onboarding in our online WhatsApp cohort.',
+            assignedEngineer: 'Admissions & Academic Mentorship Team'
+          });
+        } else if (isTicketCode || clean.length >= 5) {
+          setResult({
+            found: true,
+            type: 'ticket',
+            referenceCode: clean.toUpperCase(),
+            clientName: 'Ocean Tech Client',
+            title: 'Emergency Bug / Software Repair Dispatch',
+            status: 'In Triage',
+            date: 'Active Incident Window',
+            notes: 'Our duty software engineer has logged this reference. Active triage and root-cause inspection is underway.',
+            assignedEngineer: 'On-Duty Emergency Systems Specialist'
+          });
+        } else {
+          setResult({
+            found: false,
+            type: 'ticket',
+            referenceCode: clean,
+            clientName: '',
+            title: '',
+            status: 'Received',
+            date: '',
+            notes: '',
+            assignedEngineer: ''
+          });
+        }
       }
     } finally {
       setIsSearching(false);
     }
+  };
+
+  const handleLookup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await performSearch(query);
   };
 
   const getStatusBadge = (status: LookupResult['status']) => {
@@ -242,9 +318,32 @@ export const TicketStatusTrackerModal: React.FC<TicketStatusTrackerModalProps> =
                 )}
               </button>
             </div>
-            <p className="text-[11px] text-slate-500">
-              Tip: You can use the reference ID given on submission or your registered telephone number.
-            </p>
+            <div className="flex flex-wrap items-center justify-between gap-1.5 pt-1 text-[11px] text-slate-500">
+              <span>Tip: Use your reference ID, email, or telephone number.</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-semibold text-slate-400">Quick Try:</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery('OCEAN-FIX-892401');
+                    performSearch('OCEAN-FIX-892401');
+                  }}
+                  className="px-2 py-0.5 rounded bg-slate-200/80 hover:bg-slate-300 text-slate-700 font-mono text-[10px] transition-colors cursor-pointer"
+                >
+                  OCEAN-FIX-892401
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery('OCT-CRS-2026-AI');
+                    performSearch('OCT-CRS-2026-AI');
+                  }}
+                  className="px-2 py-0.5 rounded bg-slate-200/80 hover:bg-slate-300 text-slate-700 font-mono text-[10px] transition-colors cursor-pointer"
+                >
+                  OCT-CRS-2026-AI
+                </button>
+              </div>
+            </div>
           </form>
 
           {/* Results Display */}

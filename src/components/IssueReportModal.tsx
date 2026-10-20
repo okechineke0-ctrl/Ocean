@@ -8,7 +8,8 @@ import {
   MessageCircle, 
   ShieldAlert, 
   Send,
-  Zap
+  Zap,
+  FileSearch
 } from 'lucide-react';
 import { IssueTicketFormData } from '../types';
 import { saveInquiry } from '../lib/inquiriesService';
@@ -136,6 +137,18 @@ export const IssueReportModal: React.FC<IssueReportModalProps> = ({
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  window.dispatchEvent(new CustomEvent('open-ticket-tracker', { detail: { query: ticketId } }));
+                }}
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              >
+                <FileSearch className="w-4 h-4" />
+                <span>Track Ticket Live</span>
+              </button>
+              <button
+                type="button"
                 onClick={handleSendWhatsAppEmergency}
                 className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
               >
@@ -143,6 +156,7 @@ export const IssueReportModal: React.FC<IssueReportModalProps> = ({
                 <span>Forward Ticket to WhatsApp</span>
               </button>
               <button
+                type="button"
                 onClick={onClose}
                 className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors cursor-pointer"
               >

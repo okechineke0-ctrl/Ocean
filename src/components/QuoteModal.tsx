@@ -8,7 +8,8 @@ import {
   MessageCircle, 
   Phone,
   ArrowRight,
-  ShieldCheck
+  ShieldCheck,
+  FileSearch
 } from 'lucide-react';
 import { QuoteRequestFormData } from '../types';
 import { saveInquiry } from '../lib/inquiriesService';
@@ -41,6 +42,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [submittedId, setSubmittedId] = useState('');
 
   useEffect(() => {
     if (isOpen) {
@@ -59,7 +61,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
     setSubmitting(true);
     
     try {
-      await saveInquiry({
+      const generatedId = await saveInquiry({
         type: 'quote',
         fullName: formData.fullName,
         email: formData.email,
@@ -71,6 +73,9 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
         message: `${formData.description || 'No description provided'}${formData.currentWebsiteOrAppUrl ? ` | URL: ${formData.currentWebsiteOrAppUrl}` : ''}`,
         preferredContact: formData.contactMethod
       });
+      if (generatedId) {
+        setSubmittedId(generatedId);
+      }
     } catch (err) {
       console.error('Error saving quote inquiry:', err);
     }
@@ -81,6 +86,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
   const handleReset = () => {
     setSubmitted(false);
+    setSubmittedId('');
     onClose();
   };
 
@@ -126,6 +132,11 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
             </div>
             
             <div className="space-y-2 max-w-md mx-auto">
+              {submittedId && (
+                <span className="inline-block px-3 py-1 bg-sky-100 text-sky-900 font-mono text-xs font-bold rounded-full">
+                  Reference: {submittedId}
+                </span>
+              )}
               <h4 className="text-2xl font-bold text-slate-900 font-display">
                 Quote Request Received!
               </h4>
@@ -145,7 +156,21 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+              {submittedId && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    window.dispatchEvent(new CustomEvent('open-ticket-tracker', { detail: { query: submittedId } }));
+                  }}
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                >
+                  <FileSearch className="w-4 h-4" />
+                  <span>Track Status Live</span>
+                </button>
+              )}
               <button
+                type="button"
                 onClick={sendDirectWhatsApp}
                 className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
               >
@@ -153,6 +178,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 <span>Send via WhatsApp to 09129216768</span>
               </button>
               <button
+                type="button"
                 onClick={handleReset}
                 className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors cursor-pointer"
               >

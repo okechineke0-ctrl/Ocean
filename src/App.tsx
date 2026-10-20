@@ -151,6 +151,8 @@ export default function App() {
           <ContactView
             onNavigate={handleNavigate}
             onOpenIssueReport={handleOpenIssueReport}
+            onOpenQuote={handleOpenQuote}
+            onOpenTracker={() => handleOpenTracker()}
           />
         )}
 
@@ -217,6 +219,10 @@ export default function App() {
         onOpenCourseRegistration={(courseId) => {
           setSearchModalOpen(false);
           handleOpenCourseRegistration(courseId);
+        }}
+        onOpenTracker={(q) => {
+          setSearchModalOpen(false);
+          handleOpenTracker(q);
         }}
       />
 

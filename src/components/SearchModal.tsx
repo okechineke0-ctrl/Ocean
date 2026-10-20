@@ -11,7 +11,8 @@ import {
   Smartphone, 
   HelpCircle, 
   FolderGit2,
-  GraduationCap
+  GraduationCap,
+  FileSearch
 } from 'lucide-react';
 
 interface SearchModalProps {
@@ -20,6 +21,7 @@ interface SearchModalProps {
   onNavigate: (view: ViewMode) => void;
   onSelectService: (serviceId: string) => void;
   onOpenCourseRegistration?: (courseId?: string) => void;
+  onOpenTracker?: (query?: string) => void;
 }
 
 export const SearchModal: React.FC<SearchModalProps> = ({
@@ -27,7 +29,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   onClose,
   onNavigate,
   onSelectService,
-  onOpenCourseRegistration
+  onOpenCourseRegistration,
+  onOpenTracker
 }) => {
   const [query, setQuery] = useState('');
 
@@ -107,8 +110,18 @@ export const SearchModal: React.FC<SearchModalProps> = ({
       icon: <HelpCircle className="w-4 h-4 text-amber-600" />
     }));
 
-    return [...courseMatches, ...serviceMatches, ...planMatches, ...caseMatches, ...faqMatches];
-  }, [query]);
+    const isTrackerQuery = q.includes('ticket') || q.includes('track') || q.includes('status') || q.includes('ocean-') || q.includes('oct-') || q.includes('fix');
+    const trackerMatches = (isTrackerQuery && onOpenTracker) ? [{
+      type: 'tracker' as const,
+      id: 'ticket-tracker',
+      title: `Track Ticket or Admission Status: "${query.trim()}"`,
+      subtitle: 'Look up real-time status of emergency tickets, quotes, or online course registrations',
+      view: 'home' as ViewMode,
+      icon: <FileSearch className="w-4 h-4 text-sky-600" />
+    }] : [];
+
+    return [...trackerMatches, ...courseMatches, ...serviceMatches, ...planMatches, ...caseMatches, ...faqMatches];
+  }, [query, onOpenTracker]);
 
   if (!isOpen) return null;
 
@@ -153,10 +166,17 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 Suggested Searches:
               </p>
               <div className="flex flex-wrap gap-2">
-                {['AI Learning & Mentorship', 'Website Development', 'Mobile App', 'Maintenance Retainers', 'Emergency Bug Fix', 'Paystack Integration'].map((tag) => (
+                {['Track Ticket Status', 'AI Learning & Mentorship', 'Website Development', 'Mobile App', 'Maintenance Retainers', 'Emergency Bug Fix', 'Paystack Integration'].map((tag) => (
                   <button
                     key={tag}
-                    onClick={() => setQuery(tag)}
+                    onClick={() => {
+                      if (tag === 'Track Ticket Status' && onOpenTracker) {
+                        onClose();
+                        onOpenTracker();
+                      } else {
+                        setQuery(tag);
+                      }
+                    }}
                     className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-sky-50 hover:text-sky-700 text-slate-700 font-medium transition-colors cursor-pointer"
                   >
                     {tag}
@@ -175,7 +195,11 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 <button
                   key={`${item.type}-${item.id}`}
                   onClick={() => {
-                    if (item.type === 'course') {
+                    if (item.type === 'tracker') {
+                      if (onOpenTracker) {
+                        onOpenTracker(query);
+                      }
+                    } else if (item.type === 'course') {
                       if (onOpenCourseRegistration) {
                         onOpenCourseRegistration(item.id);
                       } else {

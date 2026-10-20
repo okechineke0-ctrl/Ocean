@@ -16,17 +16,22 @@ import {
   HelpCircle,
   ExternalLink,
   Building2,
-  Palette
+  Palette,
+  FileSearch
 } from 'lucide-react';
 
 interface ContactViewProps {
   onNavigate: (view: ViewMode) => void;
   onOpenIssueReport: () => void;
+  onOpenQuote?: (serviceId?: string) => void;
+  onOpenTracker?: () => void;
 }
 
 export const ContactView: React.FC<ContactViewProps> = ({
   onNavigate,
   onOpenIssueReport,
+  onOpenQuote,
+  onOpenTracker,
 }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -289,15 +294,27 @@ export const ContactView: React.FC<ContactViewProps> = ({
                 <p className="text-xs text-slate-600 max-w-md mx-auto">
                   Thank you, <span className="font-semibold text-slate-900">{formData.name}</span>. We have received your inquiry regarding <span className="font-semibold text-slate-900">{formData.subject}</span>. We will reach out via <span className="font-semibold text-slate-900">{formData.phone || formData.email}</span>.
                 </p>
-                <div className="pt-2 flex justify-center gap-3">
+                <div className="pt-2 flex flex-wrap justify-center gap-3">
                   <button
+                    type="button"
                     onClick={handleSendWhatsApp}
                     className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <MessageCircle className="w-4 h-4" />
                     <span>Send Message on WhatsApp</span>
                   </button>
+                  {onOpenTracker && (
+                    <button
+                      type="button"
+                      onClick={onOpenTracker}
+                      className="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <FileSearch className="w-4 h-4" />
+                      <span>Track Status</span>
+                    </button>
+                  )}
                   <button
+                    type="button"
                     onClick={() => setSubmitted(false)}
                     className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
                   >

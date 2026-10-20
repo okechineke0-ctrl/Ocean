@@ -15,7 +15,8 @@ import {
   ShieldCheck, 
   AlertCircle,
   Users,
-  Clock
+  Clock,
+  FileSearch
 } from 'lucide-react';
 import { COURSES_OFFERED } from '../data/coursesData';
 import { ClassFormat, CourseRegistrationFormData } from '../types';
@@ -238,18 +239,32 @@ export const CourseRegistrationModal: React.FC<CourseRegistrationModalProps> = (
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 pt-1">
+              <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
                 <button
+                  type="button"
+                  onClick={() => {
+                    const code = successData?.registrationNumber;
+                    onClose();
+                    window.dispatchEvent(new CustomEvent('open-ticket-tracker', { detail: { query: code } }));
+                  }}
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-xs"
+                >
+                  <FileSearch className="w-3.5 h-3.5" />
+                  <span>Track Admission Status</span>
+                </button>
+                <button
+                  type="button"
                   onClick={handleReset}
                   className="flex-1 py-2.5 px-4 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-colors cursor-pointer"
                 >
                   Register Another Course
                 </button>
                 <button
+                  type="button"
                   onClick={onClose}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-colors cursor-pointer"
+                  className="py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-colors cursor-pointer"
                 >
-                  Close Window
+                  Close
                 </button>
               </div>
             </div>
